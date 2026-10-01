@@ -351,7 +351,33 @@ const SUPABASE_POLL_MS = 500;
 
 // Live data target: <= 0.5 s polling interval.
 // The ESP32 uploads the latest row independently of history logging.
+function setPumpUI(value, state){
+  const isOn = !!value;
+
+  // Try common status elements used by the existing dashboard.
+  const statusEls = [
+    document.getElementById('pumpStatus'),
+    document.getElementById('pump-status'),
+    document.querySelector('.pump-status'),
+    document.querySelector('[data-pump-status]')
+  ].filter(Boolean);
+
+  statusEls.forEach(el=>{
+    if(state === "pending"){
+      el.textContent = isOn ? "MENGHIDUPKAN..." : "MEMATIKAN...";
+    }else if(state === "error"){
+      el.textContent = "GAGAL";
+    }else{
+      el.textContent = isOn ? "POMPA HIDUP" : "POMPA MATI";
+    }
+  });
+}
+
 window.receiveESPData=function(data){
+  // Physical relay state comes from ESP32 (pump_on).
+  // While a web command is pending, don't overwrite the command UI
+  // with the previous physical state.
+
   data=data||{};
   dataReceived=true;
   lastDataAt=Date.now();
@@ -401,10 +427,26 @@ async function pollSupabase(){
   }
 }
 
+let pendingPumpCommand = null;
+let pendingPumpSince = 0;
+let pumpCommandBusy = false;
+
 async function syncPumpToSupabase(value){
+  if (pumpCommandBusy) return;
+
+  pumpCommandBusy = true;
+  pendingPumpCommand = !!value;
+  pendingPumpSince = Date.now();
+
+  // Show that the command is being sent; do NOT let the polling loop
+  // immediately overwrite it with the old physical pump_on state.
+  setPumpUI?.(!!value, "pending");
+
+  const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE +
+    '?device_id=eq.tandon-01';
+
   try{
-    const url=SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?device_id=eq.tandon-01';
-    const res=await fetch(url,{
+    const res = await fetch(url,{
       method:'PATCH',
       cache:'no-store',
       headers:{
@@ -412,14 +454,33 @@ async function syncPumpToSupabase(value){
         'Accept':'application/json',
         'apikey':SUPABASE_PUBLISHABLE_KEY,
         'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY,
-        'Prefer':'return=minimal'
+        'Prefer':'return=representation'
       },
-      body:JSON.stringify({pump_command:!!value,updated_at:new Date().toISOString()})
+      body:JSON.stringify({
+        pump_command: !!value,
+        updated_at: new Date().toISOString()
+      })
     });
-    if(!res.ok) throw new Error('Pump command HTTP '+res.status);
-    console.log('PUMP COMMAND SENT:',value?'ON':'OFF');
-  }catch(e){
-    console.warn('Pump command:',e.message);
+
+    const text = await res.text();
+
+    if(!res.ok){
+      throw new Error('HTTP '+res.status+' '+text);
+    }
+
+    console.log('PUMP COMMAND SENT:', value ? 'ON' : 'OFF', text);
+
+    // Keep the requested state pending until ESP32 reports pump_on.
+    setPumpUI?.(!!value, "pending");
+  }catch(err){
+    console.error('PUMP COMMAND ERROR:', err);
+    pendingPumpCommand = null;
+    setPumpUI?.(false, "error");
+    alert('Perintah pompa gagal dikirim ke Supabase.
+
+' + err.message);
+  }finally{
+    pumpCommandBusy = false;
   }
 }
 
