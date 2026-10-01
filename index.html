@@ -290,16 +290,23 @@ function updateTank(){
   document.getElementById('heightValue').textContent=tank.height+" cm";
   updateLevel();
 }
+function fmt1(v){ return Number(v).toFixed(1); }
 function updateLevel(){
-  const liters=Math.round(tank.cap*level/100), cm=(lastLevelCm!=null?Number(lastLevelCm):Math.round(tank.height*level/100)), distance=Math.max(0,tank.height-cm);
-  document.getElementById('levelKpi').textContent=level+"%";
+  const liters=Math.round(tank.cap*level/100);
+  const cm=(lastLevelCm!=null?Number(lastLevelCm):tank.height*level/100);
+  const distance=(lastSensorDistance!=null?Number(lastSensorDistance):Math.max(0,tank.height-cm));
+
+  document.getElementById('levelKpi').textContent=fmt1(level)+"%";
   document.getElementById('volumeKpi').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
-  document.getElementById('tankPct').textContent=level+"%";
+  document.getElementById('tankPct').textContent=fmt1(level)+"%";
   document.getElementById('tankLiters').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
-  document.getElementById('cmValue').innerHTML=cm+' <span class="unit">cm</span>';
-  document.getElementById('distanceValue').textContent=(lastSensorDistance!=null?Number(lastSensorDistance).toFixed(1):distance)+" cm";
-  const remaining=(lastRemaining!=null?lastRemaining:Math.max(0,tank.cap-liters));
-  const remEl=document.getElementById('remainingValue'); if(remEl) remEl.textContent=Math.round(remaining).toLocaleString('id-ID')+' L';
+  document.getElementById('cmValue').innerHTML=fmt1(cm)+' <span class="unit">cm</span>';
+  document.getElementById('distanceValue').textContent=fmt1(distance)+" cm";
+
+  const remaining=(lastRemaining!=null?Number(lastRemaining):Math.max(0,tank.cap-liters));
+  const remEl=document.getElementById('remainingValue');
+  if(remEl) remEl.textContent=Math.round(remaining).toLocaleString('id-ID')+' L';
+
   document.getElementById('water').style.height=level+"%";
   document.getElementById('meter').style.width=level+"%";
 }
@@ -354,10 +361,11 @@ window.receiveESPData=function(data){
   if(Number.isFinite(Number(data.remainingLiters ?? data.remaining_liters))) lastRemaining=Number(data.remainingLiters ?? data.remaining_liters);
   if(Number.isFinite(Number(data.capacityLiters ?? data.capacity_liters))) { tank.cap=Number(data.capacityLiters ?? data.capacity_liters); }
   if(Number.isFinite(Number(data.tankHeightCm ?? data.tank_height_cm))) { tank.height=Number(data.tankHeightCm ?? data.tank_height_cm); }
-  if(typeof data.pump==='boolean') pump=data.pump;
+  const remotePump = (typeof data.pump==='boolean') ? data.pump : data.pump_on;
+  if(typeof remotePump==='boolean') pump=remotePump;
   updateLevel();
   updateTankMeta();
-  setPump(pump);
+  setPump(pump,false);
   updateSystemStatus();
 };
 
@@ -373,10 +381,11 @@ function updateTankMeta(){
 
 async function pollSupabase(){
   try{
-    const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE + '?select=*&order=created_at.desc&limit=1';
+    const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE + '?select=*&device_id=eq.tandon-01&limit=1';
     const res=await fetch(url,{method:'GET',cache:'no-store',headers:{
       'Accept':'application/json',
-      'apikey':SUPABASE_PUBLISHABLE_KEY
+      'apikey':SUPABASE_PUBLISHABLE_KEY,
+      'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY
     }});
     if(!res.ok) throw new Error('Supabase HTTP '+res.status);
     const rows=await res.json();
@@ -384,8 +393,29 @@ async function pollSupabase(){
       receiveESPData(rows[0]);
     }
   }catch(e){
-    // Tetap MENUNGGU DATA bila Supabase belum dapat dibaca.
     console.warn('Supabase:',e.message);
+  }
+}
+
+async function syncPumpToSupabase(value){
+  try{
+    const url=SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?device_id=eq.tandon-01';
+    const res=await fetch(url,{
+      method:'PATCH',
+      cache:'no-store',
+      headers:{
+        'Content-Type':'application/json',
+        'Accept':'application/json',
+        'apikey':SUPABASE_PUBLISHABLE_KEY,
+        'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY,
+        'Prefer':'return=minimal'
+      },
+      body:JSON.stringify({pump_on:!!value,updated_at:new Date().toISOString()})
+    });
+    if(!res.ok) throw new Error('Pump command HTTP '+res.status);
+    console.log('PUMP COMMAND SENT:',value?'ON':'OFF');
+  }catch(e){
+    console.warn('Pump command:',e.message);
   }
 }
 
@@ -400,12 +430,13 @@ setInterval(function(){
   }
 },3000);
 
-function setPump(v){
-  pump=v;
+function setPump(v,syncRemote=true){
+  pump=!!v;
   const t=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id;
   document.getElementById('pumpKpi').textContent=pump?(t.on||"ON"):(t.off||"OFF");
   document.getElementById('pumpState').textContent=pump?(t.pumpOn||t.on||"ON"):(t.pumpOff||t.off||"OFF");
   document.getElementById('pumpDot').classList.toggle('on',pump);
+  if(syncRemote) syncPumpToSupabase(pump);
 }
 function toggleAuto(){
   auto=!auto;
