@@ -347,8 +347,10 @@ function updateSystemStatus(){
 const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
 const SUPABASE_TABLE = 'controller_tandon_data';
-const SUPABASE_POLL_MS = 2000;
+const SUPABASE_POLL_MS = 500;
 
+// Live data target: <= 0.5 s polling interval.
+// The ESP32 uploads the latest row independently of history logging.
 window.receiveESPData=function(data){
   data=data||{};
   dataReceived=true;
@@ -374,15 +376,17 @@ function updateTankMeta(){
   const h=document.getElementById('heightValue');
   const d=document.getElementById('distanceValue');
   if(cap) cap.textContent=(tank.cap||0).toLocaleString('id-ID')+' L';
-  if(h) h.textContent=(tank.height||0)+' cm';
+  if(h) h.textContent=Number(tank.height||0).toFixed(1)+' cm';
   if(d) d.textContent=lastSensorDistance==null?'—':Number(lastSensorDistance).toFixed(1)+' cm';
   const r=document.getElementById('remainingValue'); if(r) r.textContent=lastRemaining==null?'—':Math.round(lastRemaining).toLocaleString('id-ID')+' L';
 }
 
 async function pollSupabase(){
   try{
-    const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE + '?select=*&device_id=eq.tandon-01&limit=1';
-    const res=await fetch(url,{method:'GET',cache:'no-store',headers:{
+    const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE +
+      '?select=device_id,distance_cm,level_cm,level_percent,volume_liters,remaining_liters,capacity_liters,tank_height_cm,pump_on,sensor_error,wifi_rssi,pump_command,updated_at' +
+      '&device_id=eq.tandon-01&limit=1';
+    const res=await fetch(url + '&_=' + Date.now(),{method:'GET',cache:'no-store',headers:{
       'Accept':'application/json',
       'apikey':SUPABASE_PUBLISHABLE_KEY,
       'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY
@@ -410,7 +414,7 @@ async function syncPumpToSupabase(value){
         'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY,
         'Prefer':'return=minimal'
       },
-      body:JSON.stringify({pump_on:!!value,updated_at:new Date().toISOString()})
+      body:JSON.stringify({pump_command:!!value,updated_at:new Date().toISOString()})
     });
     if(!res.ok) throw new Error('Pump command HTTP '+res.status);
     console.log('PUMP COMMAND SENT:',value?'ON':'OFF');
@@ -423,7 +427,7 @@ pollSupabase();
 setInterval(pollSupabase,SUPABASE_POLL_MS);
 
 setInterval(function(){
-  if(dataReceived && Date.now()-lastDataAt>10000){
+  if(dataReceived && Date.now()-lastDataAt>3000){
     dataReceived=false;
     sensorState="waiting";
     updateSystemStatus();
