@@ -256,7 +256,7 @@ html.rtl .line{flex-direction:row-reverse}
 <script>
 let tank={brand:"Penguin",family:"General Tank",model:"TB 120",cap:1200,height:163,diameter:105};
 let level=0, pump=false, auto=false, start=30, stop=90;
-let dataReceived=false, sensorState="waiting", lastDataAt=0, lastSensorDistance=null, lastVolume=null, lastRemaining=null;
+let dataReceived=false, sensorState="waiting", lastDataAt=0, lastSensorDistance=null, lastVolume=null, lastRemaining=null, lastLevelCm=null;
 
 function showPage(id,btn){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -291,7 +291,7 @@ function updateTank(){
   updateLevel();
 }
 function updateLevel(){
-  const liters=Math.round(tank.cap*level/100), cm=Math.round(tank.height*level/100), distance=Math.max(0,tank.height-cm);
+  const liters=Math.round(tank.cap*level/100), cm=(lastLevelCm!=null?Number(lastLevelCm):Math.round(tank.height*level/100)), distance=Math.max(0,tank.height-cm);
   document.getElementById('levelKpi').textContent=level+"%";
   document.getElementById('volumeKpi').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
   document.getElementById('tankPct').textContent=level+"%";
@@ -332,27 +332,15 @@ function updateSystemStatus(){
 }
 
 // ============================================================
-// ESP32 DATA INPUT
+// ESP32 -> SUPABASE -> GITHUB PAGES
 // ============================================================
-// Dashboard menerima data JSON dari ESP32 melalui HTTP GET.
-// Tidak ada data contoh yang dianggap sebagai data nyata.
-// Payload yang didukung:
-// {
-//   "levelPercent": 72.5,
-//   "distanceCm": 48.2,
-//   "volumeLiters": 870,
-//   "remainingLiters": 330,
-//   "pump": false,
-//   "sensorError": false
-// }
-//
-// URL dapat diberikan melalui ?esp=http://IP_ESP32/api/data
-// atau localStorage key: controllerTandonEspUrl.
-// Jika dashboard di-host langsung dari ESP32, /api/data dipakai.
-const ESP32_API_URL = new URLSearchParams(location.search).get('esp') ||
-  localStorage.getItem('controllerTandonEspUrl') ||
-  '/api/data';
-const ESP32_POLL_MS = 2000;
+// GitHub Pages adalah static hosting, jadi /api/data tidak tersedia
+// di server GitHub. ESP32 mengirim data ke Supabase, lalu dashboard
+// ini membaca record terbaru dari tabel controller_tandon_data.
+const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
+const SUPABASE_TABLE = 'controller_tandon_data';
+const SUPABASE_POLL_MS = 2000;
 
 window.receiveESPData=function(data){
   data=data||{};
@@ -360,6 +348,7 @@ window.receiveESPData=function(data){
   lastDataAt=Date.now();
   sensorState=(data.sensorError===true || data.sensor_ok===false || data.sensorStatus==='error')?'error':'ok';
   if(Number.isFinite(Number(data.levelPercent ?? data.level_percent))) level=Math.max(0,Math.min(100,Number(data.levelPercent ?? data.level_percent)));
+  if(Number.isFinite(Number(data.levelCm ?? data.level_cm))) lastLevelCm=Number(data.levelCm ?? data.level_cm);
   if(Number.isFinite(Number(data.distanceCm ?? data.distance_cm))) lastSensorDistance=Number(data.distanceCm ?? data.distance_cm);
   if(Number.isFinite(Number(data.volumeLiters ?? data.volume_liters))) lastVolume=Number(data.volumeLiters ?? data.volume_liters);
   if(Number.isFinite(Number(data.remainingLiters ?? data.remaining_liters))) lastRemaining=Number(data.remainingLiters ?? data.remaining_liters);
@@ -382,19 +371,26 @@ function updateTankMeta(){
   const r=document.getElementById('remainingValue'); if(r) r.textContent=lastRemaining==null?'—':Math.round(lastRemaining).toLocaleString('id-ID')+' L';
 }
 
-async function pollESP32(){
+async function pollSupabase(){
   try{
-    const res=await fetch(ESP32_API_URL,{method:'GET',cache:'no-store',headers:{'Accept':'application/json'}});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const data=await res.json();
-    receiveESPData(data);
+    const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE + '?select=*&order=created_at.desc&limit=1';
+    const res=await fetch(url,{method:'GET',cache:'no-store',headers:{
+      'Accept':'application/json',
+      'apikey':SUPABASE_PUBLISHABLE_KEY
+    }});
+    if(!res.ok) throw new Error('Supabase HTTP '+res.status);
+    const rows=await res.json();
+    if(Array.isArray(rows) && rows.length){
+      receiveESPData(rows[0]);
+    }
   }catch(e){
-    // Tidak menampilkan instruksi koneksi. Dashboard cukup tetap pada MENUNGGU DATA.
+    // Tetap MENUNGGU DATA bila Supabase belum dapat dibaca.
+    console.warn('Supabase:',e.message);
   }
 }
 
-pollESP32();
-setInterval(pollESP32,ESP32_POLL_MS);
+pollSupabase();
+setInterval(pollSupabase,SUPABASE_POLL_MS);
 
 setInterval(function(){
   if(dataReceived && Date.now()-lastDataAt>10000){
