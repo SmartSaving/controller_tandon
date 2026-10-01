@@ -347,32 +347,10 @@ function updateSystemStatus(){
 const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
 const SUPABASE_TABLE = 'controller_tandon_data';
-const SUPABASE_POLL_MS = 500;
+const SUPABASE_POLL_MS = 300;
 
 // Live data target: <= 0.5 s polling interval.
 // The ESP32 uploads the latest row independently of history logging.
-function setPumpUI(value, state){
-  const isOn = !!value;
-
-  // Try common status elements used by the existing dashboard.
-  const statusEls = [
-    document.getElementById('pumpStatus'),
-    document.getElementById('pump-status'),
-    document.querySelector('.pump-status'),
-    document.querySelector('[data-pump-status]')
-  ].filter(Boolean);
-
-  statusEls.forEach(el=>{
-    if(state === "pending"){
-      el.textContent = isOn ? "MENGHIDUPKAN..." : "MEMATIKAN...";
-    }else if(state === "error"){
-      el.textContent = "GAGAL";
-    }else{
-      el.textContent = isOn ? "POMPA HIDUP" : "POMPA MATI";
-    }
-  });
-}
-
 window.receiveESPData=function(data){
   // Physical relay state comes from ESP32 (pump_on).
   // While a web command is pending, don't overwrite the command UI
@@ -390,10 +368,26 @@ window.receiveESPData=function(data){
   if(Number.isFinite(Number(data.capacityLiters ?? data.capacity_liters))) { tank.cap=Number(data.capacityLiters ?? data.capacity_liters); }
   if(Number.isFinite(Number(data.tankHeightCm ?? data.tank_height_cm))) { tank.height=Number(data.tankHeightCm ?? data.tank_height_cm); }
   const remotePump = (typeof data.pump==='boolean') ? data.pump : data.pump_on;
-  if(typeof remotePump==='boolean') pump=remotePump;
+  if(typeof remotePump==='boolean'){
+    pump=remotePump;
+
+    // A physical status update confirms the command only when it matches.
+    if(pendingPumpCommand !== null){
+      if(remotePump === pendingPumpCommand){
+        pendingPumpCommand = null;
+        pendingPumpSince = 0;
+      } else if(Date.now() - pendingPumpSince > 8000){
+        pendingPumpCommand = null;
+        pendingPumpSince = 0;
+      }
+    }
+
+    // Always update the real pump indicator from ESP32.
+    updatePumpVisualOnly(pump);
+  }
+
   updateLevel();
   updateTankMeta();
-  setPump(pump,false);
   updateSystemStatus();
 };
 
@@ -407,7 +401,10 @@ function updateTankMeta(){
   const r=document.getElementById('remainingValue'); if(r) r.textContent=lastRemaining==null?'—':Math.round(lastRemaining).toLocaleString('id-ID')+' L';
 }
 
+let supabasePollBusy=false;
 async function pollSupabase(){
+  if(supabasePollBusy) return;
+  supabasePollBusy=true;
   try{
     const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE +
       '?select=device_id,distance_cm,level_cm,level_percent,volume_liters,remaining_liters,capacity_liters,tank_height_cm,pump_on,sensor_error,wifi_rssi,pump_command,updated_at' +
@@ -424,6 +421,8 @@ async function pollSupabase(){
     }
   }catch(e){
     console.warn('Supabase:',e.message);
+  }finally{
+    supabasePollBusy=false;
   }
 }
 
@@ -432,21 +431,13 @@ let pendingPumpSince = 0;
 let pumpCommandBusy = false;
 
 async function syncPumpToSupabase(value){
-  if (pumpCommandBusy) return;
+  if(pumpCommandBusy) return;
+  pumpCommandBusy=true;
 
-  pumpCommandBusy = true;
-  pendingPumpCommand = !!value;
-  pendingPumpSince = Date.now();
-
-  // Show that the command is being sent; do NOT let the polling loop
-  // immediately overwrite it with the old physical pump_on state.
-  setPumpUI?.(!!value, "pending");
-
-  const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE +
-    '?device_id=eq.tandon-01';
+  const url=SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?device_id=eq.tandon-01';
 
   try{
-    const res = await fetch(url,{
+    const res=await fetch(url,{
       method:'PATCH',
       cache:'no-store',
       headers:{
@@ -454,33 +445,28 @@ async function syncPumpToSupabase(value){
         'Accept':'application/json',
         'apikey':SUPABASE_PUBLISHABLE_KEY,
         'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY,
-        'Prefer':'return=representation'
+        'Prefer':'return=minimal'
       },
       body:JSON.stringify({
-        pump_command: !!value,
-        updated_at: new Date().toISOString()
+        pump_command:!!value,
+        updated_at:new Date().toISOString()
       })
     });
 
-    const text = await res.text();
-
     if(!res.ok){
-      throw new Error('HTTP '+res.status+' '+text);
+      const msg=await res.text();
+      throw new Error('HTTP '+res.status+' '+msg);
     }
 
-    console.log('PUMP COMMAND SENT:', value ? 'ON' : 'OFF', text);
-
-    // Keep the requested state pending until ESP32 reports pump_on.
-    setPumpUI?.(!!value, "pending");
+    console.log('PUMP COMMAND ->',value?'ON':'OFF');
   }catch(err){
-    console.error('PUMP COMMAND ERROR:', err);
-    pendingPumpCommand = null;
-    setPumpUI?.(false, "error");
-    alert('Perintah pompa gagal dikirim ke Supabase.
-
-' + err.message);
+    console.error('PUMP COMMAND ERROR:',err);
+    pendingPumpCommand=null;
+    pendingPumpSince=0;
+    // Revert visual only when command definitely failed.
+    updatePumpVisualOnly(false);
   }finally{
-    pumpCommandBusy = false;
+    pumpCommandBusy=false;
   }
 }
 
@@ -495,13 +481,27 @@ setInterval(function(){
   }
 },3000);
 
-function setPump(v,syncRemote=true){
+function updatePumpVisualOnly(v){
   pump=!!v;
   const t=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id;
-  document.getElementById('pumpKpi').textContent=pump?(t.on||"ON"):(t.off||"OFF");
-  document.getElementById('pumpState').textContent=pump?(t.pumpOn||t.on||"ON"):(t.pumpOff||t.off||"OFF");
-  document.getElementById('pumpDot').classList.toggle('on',pump);
-  if(syncRemote) syncPumpToSupabase(pump);
+  const k=document.getElementById('pumpKpi');
+  const st=document.getElementById('pumpState');
+  const dot=document.getElementById('pumpDot');
+  if(k) k.textContent=pump?(t.on||"ON"):(t.off||"OFF");
+  if(st) st.textContent=pump?(t.pumpOn||t.on||"ON"):(t.pumpOff||t.off||"OFF");
+  if(dot) dot.classList.toggle('on',pump);
+}
+
+function setPump(v,syncRemote=true){
+  pump=!!v;
+  updatePumpVisualOnly(pump);
+
+  if(syncRemote){
+    // Show command state immediately while waiting for ESP32 confirmation.
+    pendingPumpCommand = pump;
+    pendingPumpSince = Date.now();
+    syncPumpToSupabase(pump);
+  }
 }
 function toggleAuto(){
   auto=!auto;
