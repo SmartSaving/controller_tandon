@@ -6,9 +6,9 @@
 <title>CONTROLLER TANDON — V9</title>
 <style>
 :root{
-  --bg:#071018; --panel:#0d1822; --panel2:#101f2b; --line:#203746;
-  --text:#edf7fb; --muted:#78909c; --accent:#35c7ff; --accent2:#6ee7ff;
-  --ok:#40e0a0; --warn:#ffc857; --danger:#ff6577;
+--bg:#071018; --panel:#0d1822; --panel2:#101f2b; --line:#203746;
+--text:#edf7fb; --muted:#78909c; --accent:#35c7ff; --accent2:#6ee7ff;
+--ok:#40e0a0; --warn:#ffc857; --danger:#ff6577;
 }
 *{box-sizing:border-box}
 body{margin:0;background:radial-gradient(circle at 70% 10%,#123447 0,#071018 42%,#050b10 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
@@ -62,193 +62,193 @@ html.rtl .line{flex-direction:row-reverse}
 <!-- CONTROLLER TANDON: ready for ESP32 JSON input via /api/data -->
 <div class="app">
 <aside class="sidebar">
-  <div class="brand">CONTROLLER TANDON<small data-i18n="tagline">SMART WATER LEVEL SYSTEM</small></div>
-  <div class="nav">
-    <button class="active" onclick="showPage('dashboard',this)">◉ &nbsp;<span data-i18n="dashboard">Dashboard</span></button>
-    <button onclick="showPage('settings',this)">⚙ &nbsp;<span data-i18n="settings">Settings</span></button>
-    <button onclick="showPage('history',this)">▥ &nbsp;<span data-i18n="history">History</span></button>
-    <button onclick="showPage('language',this)">文 &nbsp;<span data-i18n="language">Language</span></button>
-  </div>
+<div class="brand">CONTROLLER TANDON<small data-i18n="tagline">SMART WATER LEVEL SYSTEM</small></div>
+<div class="nav">
+<button class="active" onclick="showPage('dashboard',this)">◉ &nbsp;<span data-i18n="dashboard">Dashboard</span></button>
+<button onclick="showPage('settings',this)">⚙ &nbsp;<span data-i18n="settings">Settings</span></button>
+<button onclick="showPage('history',this)">▥ &nbsp;<span data-i18n="history">History</span></button>
+<button onclick="showPage('language',this)">文 &nbsp;<span data-i18n="language">Language</span></button>
+</div>
 </aside>
 
 <main class="main">
 <header class="top">
-  <div class="title"><h1 id="pageTitle"><span data-i18n="dashboard">Dashboard</span></h1><p id="selectedLabel">Penguin • General Tank • TB 120 • 1.200 L</p></div>
-  <div class="status wait" id="systemStatus"><i class="dot"></i> <span id="systemStatusText" data-i18n="waitingData">MENUNGGU DATA</span></div>
+<div class="title"><h1 id="pageTitle"><span data-i18n="dashboard">Dashboard</span></h1><p id="selectedLabel">Penguin • General Tank • TB 120 • 1.200 L</p></div>
+<div class="status wait" id="systemStatus"><i class="dot"></i> <span id="systemStatusText" data-i18n="waitingData">MENUNGGU DATA</span></div>
 </header>
 
 <section id="dashboard" class="page active">
-  <div class="kpis">
-    <div class="kpi"><span data-i18n="waterLevel">WATER LEVEL</span><strong id="levelKpi">0%</strong></div>
-    <div class="kpi"><span data-i18n="estimatedVolume">ESTIMATED VOLUME</span><strong id="volumeKpi">0 L</strong></div>
-    <div class="kpi"><span data-i18n="sensor">SENSOR</span><strong id="sensorKpi" class="warn" data-i18n="waiting">MENUNGGU</strong></div>
-    <div class="kpi"><span data-i18n="pump">PUMP</span><strong id="pumpKpi">OFF</strong></div>
-  </div>
+<div class="kpis">
+<div class="kpi"><span data-i18n="waterLevel">WATER LEVEL</span><strong id="levelKpi">0%</strong></div>
+<div class="kpi"><span data-i18n="estimatedVolume">ESTIMATED VOLUME</span><strong id="volumeKpi">0 L</strong></div>
+<div class="kpi"><span data-i18n="sensor">SENSOR</span><strong id="sensorKpi" class="warn" data-i18n="waiting">MENUNGGU</strong></div>
+<div class="kpi"><span data-i18n="pump">PUMP</span><strong id="pumpKpi">OFF</strong></div>
+</div>
 
-  <div class="grid">
-    <div class="card">
-      <h3 data-i18n="tankMonitor">TANK MONITOR</h3><div class="sub" data-i18n="realtimeLevel">Real-time water level visualization</div>
-      <div class="tankWrap">
-        <div class="tank">
-          <div class="water" id="water"></div>
-          <div class="levelText"><strong id="tankPct">0%</strong><span id="tankLiters">0 L</span></div>
-        </div>
-        <div class="tankInfo">
-          <div class="big" id="cmValue">— <span class="unit">cm</span></div>
-          <div class="sub" data-i18n="currentWaterLevel">Current water level</div>
-          <div class="meter"><i id="meter"></i></div>
-          <div class="line"><span data-i18n="tankCapacity">Tank capacity</span><b id="capValue">—</b></div>
-          <div class="line"><span data-i18n="tankHeight">Tank height</span><b id="heightValue">—</b></div>
-          <div class="line"><span data-i18n="sensorDistance">Sensor distance</span><b id="distanceValue">—</b></div>
-           <div class="line"><span data-i18n="remainingWater">Remaining water</span><b id="remainingValue">—</b></div>
-          <div class="line"><span data-i18n="status">Status</span><b id="tankStatus" class="warn" data-i18n="waitingData">MENUNGGU DATA</b></div>
-        </div>
-      </div>
-    </div>
+<div class="grid">
+<div class="card">
+<h3 data-i18n="tankMonitor">TANK MONITOR</h3><div class="sub" data-i18n="realtimeLevel">Real-time water level visualization</div>
+<div class="tankWrap">
+<div class="tank">
+<div class="water" id="water"></div>
+<div class="levelText"><strong id="tankPct">0%</strong><span id="tankLiters">0 L</span></div>
+</div>
+<div class="tankInfo">
+<div class="big" id="cmValue">— <span class="unit">cm</span></div>
+<div class="sub" data-i18n="currentWaterLevel">Current water level</div>
+<div class="meter"><i id="meter"></i></div>
+<div class="line"><span data-i18n="tankCapacity">Tank capacity</span><b id="capValue">—</b></div>
+<div class="line"><span data-i18n="tankHeight">Tank height</span><b id="heightValue">—</b></div>
+<div class="line"><span data-i18n="sensorDistance">Sensor distance</span><b id="distanceValue">—</b></div>
+<div class="line"><span data-i18n="remainingWater">Remaining water</span><b id="remainingValue">—</b></div>
+<div class="line"><span data-i18n="status">Status</span><b id="tankStatus" class="warn" data-i18n="waitingData">MENUNGGU DATA</b></div>
+</div>
+</div>
+</div>
 
-    <div>
-      <div class="card">
-        <h3 data-i18n="pumpControl">PUMP CONTROL</h3><div class="sub" data-i18n="manualAuto">Manual control / automatic level control</div>
-        <div class="pump">
-          <div class="pumpHead"><div class="pumpState"><i class="switchDot" id="pumpDot"></i><span id="pumpState" data-i18n="pumpOff">PUMP OFF</span></div><span class="sub" id="modeLabel" data-i18n="manual">MANUAL</span></div>
-          <div class="btns"><button class="btn primary" onclick="setPump(true)" data-i18n="on">ON</button><button class="btn danger" onclick="setPump(false)" data-i18n="off">OFF</button></div>
-        </div>
-        <div class="autoBox">
-          <div class="toggle"><span data-i18n="automaticControl">Automatic Control</span><button class="toggleBtn" id="autoToggle" onclick="toggleAuto()"></button></div>
-          <div class="sub" style="margin-top:9px" data-i18n="autoDescription">ON pump at low level, OFF when target full level is reached.</div>
-          <div class="line"><span data-i18n="startPumpAt">Start pump at</span><b id="startText">30%</b></div>
-          <div class="line"><span data-i18n="stopPumpAt">Stop pump at</span><b id="stopText">90%</b></div>
-        </div>
-      </div>
+<div>
+<div class="card">
+<h3 data-i18n="pumpControl">PUMP CONTROL</h3><div class="sub" data-i18n="manualAuto">Manual control / automatic level control</div>
+<div class="pump">
+<div class="pumpHead"><div class="pumpState"><i class="switchDot" id="pumpDot"></i><span id="pumpState" data-i18n="pumpOff">PUMP OFF</span></div><span class="sub" id="modeLabel" data-i18n="manual">MANUAL</span></div>
+<div class="btns"><button class="btn primary" onclick="setPump(true)" data-i18n="on">ON</button><button class="btn danger" onclick="setPump(false)" data-i18n="off">OFF</button></div>
+</div>
+<div class="autoBox">
+<div class="toggle"><span data-i18n="automaticControl">Automatic Control</span><button class="toggleBtn" id="autoToggle" onclick="toggleAuto()"></button></div>
+<div class="sub" style="margin-top:9px" data-i18n="autoDescription">ON pump at low level, OFF when target full level is reached.</div>
+<div class="line"><span data-i18n="startPumpAt">Start pump at</span><b id="startText">30%</b></div>
+<div class="line"><span data-i18n="stopPumpAt">Stop pump at</span><b id="stopText">90%</b></div>
+</div>
+</div>
 
-      <div class="card" style="margin-top:18px">
-        <h3 data-i18n="usageToday">USAGE TODAY</h3><div class="sub" data-i18n="estimatedConsumption">Estimated water consumption</div>
-        <div class="historyCards" style="margin-top:14px">
-          <div><span class="sub" data-i18n="used">Used</span><div class="historyValue">184 L</div></div>
-          <div><span class="sub" data-i18n="pumpCycles">Pump cycles</span><div class="historyValue">4×</div></div>
-          <div><span class="sub" data-i18n="lastUpdate">Last update</span><div class="historyValue" style="font-size:19px">14:32:18</div></div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="card" style="margin-top:18px">
+<h3 data-i18n="usageToday">USAGE TODAY</h3><div class="sub" data-i18n="estimatedConsumption">Estimated water consumption</div>
+<div class="historyCards" style="margin-top:14px">
+<div><span class="sub" data-i18n="used">Used</span><div class="historyValue">184 L</div></div>
+<div><span class="sub" data-i18n="pumpCycles">Pump cycles</span><div class="historyValue">4×</div></div>
+<div><span class="sub" data-i18n="lastUpdate">Last update</span><div class="historyValue" style="font-size:19px">14:32:18</div></div>
+</div>
+</div>
+</div>
+</div>
 </section>
 
 <section id="settings" class="page">
-  <div class="card">
-    <h3 data-i18n="tankProfile">TANK PROFILE</h3><div class="sub" data-i18n="chooseTank">Choose one registered tank model or configure a custom tank.</div>
-    <div class="settingsGrid" style="margin-top:18px">
-      <div class="sectionTitle" data-i18n="manufacturer">MANUFACTURER</div>
-      <div class="tree">
-        <button onclick="openTree('penguin')"><span class="arrow">›</span> Penguin</button>
-        <div id="penguin" class="child">
-          <button onclick="openTree('penguinGeneral')"><span class="arrow">›</span> General Tank</button>
-          <div id="penguinGeneral" class="child">
-            <button onclick="selectTank('Penguin','General Tank','TB 32',300,97,69)"><span class="arrow">•</span> TB 32 — 300 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 55',520,118,83)"><span class="arrow">•</span> TB 55 — 520 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 70',650,135.5,88)"><span class="arrow">•</span> TB 70 — 650 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 80',800,177,83)"><span class="arrow">•</span> TB 80 — 800 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 110',1050,142,105)"><span class="arrow">•</span> TB 110 — 1.050 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 120',1200,163,105)"><span class="arrow">•</span> TB 120 — 1.200 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 160',1550,168,116)"><span class="arrow">•</span> TB 160 — 1.550 L</button>
-            <button onclick="selectTank('Penguin','General Tank','TB 200',2000,156.4,144)"><span class="arrow">•</span> TB 200 — 2.000 L</button>
-          </div>
-          <button onclick="openTree('penguinDrain')"><span class="arrow">›</span> Total Drain</button>
-          <div id="penguinDrain" class="child">
-            <button onclick="selectTank('Penguin','Total Drain','TD 60',600,174,77)"><span class="arrow">•</span> TD 60 — 600 L</button>
-            <button onclick="selectTank('Penguin','Total Drain','TD 80',800,165,93)"><span class="arrow">•</span> TD 80 — 800 L</button>
-            <button onclick="selectTank('Penguin','Total Drain','TD 110',1050,182,104)"><span class="arrow">•</span> TD 110 — 1.050 L</button>
-            <button onclick="selectTank('Penguin','Total Drain','TD 150',1500,190,118)"><span class="arrow">•</span> TD 150 — 1.500 L</button>
-            <button onclick="selectTank('Penguin','Total Drain','TD 200',2000,211,129)"><span class="arrow">•</span> TD 200 — 2.000 L</button>
-          </div>
-        </div>
+<div class="card">
+<h3 data-i18n="tankProfile">TANK PROFILE</h3><div class="sub" data-i18n="chooseTank">Choose one registered tank model or configure a custom tank.</div>
+<div class="settingsGrid" style="margin-top:18px">
+<div class="sectionTitle" data-i18n="manufacturer">MANUFACTURER</div>
+<div class="tree">
+<button onclick="openTree('penguin')"><span class="arrow">›</span> Penguin</button>
+<div id="penguin" class="child">
+<button onclick="openTree('penguinGeneral')"><span class="arrow">›</span> General Tank</button>
+<div id="penguinGeneral" class="child">
+<button onclick="selectTank('Penguin','General Tank','TB 32',300,97,69)"><span class="arrow">•</span> TB 32 — 300 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 55',520,118,83)"><span class="arrow">•</span> TB 55 — 520 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 70',650,135.5,88)"><span class="arrow">•</span> TB 70 — 650 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 80',800,177,83)"><span class="arrow">•</span> TB 80 — 800 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 110',1050,142,105)"><span class="arrow">•</span> TB 110 — 1.050 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 120',1200,163,105)"><span class="arrow">•</span> TB 120 — 1.200 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 160',1550,168,116)"><span class="arrow">•</span> TB 160 — 1.550 L</button>
+<button onclick="selectTank('Penguin','General Tank','TB 200',2000,156.4,144)"><span class="arrow">•</span> TB 200 — 2.000 L</button>
+</div>
+<button onclick="openTree('penguinDrain')"><span class="arrow">›</span> Total Drain</button>
+<div id="penguinDrain" class="child">
+<button onclick="selectTank('Penguin','Total Drain','TD 60',600,174,77)"><span class="arrow">•</span> TD 60 — 600 L</button>
+<button onclick="selectTank('Penguin','Total Drain','TD 80',800,165,93)"><span class="arrow">•</span> TD 80 — 800 L</button>
+<button onclick="selectTank('Penguin','Total Drain','TD 110',1050,182,104)"><span class="arrow">•</span> TD 110 — 1.050 L</button>
+<button onclick="selectTank('Penguin','Total Drain','TD 150',1500,190,118)"><span class="arrow">•</span> TD 150 — 1.500 L</button>
+<button onclick="selectTank('Penguin','Total Drain','TD 200',2000,211,129)"><span class="arrow">•</span> TD 200 — 2.000 L</button>
+</div>
+</div>
 
-        <button onclick="openTree('m')"><span class="arrow">›</span> MPOIN</button>
-        <div id="m" class="child">
-          <button onclick="selectTank('MPOIN','Wave','1200L WAVE',1200,157,107)"><span class="arrow">•</span> Wave — 1.200 L</button>
-          <button onclick="selectTank('MPOIN','Tall','1200L TALL',1200,192,91)"><span class="arrow">•</span> Tall — 1.200 L</button>
-          <button onclick="selectTank('MPOIN','Drain','1200L DRAIN',1200,196,107)"><span class="arrow">•</span> Drain — 1.200 L</button>
-          <button onclick="selectTank('MPOIN','Stack','1200L STACK',1200,155,110)"><span class="arrow">•</span> Stack — 1.200 L</button>
-          <button onclick="selectTank('MPOIN','U-Ground','1200L U-GROUND',1200,188,101)"><span class="arrow">•</span> U-Ground — 1.200 L</button>
-        </div>
+<button onclick="openTree('m')"><span class="arrow">›</span> MPOIN</button>
+<div id="m" class="child">
+<button onclick="selectTank('MPOIN','Wave','1200L WAVE',1200,157,107)"><span class="arrow">•</span> Wave — 1.200 L</button>
+<button onclick="selectTank('MPOIN','Tall','1200L TALL',1200,192,91)"><span class="arrow">•</span> Tall — 1.200 L</button>
+<button onclick="selectTank('MPOIN','Drain','1200L DRAIN',1200,196,107)"><span class="arrow">•</span> Drain — 1.200 L</button>
+<button onclick="selectTank('MPOIN','Stack','1200L STACK',1200,155,110)"><span class="arrow">•</span> Stack — 1.200 L</button>
+<button onclick="selectTank('MPOIN','U-Ground','1200L U-GROUND',1200,188,101)"><span class="arrow">•</span> U-Ground — 1.200 L</button>
+</div>
 
-        <button onclick="openTree('prime')"><span class="arrow">›</span> Prime</button>
-        <div id="prime" class="child">
-          <button onclick="selectTank('Prime','Blow','PRBL 550',550,121,79)"><span class="arrow">•</span> PRBL 550 — 550 L</button>
-          <button onclick="selectTank('Prime','Blow','PRBL 1100',1100,139,103)"><span class="arrow">•</span> PRBL 1100 — 1.100 L</button>
-          <button onclick="selectTank('Prime','Premier','PR 2000',2000,180,125)"><span class="arrow">•</span> PR 2000 — 2.000 L</button>
-          <button onclick="selectTank('Prime','Premier','PR 5000',5000,221,182)"><span class="arrow">•</span> PR 5000 — 5.000 L</button>
-        </div>
+<button onclick="openTree('prime')"><span class="arrow">›</span> Prime</button>
+<div id="prime" class="child">
+<button onclick="selectTank('Prime','Blow','PRBL 550',550,121,79)"><span class="arrow">•</span> PRBL 550 — 550 L</button>
+<button onclick="selectTank('Prime','Blow','PRBL 1100',1100,139,103)"><span class="arrow">•</span> PRBL 1100 — 1.100 L</button>
+<button onclick="selectTank('Prime','Premier','PR 2000',2000,180,125)"><span class="arrow">•</span> PR 2000 — 2.000 L</button>
+<button onclick="selectTank('Prime','Premier','PR 5000',5000,221,182)"><span class="arrow">•</span> PR 5000 — 5.000 L</button>
+</div>
 
-        <button onclick="openTree('lucky')"><span class="arrow">›</span> Lucky Polytank</button>
-        <div id="lucky" class="child">
-          <button onclick="selectTank('Lucky Polytank','Standard','LS 110',1100,136,106.5)"><span class="arrow">•</span> LS 110 — 1.100 L</button>
-          <button onclick="selectTank('Lucky Polytank','Standard','LS 235',2350,179,136)"><span class="arrow">•</span> LS 235 — 2.350 L</button>
-          <button onclick="selectTank('Lucky Polytank','Standard','LS 500',5000,229,181.5)"><span class="arrow">•</span> LS 500 — 5.000 L</button>
-          <button onclick="selectTank('Lucky Polytank','Anti Bacteria','LAB 110',1100,138.5,107)"><span class="arrow">•</span> LAB 110 — 1.100 L</button>
-          <button onclick="selectTank('Lucky Polytank','Underground','LPT 1250',1250,155,108)"><span class="arrow">•</span> LPT 1250 — 1.250 L</button>
-          <button onclick="selectTank('Lucky Polytank','Square','Tangki Petak',1000,100,'124 x 109')"><span class="arrow">•</span> Tangki Petak — 1.000 L</button>
-        </div>
+<button onclick="openTree('lucky')"><span class="arrow">›</span> Lucky Polytank</button>
+<div id="lucky" class="child">
+<button onclick="selectTank('Lucky Polytank','Standard','LS 110',1100,136,106.5)"><span class="arrow">•</span> LS 110 — 1.100 L</button>
+<button onclick="selectTank('Lucky Polytank','Standard','LS 235',2350,179,136)"><span class="arrow">•</span> LS 235 — 2.350 L</button>
+<button onclick="selectTank('Lucky Polytank','Standard','LS 500',5000,229,181.5)"><span class="arrow">•</span> LS 500 — 5.000 L</button>
+<button onclick="selectTank('Lucky Polytank','Anti Bacteria','LAB 110',1100,138.5,107)"><span class="arrow">•</span> LAB 110 — 1.100 L</button>
+<button onclick="selectTank('Lucky Polytank','Underground','LPT 1250',1250,155,108)"><span class="arrow">•</span> LPT 1250 — 1.250 L</button>
+<button onclick="selectTank('Lucky Polytank','Square','Tangki Petak',1000,100,'124 x 109')"><span class="arrow">•</span> Tangki Petak — 1.000 L</button>
+</div>
 
-        <button onclick="openTree('custom')"><span class="arrow">›</span> <span data-i18n="customTank">Custom Tank</span></button>
-        <div id="custom" class="child">
-          <div class="field"><label data-i18n="capacityLiter">CAPACITY (LITER)</label><input id="customCap" type="number" data-i18n-placeholder="exampleCapacity" placeholder="Contoh: 1200"></div>
-          <div class="field" style="margin-top:8px"><label data-i18n="tankHeightInput">TANK HEIGHT (CM)</label><input id="customHeight" type="number" data-i18n-placeholder="exampleHeight" placeholder="Contoh: 160"></div>
-          <button class="save" onclick="saveCustom()" data-i18n="saveCustom">SAVE CUSTOM TANK</button>
-        </div>
-      </div>
+<button onclick="openTree('custom')"><span class="arrow">›</span> <span data-i18n="customTank">Custom Tank</span></button>
+<div id="custom" class="child">
+<div class="field"><label data-i18n="capacityLiter">CAPACITY (LITER)</label><input id="customCap" type="number" data-i18n-placeholder="exampleCapacity" placeholder="Contoh: 1200"></div>
+<div class="field" style="margin-top:8px"><label data-i18n="tankHeightInput">TANK HEIGHT (CM)</label><input id="customHeight" type="number" data-i18n-placeholder="exampleHeight" placeholder="Contoh: 160"></div>
+<button class="save" onclick="saveCustom()" data-i18n="saveCustom">SAVE CUSTOM TANK</button>
+</div>
+</div>
 
-      <div class="sectionTitle" style="margin-top:18px" data-i18n="automaticPumpControl">AUTOMATIC PUMP CONTROL</div>
-      <div class="field"><label data-i18n="startPumpWhen">START PUMP WHEN LEVEL REACHES (%)</label><input id="startInput" type="number" min="1" max="99" value="30"></div>
-      <div class="field"><label data-i18n="stopPumpWhen">STOP PUMP WHEN LEVEL REACHES (%)</label><input id="stopInput" type="number" min="1" max="100" value="90"></div>
-      <button class="save" onclick="saveAuto()" data-i18n="saveSettings">SAVE SETTINGS</button>
-    </div>
-  </div>
+<div class="sectionTitle" style="margin-top:18px" data-i18n="automaticPumpControl">AUTOMATIC PUMP CONTROL</div>
+<div class="field"><label data-i18n="startPumpWhen">START PUMP WHEN LEVEL REACHES (%)</label><input id="startInput" type="number" min="1" max="99" value="30"></div>
+<div class="field"><label data-i18n="stopPumpWhen">STOP PUMP WHEN LEVEL REACHES (%)</label><input id="stopInput" type="number" min="1" max="100" value="90"></div>
+<button class="save" onclick="saveAuto()" data-i18n="saveSettings">SAVE SETTINGS</button>
+</div>
+</div>
 </section>
 
 <section id="history" class="page">
-  <div class="grid">
-    <div class="card"><h3 data-i18n="waterUsage">WATER USAGE</h3><div class="sub" data-i18n="simpleConsumption">Simple consumption summary</div>
-      <div class="historyCards" style="margin-top:20px">
-        <div class="kpi"><span data-i18n="today">TODAY</span><strong>184 L</strong></div>
-        <div class="kpi"><span data-i18n="thisWeek">THIS WEEK</span><strong>1.24 kL</strong></div>
-        <div class="kpi"><span data-i18n="thisMonth">THIS MONTH</span><strong>5.82 kL</strong></div>
-      </div>
-      <div class="chart" data-i18n-title="previewChart" title="Preview chart"><div class="bar" style="height:40%"></div><div class="bar" style="height:65%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:82%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:92%"></div><div class="bar" style="height:72%"></div></div>
-      <div class="days"><span data-i18n="mon">Sen</span><span data-i18n="tue">Sel</span><span data-i18n="wed">Rab</span><span data-i18n="thu">Kam</span><span data-i18n="fri">Jum</span><span data-i18n="sat">Sab</span><span data-i18n="sun">Min</span></div>
-    </div>
-    <div class="card"><h3 data-i18n="pumpUsage">PUMP USAGE</h3><div class="sub" data-i18n="pumpCycleDescription">Number of automatic pump cycles</div>
-      <div class="historyValue" style="font-size:42px;margin-top:28px">27×</div>
-      <div class="line"><span data-i18n="today">Today</span><b>4×</b></div>
-      <div class="line"><span data-i18n="thisWeek">This week</span><b>18×</b></div>
-      <div class="line"><span data-i18n="thisMonth">This month</span><b>27×</b></div>
-      <div class="note" data-i18n="historyNote">Data riwayat diperbarui berdasarkan data yang diterima sistem.</div>
-    </div>
-  </div>
+<div class="grid">
+<div class="card"><h3 data-i18n="waterUsage">WATER USAGE</h3><div class="sub" data-i18n="simpleConsumption">Simple consumption summary</div>
+<div class="historyCards" style="margin-top:20px">
+<div class="kpi"><span data-i18n="today">TODAY</span><strong>184 L</strong></div>
+<div class="kpi"><span data-i18n="thisWeek">THIS WEEK</span><strong>1.24 kL</strong></div>
+<div class="kpi"><span data-i18n="thisMonth">THIS MONTH</span><strong>5.82 kL</strong></div>
+</div>
+<div class="chart" data-i18n-title="previewChart" title="Preview chart"><div class="bar" style="height:40%"></div><div class="bar" style="height:65%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:82%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:92%"></div><div class="bar" style="height:72%"></div></div>
+<div class="days"><span data-i18n="mon">Sen</span><span data-i18n="tue">Sel</span><span data-i18n="wed">Rab</span><span data-i18n="thu">Kam</span><span data-i18n="fri">Jum</span><span data-i18n="sat">Sab</span><span data-i18n="sun">Min</span></div>
+</div>
+<div class="card"><h3 data-i18n="pumpUsage">PUMP USAGE</h3><div class="sub" data-i18n="pumpCycleDescription">Number of automatic pump cycles</div>
+<div class="historyValue" style="font-size:42px;margin-top:28px">27×</div>
+<div class="line"><span data-i18n="today">Today</span><b>4×</b></div>
+<div class="line"><span data-i18n="thisWeek">This week</span><b>18×</b></div>
+<div class="line"><span data-i18n="thisMonth">This month</span><b>27×</b></div>
+<div class="note" data-i18n="historyNote">Data riwayat diperbarui berdasarkan data yang diterima sistem.</div>
+</div>
+</div>
 </section>
 
 <section id="language" class="page">
-  <div class="card">
-    <h3 data-i18n="languageSettings">PENGATURAN BAHASA</h3>
-    <div class="sub" data-i18n="languageDesc">Pilih bahasa antarmuka CONTROLLER TANDON.</div>
-    <div class="languageGrid" style="margin-top:22px">
-      <div class="langGroup">
-        <div class="sectionTitle" data-i18n="international">BAHASA INTERNASIONAL</div>
-        <button type="button" class="langOption activeLang" onclick="setLanguage('id',this)"><span>🇮🇩</span><div><b>Bahasa Indonesia</b><small>Indonesia</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('en',this)"><span>🇬🇧</span><div><b>English</b><small>Internasional</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('ar',this)"><span>🇸🇦</span><div><b>العربية</b><small>العربية</small></div></button>
-      </div>
-      <div class="langGroup">
-        <div class="sectionTitle" data-i18n="regional">BAHASA DAERAH</div>
-        <button type="button" class="langOption" onclick="setLanguage('jv',this)"><span>🟤</span><div><b>Jawa</b><small>Jawa</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('su',this)"><span>🟢</span><div><b>Sunda</b><small>Sunda</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('ban',this)"><span>🔵</span><div><b>Banjar</b><small>Banjar</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('min',this)"><span>🟣</span><div><b>Minangkabau</b><small>Sumatera Barat</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('bbc',this)"><span>🟤</span><div><b>Batak Toba</b><small>Sumatera Utara</small></div></button>
-        <button type="button" class="langOption" onclick="setLanguage('bug',this)"><span>🟡</span><div><b>Bugis</b><small>Sulawesi Selatan</small></div></button>
-      </div>
-    </div>
-    <div class="note" data-i18n="languageNote">Bahasa yang dipilih akan diterapkan ke seluruh antarmuka yang tersedia.</div>
-  </div>
+<div class="card">
+<h3 data-i18n="languageSettings">PENGATURAN BAHASA</h3>
+<div class="sub" data-i18n="languageDesc">Pilih bahasa antarmuka CONTROLLER TANDON.</div>
+<div class="languageGrid" style="margin-top:22px">
+<div class="langGroup">
+<div class="sectionTitle" data-i18n="international">BAHASA INTERNASIONAL</div>
+<button type="button" class="langOption activeLang" onclick="setLanguage('id',this)"><span>🇮🇩</span><div><b>Bahasa Indonesia</b><small>Indonesia</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('en',this)"><span>🇬🇧</span><div><b>English</b><small>Internasional</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('ar',this)"><span>🇸🇦</span><div><b>العربية</b><small>العربية</small></div></button>
+</div>
+<div class="langGroup">
+<div class="sectionTitle" data-i18n="regional">BAHASA DAERAH</div>
+<button type="button" class="langOption" onclick="setLanguage('jv',this)"><span>🟤</span><div><b>Jawa</b><small>Jawa</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('su',this)"><span>🟢</span><div><b>Sunda</b><small>Sunda</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('ban',this)"><span>🔵</span><div><b>Banjar</b><small>Banjar</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('min',this)"><span>🟣</span><div><b>Minangkabau</b><small>Sumatera Barat</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('bbc',this)"><span>🟤</span><div><b>Batak Toba</b><small>Sumatera Utara</small></div></button>
+<button type="button" class="langOption" onclick="setLanguage('bug',this)"><span>🟡</span><div><b>Bugis</b><small>Sulawesi Selatan</small></div></button>
+</div>
+</div>
+<div class="note" data-i18n="languageNote">Bahasa yang dipilih akan diterapkan ke seluruh antarmuka yang tersedia.</div>
+</div>
 </section>
 </main>
 </div>
@@ -259,83 +259,83 @@ let level=0, pump=false, auto=false, start=30, stop=90;
 let dataReceived=false, sensorState="waiting", lastDataAt=0, lastSensorDistance=null, lastVolume=null, lastRemaining=null, lastLevelCm=null;
 
 function showPage(id,btn){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
-  btn.classList.add('active');
-  const pageNames={dashboard:"Dashboard",settings:"Settings",history:"History",language:"Language"};
-  const currentLang=localStorage.getItem("controllerTandonLanguage")||"id";
-  const titleKey=id;
-  document.getElementById('pageTitle').textContent=(translations[currentLang]&&translations[currentLang][titleKey])||pageNames[id]||id;
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+btn.classList.add('active');
+const pageNames={dashboard:"Dashboard",settings:"Settings",history:"History",language:"Language"};
+const currentLang=localStorage.getItem("controllerTandonLanguage")||"id";
+const titleKey=id;
+document.getElementById('pageTitle').textContent=(translations[currentLang]&&translations[currentLang][titleKey])||pageNames[id]||id;
 }
 function openTree(id){
-  const e=document.getElementById(id);
-  if(e)e.classList.toggle('open');
+const e=document.getElementById(id);
+if(e)e.classList.toggle('open');
 }
 function selectTank(brand,family,model,cap,height,diameter){
-  tank={brand,family,model,cap,height,diameter};
-  updateTank();
-  const tt=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id; alert((tt.tankProfile||"Tank profile")+": "+brand+" "+model+" — "+cap.toLocaleString("id-ID")+" L");
+tank={brand,family,model,cap,height,diameter};
+updateTank();
+const tt=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id; alert((tt.tankProfile||"Tank profile")+": "+brand+" "+model+" — "+cap.toLocaleString("id-ID")+" L");
 }
 function saveCustom(){
-  const cap=Number(document.getElementById('customCap').value), height=Number(document.getElementById('customHeight').value);
-  if(!cap||!height){alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).fillTank);return}
-  tank={brand:"Custom",family:"Custom Tank",model:"CUSTOM",cap,height,diameter:"—"};
-  updateTank();
-  alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).customSaved);
+const cap=Number(document.getElementById('customCap').value), height=Number(document.getElementById('customHeight').value);
+if(!cap||!height){alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).fillTank);return}
+tank={brand:"Custom",family:"Custom Tank",model:"CUSTOM",cap,height,diameter:"—"};
+updateTank();
+alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).customSaved);
 }
 function updateTank(){
-  document.getElementById('selectedLabel').textContent=`${tank.brand} • ${tank.family} • ${tank.model} • ${tank.cap.toLocaleString('id-ID')} L`;
-  document.getElementById('capValue').textContent=tank.cap.toLocaleString('id-ID')+" L";
-  document.getElementById('heightValue').textContent=tank.height+" cm";
-  updateLevel();
+document.getElementById('selectedLabel').textContent=`${tank.brand} • ${tank.family} • ${tank.model} • ${tank.cap.toLocaleString('id-ID')} L`;
+document.getElementById('capValue').textContent=tank.cap.toLocaleString('id-ID')+" L";
+document.getElementById('heightValue').textContent=tank.height+" cm";
+updateLevel();
 }
 function fmt1(v){ return Number(v).toFixed(1); }
 function updateLevel(){
-  const liters=Math.round(tank.cap*level/100);
-  const cm=(lastLevelCm!=null?Number(lastLevelCm):tank.height*level/100);
-  const distance=(lastSensorDistance!=null?Number(lastSensorDistance):Math.max(0,tank.height-cm));
+const liters=Math.round(tank.cap*level/100);
+const cm=(lastLevelCm!=null?Number(lastLevelCm):tank.height*level/100);
+const distance=(lastSensorDistance!=null?Number(lastSensorDistance):Math.max(0,tank.height-cm));
 
-  document.getElementById('levelKpi').textContent=fmt1(level)+"%";
-  document.getElementById('volumeKpi').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
-  document.getElementById('tankPct').textContent=fmt1(level)+"%";
-  document.getElementById('tankLiters').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
-  document.getElementById('cmValue').innerHTML=fmt1(cm)+' <span class="unit">cm</span>';
-  document.getElementById('distanceValue').textContent=fmt1(distance)+" cm";
+document.getElementById('levelKpi').textContent=fmt1(level)+"%";
+document.getElementById('volumeKpi').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
+document.getElementById('tankPct').textContent=fmt1(level)+"%";
+document.getElementById('tankLiters').textContent=(lastVolume!=null?Math.round(lastVolume):liters).toLocaleString('id-ID')+" L";
+document.getElementById('cmValue').innerHTML=fmt1(cm)+' <span class="unit">cm</span>';
+document.getElementById('distanceValue').textContent=fmt1(distance)+" cm";
 
-  const remaining=(lastRemaining!=null?Number(lastRemaining):Math.max(0,tank.cap-liters));
-  const remEl=document.getElementById('remainingValue');
-  if(remEl) remEl.textContent=Math.round(remaining).toLocaleString('id-ID')+' L';
+const remaining=(lastRemaining!=null?Number(lastRemaining):Math.max(0,tank.cap-liters));
+const remEl=document.getElementById('remainingValue');
+if(remEl) remEl.textContent=Math.round(remaining).toLocaleString('id-ID')+' L';
 
-  document.getElementById('water').style.height=level+"%";
-  document.getElementById('meter').style.width=level+"%";
+document.getElementById('water').style.height=level+"%";
+document.getElementById('meter').style.width=level+"%";
 }
 
 function updateSystemStatus(){
-  const lang=localStorage.getItem("controllerTandonLanguage")||"id";
-  const t=translations[lang]||translations.id;
-  const box=document.getElementById('systemStatus');
-  const top=document.getElementById('systemStatusText');
-  const sensor=document.getElementById('sensorKpi');
-  const tankStatus=document.getElementById('tankStatus');
-  box.classList.remove('wait','ok','error');
-  sensor.classList.remove('ok','warn');
-  tankStatus.classList.remove('ok','warn','error');
-  if(!dataReceived){
-    box.classList.add('wait'); top.textContent=t.waitingData;
-    sensor.classList.add('warn'); sensor.textContent=t.waiting;
-    tankStatus.classList.add('warn'); tankStatus.textContent=t.waitingData;
-    return;
-  }
-  if(sensorState==='error'){
-    box.classList.add('error'); top.textContent=t.sensorError;
-    sensor.classList.add('warn'); sensor.textContent=t.sensorError;
-    tankStatus.classList.add('error'); tankStatus.textContent=t.sensorError;
-    return;
-  }
-  box.classList.add('ok'); top.textContent=t.safe;
-  sensor.classList.add('ok'); sensor.textContent=t.normal;
-  tankStatus.classList.add('ok'); tankStatus.textContent=t.safe;
+const lang=localStorage.getItem("controllerTandonLanguage")||"id";
+const t=translations[lang]||translations.id;
+const box=document.getElementById('systemStatus');
+const top=document.getElementById('systemStatusText');
+const sensor=document.getElementById('sensorKpi');
+const tankStatus=document.getElementById('tankStatus');
+box.classList.remove('wait','ok','error');
+sensor.classList.remove('ok','warn');
+tankStatus.classList.remove('ok','warn','error');
+if(!dataReceived){
+box.classList.add('wait'); top.textContent=t.waitingData;
+sensor.classList.add('warn'); sensor.textContent=t.waiting;
+tankStatus.classList.add('warn'); tankStatus.textContent=t.waitingData;
+return;
+}
+if(sensorState==='error'){
+box.classList.add('error'); top.textContent=t.sensorError;
+sensor.classList.add('warn'); sensor.textContent=t.sensorError;
+tankStatus.classList.add('error'); tankStatus.textContent=t.sensorError;
+return;
+}
+box.classList.add('ok'); top.textContent=t.safe;
+sensor.classList.add('ok'); sensor.textContent=t.normal;
+tankStatus.classList.add('ok'); tankStatus.textContent=t.safe;
 }
 
 // ============================================================
@@ -347,43 +347,72 @@ function updateSystemStatus(){
 const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
 const SUPABASE_TABLE = 'controller_tandon_data';
-const SUPABASE_POLL_MS = 300;
+const SUPABASE_POLL_MS = 500;
 
-// Live data target: <= 0.5 s polling interval.
-// The ESP32 uploads the latest row independently of history logging.
-window.receiveESPData=function(data){
-  // Physical relay state comes from ESP32 (pump_on).
-  // While a web command is pending, don't overwrite the command UI
-  // with the previous physical state.
+function updatePumpVisualOnly(v){
+  pump = !!v;
+  const t = translations[localStorage.getItem("controllerTandonLanguage") || "id"] || translations.id;
+  const k = document.getElementById('pumpKpi');
+  const st = document.getElementById('pumpState');
+  const dot = document.getElementById('pumpDot');
+  if(k) k.textContent = pump ? (t.on || "ON") : (t.off || "OFF");
+  if(st) st.textContent = pump ? (t.pumpOn || t.on || "ON") : (t.pumpOff || t.off || "OFF");
+  if(dot) dot.classList.toggle('on', pump);
+}
 
-  data=data||{};
-  dataReceived=true;
-  lastDataAt=Date.now();
-  sensorState=(data.sensorError===true || data.sensor_ok===false || data.sensorStatus==='error')?'error':'ok';
-  if(Number.isFinite(Number(data.levelPercent ?? data.level_percent))) level=Math.max(0,Math.min(100,Number(data.levelPercent ?? data.level_percent)));
-  if(Number.isFinite(Number(data.levelCm ?? data.level_cm))) lastLevelCm=Number(data.levelCm ?? data.level_cm);
-  if(Number.isFinite(Number(data.distanceCm ?? data.distance_cm))) lastSensorDistance=Number(data.distanceCm ?? data.distance_cm);
-  if(Number.isFinite(Number(data.volumeLiters ?? data.volume_liters))) lastVolume=Number(data.volumeLiters ?? data.volume_liters);
-  if(Number.isFinite(Number(data.remainingLiters ?? data.remaining_liters))) lastRemaining=Number(data.remainingLiters ?? data.remaining_liters);
-  if(Number.isFinite(Number(data.capacityLiters ?? data.capacity_liters))) { tank.cap=Number(data.capacityLiters ?? data.capacity_liters); }
-  if(Number.isFinite(Number(data.tankHeightCm ?? data.tank_height_cm))) { tank.height=Number(data.tankHeightCm ?? data.tank_height_cm); }
-  const remotePump = (typeof data.pump==='boolean') ? data.pump : data.pump_on;
-  if(typeof remotePump==='boolean'){
-    pump=remotePump;
+function setPumpUI(value, state){
+  const isOn = !!value;
+  const statusEls = [
+    document.getElementById('pumpStatus'),
+    document.getElementById('pump-status'),
+    document.querySelector('.pump-status'),
+    document.querySelector('[data-pump-status]')
+  ].filter(Boolean);
+  statusEls.forEach(el=>{
+    if(state === "pending") el.textContent = isOn ? "MENGHIDUPKAN..." : "MEMATIKAN...";
+    else if(state === "error") el.textContent = "GAGAL";
+    else el.textContent = isOn ? "POMPA HIDUP" : "POMPA MATI";
+  });
+}
 
-    // A physical status update confirms the command only when it matches.
+window.receiveESPData = function(data){
+  data = data || {};
+  dataReceived = true;
+  lastDataAt = Date.now();
+
+  sensorState =
+    (data.sensorError === true || data.sensor_error === true ||
+     data.sensor_ok === false || data.sensorStatus === 'error')
+      ? 'error' : 'ok';
+
+  if(Number.isFinite(Number(data.levelPercent ?? data.level_percent)))
+    level = Math.max(0, Math.min(100, Number(data.levelPercent ?? data.level_percent)));
+  if(Number.isFinite(Number(data.levelCm ?? data.level_cm)))
+    lastLevelCm = Number(data.levelCm ?? data.level_cm);
+  if(Number.isFinite(Number(data.distanceCm ?? data.distance_cm)))
+    lastSensorDistance = Number(data.distanceCm ?? data.distance_cm);
+  if(Number.isFinite(Number(data.volumeLiters ?? data.volume_liters)))
+    lastVolume = Number(data.volumeLiters ?? data.volume_liters);
+  if(Number.isFinite(Number(data.remainingLiters ?? data.remaining_liters)))
+    lastRemaining = Number(data.remainingLiters ?? data.remaining_liters);
+  if(Number.isFinite(Number(data.capacityLiters ?? data.capacity_liters)))
+    tank.cap = Number(data.capacityLiters ?? data.capacity_liters);
+  if(Number.isFinite(Number(data.tankHeightCm ?? data.tank_height_cm)))
+    tank.height = Number(data.tankHeightCm ?? data.tank_height_cm);
+
+  const remotePump = (typeof data.pump_on === 'boolean')
+    ? data.pump_on
+    : ((typeof data.pump === 'boolean') ? data.pump : null);
+
+  if(typeof remotePump === 'boolean'){
+    pump = remotePump;
     if(pendingPumpCommand !== null){
-      if(remotePump === pendingPumpCommand){
-        pendingPumpCommand = null;
-        pendingPumpSince = 0;
-      } else if(Date.now() - pendingPumpSince > 8000){
+      if(remotePump === pendingPumpCommand || Date.now() - pendingPumpSince > 8000){
         pendingPumpCommand = null;
         pendingPumpSince = 0;
       }
     }
-
-    // Always update the real pump indicator from ESP32.
-    updatePumpVisualOnly(pump);
+    updatePumpVisualOnly(remotePump);
   }
 
   updateLevel();
@@ -398,7 +427,8 @@ function updateTankMeta(){
   if(cap) cap.textContent=(tank.cap||0).toLocaleString('id-ID')+' L';
   if(h) h.textContent=Number(tank.height||0).toFixed(1)+' cm';
   if(d) d.textContent=lastSensorDistance==null?'—':Number(lastSensorDistance).toFixed(1)+' cm';
-  const r=document.getElementById('remainingValue'); if(r) r.textContent=lastRemaining==null?'—':Math.round(lastRemaining).toLocaleString('id-ID')+' L';
+  const r=document.getElementById('remainingValue');
+  if(r) r.textContent=lastRemaining==null?'—':Math.round(lastRemaining).toLocaleString('id-ID')+' L';
 }
 
 let supabasePollBusy=false;
@@ -409,16 +439,20 @@ async function pollSupabase(){
     const url = SUPABASE_URL + '/rest/v1/' + SUPABASE_TABLE +
       '?select=device_id,distance_cm,level_cm,level_percent,volume_liters,remaining_liters,capacity_liters,tank_height_cm,pump_on,sensor_error,wifi_rssi,pump_command,updated_at' +
       '&device_id=eq.tandon-01&limit=1';
-    const res=await fetch(url + '&_=' + Date.now(),{method:'GET',cache:'no-store',headers:{
-      'Accept':'application/json',
-      'apikey':SUPABASE_PUBLISHABLE_KEY,
-      'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY
-    }});
+
+    const res=await fetch(url + '&_=' + Date.now(),{
+      method:'GET',
+      cache:'no-store',
+      headers:{
+        'Accept':'application/json',
+        'apikey':SUPABASE_PUBLISHABLE_KEY,
+        'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY
+      }
+    });
+
     if(!res.ok) throw new Error('Supabase HTTP '+res.status);
     const rows=await res.json();
-    if(Array.isArray(rows) && rows.length){
-      receiveESPData(rows[0]);
-    }
+    if(Array.isArray(rows) && rows.length) receiveESPData(rows[0]);
   }catch(e){
     console.warn('Supabase:',e.message);
   }finally{
@@ -426,13 +460,17 @@ async function pollSupabase(){
   }
 }
 
-let pendingPumpCommand = null;
-let pendingPumpSince = 0;
-let pumpCommandBusy = false;
+let pendingPumpCommand=null;
+let pendingPumpSince=0;
+let pumpCommandBusy=false;
 
 async function syncPumpToSupabase(value){
   if(pumpCommandBusy) return;
+
   pumpCommandBusy=true;
+  pendingPumpCommand=!!value;
+  pendingPumpSince=Date.now();
+  setPumpUI(!!value,"pending");
 
   const url=SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?device_id=eq.tandon-01';
 
@@ -453,20 +491,28 @@ async function syncPumpToSupabase(value){
       })
     });
 
-    if(!res.ok){
-      const msg=await res.text();
-      throw new Error('HTTP '+res.status+' '+msg);
-    }
+    const text=await res.text();
+    if(!res.ok) throw new Error('HTTP '+res.status+' '+text);
 
-    console.log('PUMP COMMAND ->',value?'ON':'OFF');
+    console.log('PUMP COMMAND SENT:',value?'ON':'OFF',text);
   }catch(err){
     console.error('PUMP COMMAND ERROR:',err);
     pendingPumpCommand=null;
     pendingPumpSince=0;
-    // Revert visual only when command definitely failed.
-    updatePumpVisualOnly(false);
+    updatePumpVisualOnly(pump);
+    alert('Perintah pompa gagal dikirim ke Supabase.\n\n'+err.message);
   }finally{
     pumpCommandBusy=false;
+  }
+}
+
+function setPump(v,syncRemote=true){
+  pump=!!v;
+  updatePumpVisualOnly(pump);
+  if(syncRemote){
+    pendingPumpCommand=pump;
+    pendingPumpSince=Date.now();
+    syncPumpToSupabase(pump);
   }
 }
 
@@ -481,48 +527,26 @@ setInterval(function(){
   }
 },3000);
 
-function updatePumpVisualOnly(v){
-  pump=!!v;
-  const t=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id;
-  const k=document.getElementById('pumpKpi');
-  const st=document.getElementById('pumpState');
-  const dot=document.getElementById('pumpDot');
-  if(k) k.textContent=pump?(t.on||"ON"):(t.off||"OFF");
-  if(st) st.textContent=pump?(t.pumpOn||t.on||"ON"):(t.pumpOff||t.off||"OFF");
-  if(dot) dot.classList.toggle('on',pump);
-}
-
-function setPump(v,syncRemote=true){
-  pump=!!v;
-  updatePumpVisualOnly(pump);
-
-  if(syncRemote){
-    // Show command state immediately while waiting for ESP32 confirmation.
-    pendingPumpCommand = pump;
-    pendingPumpSince = Date.now();
-    syncPumpToSupabase(pump);
-  }
-}
 function toggleAuto(){
-  auto=!auto;
-  document.getElementById('autoToggle').classList.toggle('on',auto);
-  const t=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id;
-  document.getElementById('modeLabel').textContent=auto?(t.auto||"AUTO"):(t.manual||"MANUAL");
-  if(auto) autoLogic();
+auto=!auto;
+document.getElementById('autoToggle').classList.toggle('on',auto);
+const t=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id;
+document.getElementById('modeLabel').textContent=auto?(t.auto||"AUTO"):(t.manual||"MANUAL");
+if(auto) autoLogic();
 }
 function autoLogic(){
-  if(!auto)return;
-  if(level<=start)setPump(true);
-  if(level>=stop)setPump(false);
+if(!auto)return;
+if(level<=start)setPump(true);
+if(level>=stop)setPump(false);
 }
 function saveAuto(){
-  start=Number(document.getElementById('startInput').value)||30;
-  stop=Number(document.getElementById('stopInput').value)||90;
-  if(start>=stop){alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).invalidThreshold);return}
-  document.getElementById('startText').textContent=start+"%";
-  document.getElementById('stopText').textContent=stop+"%";
-  autoLogic();
-  alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).settingsSaved);
+start=Number(document.getElementById('startInput').value)||30;
+stop=Number(document.getElementById('stopInput').value)||90;
+if(start>=stop){alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).invalidThreshold);return}
+document.getElementById('startText').textContent=start+"%";
+document.getElementById('stopText').textContent=stop+"%";
+autoLogic();
+alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).settingsSaved);
 }
 
 const translations = {
@@ -649,29 +673,29 @@ waterUsage:"PAMAKAIAN UWAE",pumpUsage:"PAMAKAIAN POMPA",waterLevel:"TINGKAT UWAE
 };
 
 function setLanguage(lang,el){
-  console.log("Language switched:", lang);
-  const t=translations[lang]||translations.id;
-  document.querySelectorAll("[data-i18n]").forEach(node=>{
-    const key=node.getAttribute("data-i18n");
-    if(t[key]) node.textContent=t[key];
-  });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(node=>{ const key=node.getAttribute("data-i18n-placeholder"); if(t[key]) node.placeholder=t[key]; });
-  document.querySelectorAll("[data-i18n-title]").forEach(node=>{ const key=node.getAttribute("data-i18n-title"); if(t[key]) node.title=t[key]; });
-  document.querySelectorAll(".langOption").forEach(x=>x.classList.remove("activeLang"));
-  if(el) el.classList.add("activeLang");
-  localStorage.setItem("controllerTandonLanguage",lang);
-  document.documentElement.lang=lang;
-  document.documentElement.classList.toggle("rtl",lang==="ar");
-  // Translate current page title too.
-  const active=document.querySelector(".page.active")?.id||"dashboard";
-  document.getElementById("pageTitle").textContent=t[active]||active;
-  setPump(pump);
-  document.getElementById('modeLabel').textContent=auto?(t.auto||"AUTO"):(t.manual||"MANUAL");
+console.log("Language switched:", lang);
+const t=translations[lang]||translations.id;
+document.querySelectorAll("[data-i18n]").forEach(node=>{
+const key=node.getAttribute("data-i18n");
+if(t[key]) node.textContent=t[key];
+});
+document.querySelectorAll("[data-i18n-placeholder]").forEach(node=>{ const key=node.getAttribute("data-i18n-placeholder"); if(t[key]) node.placeholder=t[key]; });
+document.querySelectorAll("[data-i18n-title]").forEach(node=>{ const key=node.getAttribute("data-i18n-title"); if(t[key]) node.title=t[key]; });
+document.querySelectorAll(".langOption").forEach(x=>x.classList.remove("activeLang"));
+if(el) el.classList.add("activeLang");
+localStorage.setItem("controllerTandonLanguage",lang);
+document.documentElement.lang=lang;
+document.documentElement.classList.toggle("rtl",lang==="ar");
+// Translate current page title too.
+const active=document.querySelector(".page.active")?.id||"dashboard";
+document.getElementById("pageTitle").textContent=t[active]||active;
+setPump(pump);
+document.getElementById('modeLabel').textContent=auto?(t.auto||"AUTO"):(t.manual||"MANUAL");
 }
 function loadLanguage(){
-  const lang=localStorage.getItem("controllerTandonLanguage")||"id";
-  const btn=[...document.querySelectorAll(".langOption")].find(x=>x.getAttribute("onclick")?.includes("'"+lang+"'"));
-  setLanguage(lang,btn);
+const lang=localStorage.getItem("controllerTandonLanguage")||"id";
+const btn=[...document.querySelectorAll(".langOption")].find(x=>x.getAttribute("onclick")?.includes("'"+lang+"'"));
+setLanguage(lang,btn);
 }
 updateTank();
 loadLanguage();
