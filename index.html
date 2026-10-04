@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CONTROLLER TANDON — V9</title>
+<title>CONTROLLER TANDON — CLEAN</title>
 <style>
 :root{
 --bg:#071018; --panel:#0d1822; --panel2:#101f2b; --line:#203746;
@@ -34,7 +34,10 @@ button{cursor:pointer}
 .settingsGrid{display:grid;gap:15px}.sectionTitle{font-size:12px;color:#9bb0ba;letter-spacing:1px;margin:6px 0}.field{border:1px solid var(--line);border-radius:13px;background:#0a151d;padding:13px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}.field select,.field input{width:100%;border:1px solid #29424f;background:#0b1b24;color:#edf7fb;border-radius:9px;padding:10px;outline:none}.field select:focus,.field input:focus{border-color:#2aadd7}
 .tree{margin-top:8px}.tree button{width:100%;border:0;background:transparent;color:#dcecf2;text-align:left;padding:11px 10px;border-radius:8px}.tree button:hover{background:#102530}.child{display:none;padding-left:15px;border-left:1px solid #294653;margin-left:8px}.child.open{display:block}.arrow{display:inline-block;width:20px;color:#63cdea}.save{margin-top:18px;width:100%;background:#0e83aa;border:1px solid #2ebce8;color:white;padding:12px;border-radius:11px;font-weight:700}
 .autoBox{margin-top:14px;border:1px solid #284450;border-radius:13px;padding:14px;background:#0a161e}.toggle{display:flex;justify-content:space-between;align-items:center}.toggleBtn{width:48px;height:27px;border:0;border-radius:20px;background:#34454d;position:relative}.toggleBtn:after{content:"";position:absolute;width:21px;height:21px;border-radius:50%;left:3px;top:3px;background:white;transition:.2s}.toggleBtn.on{background:#1295bc}.toggleBtn.on:after{left:24px}
-.historyCards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.historyValue{font-size:27px;font-weight:800;margin-top:8px}.note{margin-top:18px;padding:13px;border:1px dashed #31505d;border-radius:12px;color:#8fa7b1;font-size:12px}
+.historyCards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.manualOnly{border-color:#284450}.manualBadge{font-size:10px;font-weight:800;letter-spacing:.8px;color:#ffc857;border:1px solid #6a5422;background:#2a2110;padding:5px 8px;border-radius:999px}
+.historyEmpty{height:100%;min-height:140px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px}
+.historyValue{font-size:27px;font-weight:800;margin-top:8px}.note{margin-top:18px;padding:13px;border:1px dashed #31505d;border-radius:12px;color:#8fa7b1;font-size:12px}
 @media(max-width:900px){.sidebar{width:205px}.main{margin-left:205px;width:calc(100% - 205px);padding:20px}.grid{grid-template-columns:1fr}.tankWrap{gap:25px}.kpis{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.sidebar{position:static;width:100%;height:auto;border-right:0;border-bottom:1px solid var(--line)}.app{display:block}.main{margin:0;width:100%}.nav{display:flex;margin-top:20px}.nav button{flex:1;text-align:center}.top{align-items:flex-start;gap:10px}.status{font-size:11px}.tankWrap{flex-direction:column;min-height:auto;padding:20px}.historyCards{grid-template-columns:1fr}}
 
@@ -113,20 +116,18 @@ html.rtl .line{flex-direction:row-reverse}
 <div class="pumpHead"><div class="pumpState"><i class="switchDot" id="pumpDot"></i><span id="pumpState" data-i18n="pumpOff">PUMP OFF</span></div><span class="sub" id="modeLabel" data-i18n="manual">MANUAL</span></div>
 <div class="btns"><button class="btn primary" onclick="setPump(true)" data-i18n="on">ON</button><button class="btn danger" onclick="setPump(false)" data-i18n="off">OFF</button></div>
 </div>
-<div class="autoBox">
-<div class="toggle"><span data-i18n="automaticControl">Automatic Control</span><button class="toggleBtn" id="autoToggle" onclick="toggleAuto()"></button></div>
-<div class="sub" style="margin-top:9px" data-i18n="autoDescription">ON pump at low level, OFF when target full level is reached.</div>
-<div class="line"><span data-i18n="startPumpAt">Start pump at</span><b id="startText">30%</b></div>
-<div class="line"><span data-i18n="stopPumpAt">Stop pump at</span><b id="stopText">90%</b></div>
+<div class="autoBox manualOnly">
+<div class="toggle"><span data-i18n="automaticControl">Automatic Control</span><span class="manualBadge" data-i18n="manualOnly">MANUAL ONLY</span></div>
+<div class="sub" style="margin-top:9px" data-i18n="autoDisabled">Kontrol otomatis belum diaktifkan. Pompa saat ini dikendalikan secara manual melalui dashboard.</div>
 </div>
 </div>
 
 <div class="card" style="margin-top:18px">
 <h3 data-i18n="usageToday">USAGE TODAY</h3><div class="sub" data-i18n="estimatedConsumption">Estimated water consumption</div>
 <div class="historyCards" style="margin-top:14px">
-<div><span class="sub" data-i18n="used">Used</span><div class="historyValue">184 L</div></div>
-<div><span class="sub" data-i18n="pumpCycles">Pump cycles</span><div class="historyValue">4×</div></div>
-<div><span class="sub" data-i18n="lastUpdate">Last update</span><div class="historyValue" style="font-size:19px">14:32:18</div></div>
+<div><span class="sub" data-i18n="used">Used</span><div class="historyValue" id="usageTodayValue">—</div></div>
+<div><span class="sub" data-i18n="pumpCycles">Pump cycles</span><div class="historyValue" id="pumpCyclesTodayValue">—</div></div>
+<div><span class="sub" data-i18n="lastUpdate">Last update</span><div class="historyValue" id="lastUpdateValue" style="font-size:19px">—</div></div>
 </div>
 </div>
 </div>
@@ -197,10 +198,7 @@ html.rtl .line{flex-direction:row-reverse}
 </div>
 </div>
 
-<div class="sectionTitle" style="margin-top:18px" data-i18n="automaticPumpControl">AUTOMATIC PUMP CONTROL</div>
-<div class="field"><label data-i18n="startPumpWhen">START PUMP WHEN LEVEL REACHES (%)</label><input id="startInput" type="number" min="1" max="99" value="30"></div>
-<div class="field"><label data-i18n="stopPumpWhen">STOP PUMP WHEN LEVEL REACHES (%)</label><input id="stopInput" type="number" min="1" max="100" value="90"></div>
-<button class="save" onclick="saveAuto()" data-i18n="saveSettings">SAVE SETTINGS</button>
+
 </div>
 </div>
 </section>
@@ -209,18 +207,18 @@ html.rtl .line{flex-direction:row-reverse}
 <div class="grid">
 <div class="card"><h3 data-i18n="waterUsage">WATER USAGE</h3><div class="sub" data-i18n="simpleConsumption">Simple consumption summary</div>
 <div class="historyCards" style="margin-top:20px">
-<div class="kpi"><span data-i18n="today">TODAY</span><strong>184 L</strong></div>
-<div class="kpi"><span data-i18n="thisWeek">THIS WEEK</span><strong>1.24 kL</strong></div>
-<div class="kpi"><span data-i18n="thisMonth">THIS MONTH</span><strong>5.82 kL</strong></div>
+<div class="kpi"><span data-i18n="today">TODAY</span><strong id="historyToday">—</strong></div>
+<div class="kpi"><span data-i18n="thisWeek">THIS WEEK</span><strong id="historyWeek">—</strong></div>
+<div class="kpi"><span data-i18n="thisMonth">THIS MONTH</span><strong id="historyMonth">—</strong></div>
 </div>
-<div class="chart" data-i18n-title="previewChart" title="Preview chart"><div class="bar" style="height:40%"></div><div class="bar" style="height:65%"></div><div class="bar" style="height:50%"></div><div class="bar" style="height:82%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:92%"></div><div class="bar" style="height:72%"></div></div>
+<div class="chart" id="historyChart" data-i18n-title="previewChart" title="Preview chart"></div>
 <div class="days"><span data-i18n="mon">Sen</span><span data-i18n="tue">Sel</span><span data-i18n="wed">Rab</span><span data-i18n="thu">Kam</span><span data-i18n="fri">Jum</span><span data-i18n="sat">Sab</span><span data-i18n="sun">Min</span></div>
 </div>
 <div class="card"><h3 data-i18n="pumpUsage">PUMP USAGE</h3><div class="sub" data-i18n="pumpCycleDescription">Number of automatic pump cycles</div>
-<div class="historyValue" style="font-size:42px;margin-top:28px">27×</div>
-<div class="line"><span data-i18n="today">Today</span><b>4×</b></div>
-<div class="line"><span data-i18n="thisWeek">This week</span><b>18×</b></div>
-<div class="line"><span data-i18n="thisMonth">This month</span><b>27×</b></div>
+<div class="historyValue" id="historyPumpTotal" style="font-size:42px;margin-top:28px">—</div>
+<div class="line"><span data-i18n="today">Today</span><b id="pumpToday">—</b></div>
+<div class="line"><span data-i18n="thisWeek">This week</span><b id="pumpWeek">—</b></div>
+<div class="line"><span data-i18n="thisMonth">This month</span><b id="pumpMonth">—</b></div>
 <div class="note" data-i18n="historyNote">Data riwayat diperbarui berdasarkan data yang diterima sistem.</div>
 </div>
 </div>
@@ -255,7 +253,7 @@ html.rtl .line{flex-direction:row-reverse}
 
 <script>
 let tank={brand:"Penguin",family:"General Tank",model:"TB 120",cap:1200,height:163,diameter:105};
-let level=0, pump=false, auto=false, start=30, stop=90;
+let level=0, pump=false;
 let dataReceived=false, sensorState="waiting", lastDataAt=0, lastSensorDistance=null, lastVolume=null, lastRemaining=null, lastLevelCm=null;
 
 function showPage(id,btn){
@@ -347,7 +345,7 @@ tankStatus.classList.add('ok'); tankStatus.textContent=t.safe;
 const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
 const SUPABASE_TABLE = 'controller_tandon_data';
-const SUPABASE_POLL_MS = 500;
+const SUPABASE_POLL_MS = 2000;
 
 function updatePumpVisualOnly(v){
   pump = !!v;
@@ -516,38 +514,98 @@ function setPump(v,syncRemote=true){
   }
 }
 
+// Automatic pump control is intentionally disabled in this version.
+// Manual ON/OFF remains the only web command. The ESP32 remains the safety authority.
+async function loadHistoryStats(){
+  const url = SUPABASE_URL + '/rest/v1/controller_tandon_history' +
+    '?select=created_at,volume_liters,pump_on,sensor_error&device_id=eq.tandon-01&order=created_at.desc&limit=5000';
+  try{
+    const res=await fetch(url,{cache:'no-store',headers:{'Accept':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY}});
+    if(!res.ok) throw new Error('History HTTP '+res.status);
+    const rows=await res.json();
+    if(!Array.isArray(rows)) return;
+    renderHistoryStats(rows);
+  }catch(e){
+    console.warn('History:',e.message);
+  }
+}
+
+function renderHistoryStats(rows){
+  const now=Date.now();
+  const day=24*60*60*1000;
+  const inWindow=(r,ms)=>{const t=Date.parse(r.created_at); return Number.isFinite(t) && now-t<ms;};
+  const consumption=(list)=>{
+    let total=0, prev=null;
+    const ordered=[...list].sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+    for(const r of ordered){
+      const v=Number(r.volume_liters);
+      if(!Number.isFinite(v)) continue;
+      if(prev!==null && v<prev) total += (prev-v);
+      prev=v;
+    }
+    return total;
+  };
+  const today=rows.filter(r=>inWindow(r,day));
+  const week=rows.filter(r=>inWindow(r,7*day));
+  const month=rows.filter(r=>inWindow(r,31*day));
+  const fmtL=v=>Math.round(v).toLocaleString('id-ID')+' L';
+  const fmtKL=v=>(v/1000).toFixed(2)+' kL';
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('usageTodayValue',fmtL(consumption(today)));
+  set('historyToday',fmtL(consumption(today)));
+  set('historyWeek',fmtKL(consumption(week)));
+  set('historyMonth',fmtKL(consumption(month)));
+
+  const countStarts=list=>{
+    const ordered=[...list].sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+    let prev=false,count=0;
+    for(const r of ordered){const cur=r.pump_on===true;if(cur&&!prev)count++;prev=cur;}
+    return count;
+  };
+  const cToday=countStarts(today), cWeek=countStarts(week), cMonth=countStarts(month);
+  set('pumpCyclesTodayValue',cToday+'×');
+  set('historyPumpTotal',cMonth+'×');
+  set('pumpToday',cToday+'×'); set('pumpWeek',cWeek+'×'); set('pumpMonth',cMonth+'×');
+
+  if(rows.length){
+    const latest=rows.reduce((a,b)=>Date.parse(a.created_at)>Date.parse(b.created_at)?a:b);
+    const t=Date.parse(latest.created_at);
+    if(Number.isFinite(t)) set('lastUpdateValue',new Date(t).toLocaleTimeString('id-ID'));
+  }
+  renderHistoryChart(rows);
+}
+
+function renderHistoryChart(rows){
+  const box=document.getElementById('historyChart'); if(!box)return;
+  const day=24*60*60*1000, now=Date.now();
+  const buckets=[];
+  for(let i=6;i>=0;i--){
+    const start=new Date(now-i*day); start.setHours(0,0,0,0);
+    const end=new Date(start); end.setDate(end.getDate()+1);
+    const bucket={date:start, value:0};
+    buckets.push(bucket);
+    const subset=rows.filter(r=>{const t=Date.parse(r.created_at);return t>=start.getTime()&&t<end.getTime();});
+    const ordered=subset.sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at));
+    let prev=null;
+    for(const r of ordered){const v=Number(r.volume_liters);if(!Number.isFinite(v))continue;if(prev!==null&&v<prev)bucket.value += prev-v;prev=v;}
+  }
+  const max=Math.max(...buckets.map(x=>x.value),1);
+  box.innerHTML='';
+  for(const b of buckets){
+    const bar=document.createElement('div'); bar.className='bar'; bar.style.height=Math.max(8,(b.value/max)*100)+'%'; bar.title=b.date.toLocaleDateString('id-ID')+' — '+Math.round(b.value).toLocaleString('id-ID')+' L'; box.appendChild(bar);
+  }
+}
+
 pollSupabase();
 setInterval(pollSupabase,SUPABASE_POLL_MS);
+loadHistoryStats();
+setInterval(loadHistoryStats,60000);
 
 setInterval(function(){
-  if(dataReceived && Date.now()-lastDataAt>3000){
-    dataReceived=false;
-    sensorState="waiting";
-    updateSystemStatus();
+  if(dataReceived && Date.now()-lastDataAt>6000){
+    dataReceived=false; sensorState='waiting'; updateSystemStatus();
   }
 },3000);
-
-function toggleAuto(){
-auto=!auto;
-document.getElementById('autoToggle').classList.toggle('on',auto);
-const t=translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id;
-document.getElementById('modeLabel').textContent=auto?(t.auto||"AUTO"):(t.manual||"MANUAL");
-if(auto) autoLogic();
-}
-function autoLogic(){
-if(!auto)return;
-if(level<=start)setPump(true);
-if(level>=stop)setPump(false);
-}
-function saveAuto(){
-start=Number(document.getElementById('startInput').value)||30;
-stop=Number(document.getElementById('stopInput').value)||90;
-if(start>=stop){alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).invalidThreshold);return}
-document.getElementById('startText').textContent=start+"%";
-document.getElementById('stopText').textContent=stop+"%";
-autoLogic();
-alert((translations[localStorage.getItem("controllerTandonLanguage")||"id"]||translations.id).settingsSaved);
-}
 
 const translations = {
 id:{
@@ -557,7 +615,7 @@ tankProfile:"PROFIL TANDON",waterUsage:"PEMAKAIAN AIR",pumpUsage:"PENGGUNAAN POM
 waterLevel:"KETINGGIAN AIR",estimatedVolume:"PERKIRAAN VOLUME",sensor:"SENSOR",pump:"POMPA",
 realtimeLevel:"Pemantauan ketinggian air secara langsung",currentWaterLevel:"Ketinggian air saat ini",
 tankCapacity:"Kapasitas tandon",tankHeight:"Tinggi tandon",sensorDistance:"Jarak sensor",remainingWater:"Sisa air",normal:"NORMAL",
-manualAuto:"Kontrol manual / otomatis berdasarkan ketinggian air",pumpOff:"POMPA MATI",pumpOn:"POMPA HIDUP",
+manualAuto:"Kontrol manual / otomatis berdasarkan ketinggian air",manualOnly:"MANUAL ONLY",autoDisabled:"Kontrol otomatis belum diaktifkan. Pompa saat ini dikendalikan secara manual melalui dashboard.",pumpOff:"POMPA MATI",pumpOn:"POMPA HIDUP",
 manual:"MANUAL",auto:"OTOMATIS",
 automaticControl:"Kontrol Otomatis",autoDescription:"Pompa hidup saat air rendah dan mati saat ketinggian sasaran tercapai.",
 startPumpAt:"Hidupkan pompa pada",stopPumpAt:"Matikan pompa pada",saveSettings:"SIMPAN PENGATURAN",
@@ -577,7 +635,7 @@ tankMonitor:"TANK MONITOR",pumpControl:"PUMP CONTROL",usageToday:"TODAY'S USAGE"
 waterUsage:"WATER USAGE",pumpUsage:"PUMP USAGE",waterLevel:"WATER LEVEL",estimatedVolume:"ESTIMATED VOLUME",
 sensor:"SENSOR",pump:"PUMP",realtimeLevel:"Real-time water level monitoring",currentWaterLevel:"Current water level",
 tankCapacity:"Tank capacity",tankHeight:"Tank height",sensorDistance:"Sensor distance",remainingWater:"Remaining water",normal:"NORMAL",
-manualAuto:"Manual control / automatic water-level control",pumpOff:"PUMP OFF",pumpOn:"PUMP ON",manual:"MANUAL",auto:"AUTO",
+manualAuto:"Manual control / automatic water-level control",manualOnly:"MANUAL ONLY",autoDisabled:"Automatic control is not enabled yet. The pump is currently controlled manually from the dashboard.",pumpOff:"PUMP OFF",pumpOn:"PUMP ON",manual:"MANUAL",auto:"AUTO",
 automaticControl:"Automatic Control",
 autoDescription:"Turn the pump on at low level and off when the target level is reached.",startPumpAt:"Start pump at",
 stopPumpAt:"Stop pump at",saveSettings:"SAVE SETTINGS",estimatedConsumption:"Estimated water consumption",used:"Used",
@@ -689,7 +747,7 @@ document.documentElement.classList.toggle("rtl",lang==="ar");
 // Translate current page title too.
 const active=document.querySelector(".page.active")?.id||"dashboard";
 document.getElementById("pageTitle").textContent=t[active]||active;
-setPump(pump);
+updatePumpVisualOnly(pump);
 document.getElementById('modeLabel').textContent=auto?(t.auto||"AUTO"):(t.manual||"MANUAL");
 }
 function loadLanguage(){
