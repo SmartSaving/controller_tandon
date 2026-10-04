@@ -977,7 +977,7 @@ async function pollLive(){
   try{
 
     const response = await fetch(
-      url + '&_=' + Date.now(),
+      url,
       {
         method:'GET',
         cache:'no-store',
@@ -1127,7 +1127,7 @@ async function loadHistory(){
   try{
 
     const response = await fetch(
-      url + '&_=' + Date.now(),
+      url,
       {
         method:'GET',
         cache:'no-store',
