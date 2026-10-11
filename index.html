@@ -2,900 +2,1133 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CONTROLLER TANDON — V10</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06131c">
+<title>Controller Tandon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
---bg:#071018; --panel:#0d1822; --panel2:#101f2b; --line:#203746;
---text:#edf7fb; --muted:#78909c; --accent:#35c7ff; --accent2:#6ee7ff;
---ok:#40e0a0; --warn:#ffc857; --danger:#ff6577;
+  --bg:#06131c;--panel:#0c1f2c;--panel2:#0f2738;--line:#1c3a4d;
+  --text:#e9f5fa;--muted:#8fabb8;--water:#2fb6f2;--water2:#7fe0ff;
+  --ok:#3ddc97;--warn:#ffbf5a;--bad:#ff6170;--r:18px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 70% 10%,#123447 0,#071018 42%,#050b10 100%);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;min-height:100vh}
-button,select,input{font:inherit}
-button{cursor:pointer}
-button:disabled{opacity:.55;cursor:wait}
-.app{display:flex;min-height:100vh}
-.sidebar{width:250px;background:rgba(6,14,20,.92);border-right:1px solid var(--line);padding:25px 18px;position:fixed;inset:0 auto 0 0;z-index:10}
-.brand{font-size:20px;font-weight:800;letter-spacing:1.6px}.brand small{display:block;color:var(--muted);font-size:10px;letter-spacing:1.4px;margin-top:5px}
-.nav{margin-top:40px;display:grid;gap:8px}.nav button{border:1px solid transparent;background:transparent;color:#8ea4ae;text-align:left;padding:14px 15px;border-radius:12px}.nav button.active,.nav button:hover{background:#102331;border-color:#1c4356;color:white}
-.main{margin-left:250px;width:calc(100% - 250px);padding:28px 34px 40px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.title h1{margin:0;font-size:27px;letter-spacing:.8px}.title p{margin:7px 0;color:var(--muted)}
-.status{display:flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid #244454;background:#0b1820;border-radius:12px;color:#b6cad2}.dot{width:9px;height:9px;border-radius:50%;background:var(--warn);box-shadow:0 0 14px var(--warn)}.status.ok{color:var(--ok)}.status.ok .dot{background:var(--ok);box-shadow:0 0 14px var(--ok)}.status.error{color:var(--danger)}.status.error .dot{background:var(--danger);box-shadow:0 0 14px var(--danger)}.status.wait{color:var(--warn)}.status.wait .dot{background:var(--warn);box-shadow:0 0 14px var(--warn)}
-.page{display:none}.page.active{display:block}
-.grid{display:grid;grid-template-columns:1.25fr .75fr;gap:18px}.card{background:linear-gradient(145deg,rgba(16,31,43,.95),rgba(8,18,25,.95));border:1px solid var(--line);border-radius:17px;padding:20px;box-shadow:0 18px 45px rgba(0,0,0,.2)}.card h3{margin:0 0 5px;font-size:14px;letter-spacing:.8px}.sub{color:var(--muted);font-size:12px}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.kpi{padding:17px;border:1px solid var(--line);border-radius:14px;background:#0b1720}.kpi span{font-size:11px;color:var(--muted)}.kpi strong{display:block;font-size:24px;margin-top:7px}.ok{color:var(--ok)}.warn{color:var(--warn)}.error{color:var(--danger)}
-.tankWrap{min-height:470px;display:flex;align-items:center;justify-content:center;gap:55px;position:relative}.tank{width:180px;height:330px;border:4px solid #b9d6df;border-radius:34px 34px 26px 26px;position:relative;overflow:hidden;background:rgba(255,255,255,.025);box-shadow:0 0 35px rgba(53,199,255,.08),inset 0 0 25px rgba(255,255,255,.04)}.tank:before{content:"";position:absolute;left:8px;right:8px;top:-14px;height:28px;border:4px solid #b9d6df;border-radius:50%;background:#09141b}.tank:after{content:"";position:absolute;bottom:-24px;left:50%;width:75px;height:30px;transform:translateX(-50%);border-left:4px solid #b9d6df;border-right:4px solid #b9d6df}
-.water{position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(to top,rgba(31,164,224,.75),rgba(78,218,255,.45));transition:height 1.2s cubic-bezier(.2,.8,.2,1);overflow:hidden}.water:before{content:"";position:absolute;left:-15%;top:-9px;width:130%;height:22px;border-radius:50%;background:rgba(120,236,255,.55);animation:wave 3s ease-in-out infinite}.water:after{content:"";position:absolute;left:-20%;top:2px;width:140%;height:20px;border-radius:50%;border-top:2px solid rgba(220,250,255,.7);animation:wave 4s ease-in-out infinite reverse}@keyframes wave{0%,100%{transform:translateX(-3%)}50%{transform:translateX(3%)}}
-.levelText{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-shadow:0 2px 8px #000}.levelText strong{font-size:39px}.levelText span{font-size:13px;color:#d9f8ff}
-.tankInfo{min-width:220px}.big{font-size:45px;font-weight:800}.unit{color:var(--muted)}.meter{height:9px;background:#182a34;border-radius:20px;overflow:hidden;margin:12px 0 20px}.meter i{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px;transition:width 1s}.line{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #1b303c;font-size:13px}.line span{color:var(--muted)}
-.pump{border:1px solid #244454;background:#09161f;border-radius:15px;padding:17px;margin-top:18px}.pumpHead{display:flex;justify-content:space-between;align-items:center}.pumpState{display:flex;gap:8px;align-items:center;font-weight:700}.switchDot{width:10px;height:10px;border-radius:50%;background:#53636b}.switchDot.on{background:var(--ok);box-shadow:0 0 12px var(--ok)}.switchDot.pending{background:var(--warn);box-shadow:0 0 12px var(--warn)}.btns{display:flex;gap:9px;margin-top:14px}.btn{border:1px solid #294654;background:#10222c;color:#dcecf2;padding:10px 16px;border-radius:10px}.btn.primary{border-color:#178bb6;background:#0d4155}.btn.danger{border-color:#67313b;background:#31171d}.mode{margin-top:12px;color:var(--muted);font-size:12px}
-.chart{height:170px;display:flex;align-items:end;gap:8px;padding:20px 4px 4px}.bar{flex:1;background:linear-gradient(to top,#176e94,#3bc9f7);border-radius:6px 6px 2px 2px;min-height:4px;opacity:.8;transition:height .6s}.days{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}.days span{flex:1;text-align:center}
-.settingsGrid{display:grid;gap:15px}.sectionTitle{font-size:12px;color:#9bb0ba;letter-spacing:1px;margin:6px 0}.field{border:1px solid var(--line);border-radius:13px;background:#0a151d;padding:13px}.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:8px}.field select,.field input{width:100%;border:1px solid #29424f;background:#0b1b24;color:#edf7fb;border-radius:9px;padding:10px;outline:none}.field select:focus,.field input:focus{border-color:#2aadd7}
-.tree{margin-top:8px}.tree button{width:100%;border:0;background:transparent;color:#dcecf2;text-align:left;padding:11px 10px;border-radius:8px}.tree button:hover{background:#102530}.child{display:none;padding-left:15px;border-left:1px solid #294653;margin-left:8px}.child.open{display:block}.arrow{display:inline-block;width:20px;color:#63cdea}.save{margin-top:18px;width:100%;background:#0e83aa;border:1px solid #2ebce8;color:white;padding:12px;border-radius:11px;font-weight:700}
-.autoBox{margin-top:14px;border:1px solid #284450;border-radius:13px;padding:14px;background:#0a161e}.toggle{display:flex;justify-content:space-between;align-items:center}.toggleBtn{width:48px;height:27px;border:0;border-radius:20px;background:#34454d;position:relative}.toggleBtn:after{content:"";position:absolute;width:21px;height:21px;border-radius:50%;left:3px;top:3px;background:white;transition:.2s}.toggleBtn.on{background:#1295bc}.toggleBtn.on:after{left:24px}
-.historyCards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.historyValue{font-size:27px;font-weight:800;margin-top:8px}.note{margin-top:18px;padding:13px;border:1px dashed #31505d;border-radius:12px;color:#8fa7b1;font-size:12px}
-@media(max-width:900px){.sidebar{width:205px}.main{margin-left:205px;width:calc(100% - 205px);padding:20px}.grid{grid-template-columns:1fr}.tankWrap{gap:25px}.kpis{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:650px){.sidebar{position:static;width:100%;height:auto;border-right:0;border-bottom:1px solid var(--line)}.app{display:block}.main{margin:0;width:100%}.nav{display:flex;margin-top:20px}.nav button{flex:1;text-align:center}.top{align-items:flex-start;gap:10px}.status{font-size:11px}.tankWrap{flex-direction:column;min-height:auto;padding:20px}.historyCards{grid-template-columns:1fr}}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0;color:var(--text);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+body{background:radial-gradient(1100px 560px at 85% -10%,#123a52 0,transparent 60%),var(--bg);min-height:100vh;padding-bottom:86px}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--water2);outline-offset:2px}
+.app{max-width:1080px;margin:0 auto;padding:16px}
 
-.languageGrid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.langGroup{border:1px solid var(--line);background:#0a151d;border-radius:15px;padding:16px}
-.langOption{width:100%;display:flex;align-items:center;gap:13px;text-align:left;border:1px solid transparent;background:#0d1c25;color:#e8f4f8;padding:13px;border-radius:11px;margin-top:8px}
-.langOption:hover{border-color:#286073;background:#102631}
-.langOption.activeLang{border-color:#1596c1;background:#0d3444;box-shadow:0 0 0 1px rgba(53,199,255,.08)}
-.langOption span{font-size:20px;width:26px;text-align:center}
-.langOption b{display:block;font-size:13px}
-.langOption small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
-@media(max-width:650px){.languageGrid{grid-template-columns:1fr}}
+/* header */
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.brand{display:flex;gap:12px;align-items:center;min-width:0}
+.logo{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(160deg,#1a5a7d,#0d2c3e);font-size:22px}
+h1{font-size:19px;margin:0}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:600;white-space:nowrap}
+.pill i{width:9px;height:9px;border-radius:50%;background:var(--warn)}
+.pill.ok i{background:var(--ok);box-shadow:0 0 0 4px rgba(61,220,151,.15)}
+.pill.bad i{background:var(--bad)}
 
-html.rtl, html.rtl body{direction:rtl}
-html.rtl .sidebar{left:auto;right:0;border-right:0;border-left:1px solid var(--line)}
-html.rtl .main{margin-left:0;margin-right:250px}
-html.rtl .nav button{text-align:right}
-html.rtl .title,html.rtl .card,html.rtl .field,html.rtl .langOption{text-align:right}
-@media(max-width:900px){html.rtl .main{margin-right:205px;margin-left:0}}
-@media(max-width:650px){html.rtl .sidebar{right:auto;left:auto;border-left:0}html.rtl .main{margin-right:0}}
+/* nav */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(6,19,28,.96);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
+.tabs button{background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:12px;font-size:11.5px;font-weight:600}
+.tabs .ic{font-size:20px;line-height:1}
+.tabs button.active{color:var(--text);background:var(--panel2)}
+@media(min-width:860px){
+  body{padding-bottom:0}
+  .tabs{position:static;display:flex;gap:6px;background:none;border:0;padding:0;margin-bottom:18px}
+  .tabs button{flex-direction:row;gap:8px;padding:10px 16px;font-size:14px;border:1px solid transparent}
+  .tabs button.active{border-color:var(--line)}
+}
+
+/* layout */
+.page{display:none}
+.page.active{display:block}
+@media(min-width:860px){
+  #pg-home.active{display:grid;grid-template-columns:1.45fr 1fr;gap:14px;align-items:start}
+  #pg-home .alarm{grid-column:1/-1}
+  #pg-home .card{margin-bottom:0}
+}
+.card{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+h2{font-size:18px;margin:0 0 4px}
+h3{font-size:15px;margin:0 0 10px}
+.muted{color:var(--muted);font-size:14px;margin:0;line-height:1.5}
+
+.btn{border:0;border-radius:14px;padding:15px 16px;font-weight:800;font-size:17px;color:#04131b}
+.btn:disabled{opacity:.3;cursor:not-allowed}
+.btn.on{background:var(--ok)}
+.btn.off{background:var(--bad);color:#fff}
+.btn.primary{background:var(--water);width:100%;margin-top:16px}
+.btn.small{padding:9px 14px;font-size:14px;background:var(--warn);margin-top:10px}
+.note{min-height:1.3em;font-size:14px;color:var(--muted);margin:10px 0 0}
+.note.err{color:var(--bad)}
+.note.good{color:var(--ok)}
+
+/* alarm */
+.alarm{display:flex;gap:12px;align-items:flex-start;background:rgba(255,97,112,.12);border:1px solid rgba(255,97,112,.55);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
+.alarm[hidden]{display:none}
+.alarm .ai{font-size:26px;line-height:1}
+.alarm b{display:block;font-size:15px;line-height:1.45}
+
+/* hero tank */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+@media(max-width:540px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}.facts{text-align:left;width:100%}}
+.tank{position:relative;width:150px;height:240px;border:4px solid #b8d8e3;border-top-width:10px;border-radius:30px 30px 22px 22px;overflow:hidden;background:#071a25}
+.water{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(to top,#1478aa,var(--water));transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
+.wave{position:absolute;top:-6px;left:-50%;width:200%;height:7px;background:radial-gradient(ellipse 22px 7px at 50% 100%,var(--water) 98%,transparent 100%) 0 0/40px 7px repeat-x;animation:wave 3s linear infinite}
+.water.empty .wave{display:none}
+@keyframes wave{to{transform:translateX(40px)}}
+.pct{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;font-weight:800;text-shadow:0 2px 10px rgba(0,0,0,.65);z-index:3}
+.mark{position:absolute;left:0;right:0;border-top:2px dashed var(--ok);z-index:2;transition:bottom .6s}
+.mark span{position:absolute;right:4px;top:-19px;font-size:10.5px;font-weight:800;color:var(--ok);background:rgba(6,19,28,.85);padding:1px 6px;border-radius:6px}
+.mark.start{border-color:var(--warn)}
+.mark.start span{color:var(--warn);top:3px}
+.mark[hidden]{display:none}
+.readout{min-width:0;width:100%}
+.readout .label{color:var(--muted);font-weight:600}
+.liters{font-size:54px;font-weight:800;line-height:1.05;letter-spacing:-1px;margin-top:2px}
+.liters small{font-size:22px;color:var(--muted);letter-spacing:0}
+.state{display:inline-block;margin:12px 0 8px;padding:7px 13px;border-radius:999px;font-weight:700;font-size:15px;background:rgba(61,220,151,.14);color:var(--ok)}
+.state.warn{background:rgba(255,191,90,.14);color:var(--warn)}
+.state.bad{background:rgba(255,97,112,.14);color:var(--bad)}
+.state.info{background:rgba(47,182,242,.15);color:var(--water2)}
+.estimate{font-size:15px;color:var(--muted)}
+.estimate b{color:var(--text)}
+.bar{height:8px;background:#163243;border-radius:9px;overflow:hidden;margin:14px 0}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--water),var(--water2));transition:width 1.2s}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
+.facts div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+dt{font-size:12px;color:var(--muted)}
+dd{margin:2px 0 0;font-weight:700}
+
+/* pump card */
+.pumpTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.pumpState{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:800}
+.lamp{width:18px;height:18px;border-radius:50%;background:#3a4f5b;flex:none}
+.lamp.on{background:var(--ok);box-shadow:0 0 0 6px rgba(61,220,151,.18),0 0 18px var(--ok)}
+.seg{display:flex;background:#08202d;border:1px solid var(--line);border-radius:13px;padding:3px}
+.seg button{border:0;background:none;color:var(--muted);padding:9px 14px;border-radius:10px;font-weight:700}
+.seg button.active{background:var(--water);color:#04131b}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+
+/* tank page */
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{border:1px solid var(--line);background:#08202d;color:var(--text);padding:10px 15px;border-radius:999px;font-weight:700}
+.chip.active{background:var(--water);color:#04131b;border-color:transparent}
+.models{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.model{text-align:left;border:1px solid var(--line);background:#08202d;color:var(--text);border-radius:14px;padding:12px}
+.model b{display:block;font-size:15px}
+.model span{color:var(--muted);font-size:13px}
+.model.active{border-color:var(--water);box-shadow:inset 0 0 0 1px var(--water)}
+.field{display:block;margin-top:12px}
+.field>span{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px;font-weight:600}
+input[type=number]{width:100%;background:#061822;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font:inherit;font-size:18px;font-weight:700}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.summary div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.summary b{display:block;font-size:17px}
+.summary span{font-size:12.5px;color:var(--muted)}
+
+/* threshold */
+.thr{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}
+.thrLabel{display:flex;align-items:center;gap:9px;font-weight:700;margin-bottom:10px}
+.dot{width:12px;height:12px;border-radius:50%;flex:none}
+.dot.start{background:var(--warn)}
+.dot.stop{background:var(--ok)}
+.pair{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
+.unit{position:relative;display:block}
+.unit input{padding-right:42px}
+.unit em{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--muted);font-weight:800}
+.eq{color:var(--muted);font-weight:800}
+input[type=range]{width:100%;margin-top:14px;accent-color:var(--water);height:28px}
+.preview{position:relative;height:18px;border-radius:9px;background:#163243;margin-top:16px;overflow:hidden}
+.preview i{position:absolute;top:0;bottom:0;background:rgba(47,182,242,.4)}
+.preview .s,.preview .e{position:absolute;top:0;bottom:0;width:3px}
+.preview .s{background:var(--warn)}
+.preview .e{background:var(--ok)}
+.inline{display:flex;align-items:center;gap:10px}
+.inline input{max-width:110px}
+
+/* history */
+.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
+@media(max-width:540px){.totals{grid-template-columns:1fr}}
+.tot{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.02)}
+.tot .k{color:var(--muted);font-size:13px;font-weight:700}
+.tot .v{font-size:27px;font-weight:800;margin:4px 0}
+.tot .s{font-size:13px;color:var(--muted);line-height:1.5}
+.chart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:190px;margin-top:8px}
+.col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;font-size:12px;color:var(--muted)}
+.col i{width:100%;max-width:40px;border-radius:8px 8px 3px 3px;background:linear-gradient(to top,#1478aa,var(--water));min-height:4px;transition:height .8s}
+.col.today i{background:linear-gradient(to top,#24966a,var(--ok))}
+.col b{color:var(--text);font-size:11px}
+.events{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.events li{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.events .ei{font-size:18px;flex:none}
+.events .et{flex:1;font-weight:600;font-size:14px;min-width:0}
+.events .et small{display:block;color:var(--muted);font-weight:500}
+.events time{font-size:12px;color:var(--muted);white-space:nowrap}
+
+/* language */
+.group{margin-top:18px;font-size:13px;color:var(--muted);font-weight:700}
+.langs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px}
+.lang{display:flex;flex-direction:column;align-items:flex-start;border:1px solid var(--line);background:#08202d;color:var(--text);border-radius:14px;padding:12px 14px;text-align:left}
+.lang b{font-size:16px}
+.lang span{color:var(--muted);font-size:13px}
+.lang.active{border-color:var(--water);box-shadow:inset 0 0 0 1px var(--water)}
+
+@media(prefers-reduced-motion:reduce){.wave{animation:none}.water,.bar i,.col i,.mark{transition:none}}
 </style>
 </head>
 <body>
 <div class="app">
-<aside class="sidebar">
-<div class="brand">CONTROLLER TANDON<small data-i18n="tagline">SMART WATER LEVEL SYSTEM</small></div>
-<div class="nav">
-<button class="active" onclick="showPage('dashboard',this)">◉ &nbsp;<span data-i18n="dashboard">Dashboard</span></button>
-<button onclick="showPage('settings',this)">⚙ &nbsp;<span data-i18n="settings">Settings</span></button>
-<button onclick="showPage('history',this)">▥ &nbsp;<span data-i18n="history">History</span></button>
-<button onclick="showPage('language',this)">文 &nbsp;<span data-i18n="language">Language</span></button>
-</div>
-</aside>
 
-<main class="main">
 <header class="top">
-<div class="title"><h1 id="pageTitle">Dashboard</h1><p id="selectedLabel">Penguin • General Tank • TB 120 • 1.200 L</p></div>
-<div class="status wait" id="systemStatus"><i class="dot"></i> <span id="systemStatusText">MENUNGGU DATA</span></div>
+  <div class="brand">
+    <div class="logo" aria-hidden="true">💧</div>
+    <div><h1>Controller Tandon</h1><p id="tankLabel">—</p></div>
+  </div>
+  <div class="pill wait" id="connPill"><i></i><span id="connText"></span></div>
 </header>
 
-<section id="dashboard" class="page active">
-<div class="kpis">
-<div class="kpi"><span data-i18n="waterLevel">WATER LEVEL</span><strong id="levelKpi">—</strong></div>
-<div class="kpi"><span data-i18n="estimatedVolume">ESTIMATED VOLUME</span><strong id="volumeKpi">—</strong></div>
-<div class="kpi"><span data-i18n="sensor">SENSOR</span><strong id="sensorKpi" class="warn">MENUNGGU</strong></div>
-<div class="kpi"><span data-i18n="pump">PUMP</span><strong id="pumpKpi">—</strong></div>
-</div>
+<nav class="tabs" id="tabs">
+  <button data-page="home" class="active"><span class="ic">🏠</span><span data-i18n="nav_home"></span></button>
+  <button data-page="tank"><span class="ic">🛢️</span><span data-i18n="nav_tank"></span></button>
+  <button data-page="pump"><span class="ic">⚙️</span><span data-i18n="nav_pump"></span></button>
+  <button data-page="history"><span class="ic">📊</span><span data-i18n="nav_history"></span></button>
+  <button data-page="lang"><span class="ic">🌐</span><span data-i18n="nav_lang"></span></button>
+</nav>
 
-<div class="grid">
-<div class="card">
-<h3 data-i18n="tankMonitor">TANK MONITOR</h3><div class="sub" data-i18n="realtimeLevel">Real-time water level visualization</div>
-<div class="tankWrap">
-<div class="tank">
-<div class="water" id="water"></div>
-<div class="levelText"><strong id="tankPct">—</strong><span id="tankLiters">—</span></div>
-</div>
-<div class="tankInfo">
-<div class="big" id="cmValue">— <span class="unit">cm</span></div>
-<div class="sub" data-i18n="currentWaterLevel">Current water level</div>
-<div class="meter"><i id="meter"></i></div>
-<div class="line"><span data-i18n="tankCapacity">Tank capacity</span><b id="capValue">—</b></div>
-<div class="line"><span data-i18n="tankHeight">Tank height</span><b id="heightValue">—</b></div>
-<div class="line"><span data-i18n="sensorDistance">Sensor distance</span><b id="distanceValue">—</b></div>
-<div class="line"><span data-i18n="remainingWater">Remaining water</span><b id="remainingValue">—</b></div>
-<div class="line"><span data-i18n="status">Status</span><b id="tankStatus" class="warn">MENUNGGU DATA</b></div>
-</div>
-</div>
-</div>
+<main>
+<!-- ================= BERANDA ================= -->
+<section id="pg-home" class="page active">
+  <div class="alarm" id="alarmBox" hidden>
+    <div class="ai">⚠️</div>
+    <div><b id="alarmText"></b><button class="btn small" id="alarmReset" data-i18n="reset_alarm"></button></div>
+  </div>
 
-<div>
-<div class="card">
-<h3 data-i18n="pumpControl">PUMP CONTROL</h3><div class="sub" data-i18n="manualAuto">Manual control / automatic level control</div>
-<div class="pump">
-<div class="pumpHead"><div class="pumpState"><i class="switchDot" id="pumpDot"></i><span id="pumpState">—</span></div><span class="sub" id="modeLabel">MANUAL</span></div>
-<div class="btns"><button class="btn primary" id="btnPumpOn" onclick="setPump(true)" data-i18n="on">ON</button><button class="btn danger" id="btnPumpOff" onclick="setPump(false)" data-i18n="off">OFF</button></div>
-</div>
-<div class="autoBox">
-<div class="toggle"><span data-i18n="automaticControl">Automatic Control</span><button class="toggleBtn" id="autoToggle" onclick="toggleAuto()"></button></div>
-<div class="sub" style="margin-top:9px" data-i18n="autoDescription">ON pump at low level, OFF when target full level is reached.</div>
-<div class="sub" style="margin-top:6px" data-i18n="autoBrowserNote">Mode otomatis hanya berjalan selama halaman ini terbuka.</div>
-<div class="line"><span data-i18n="startPumpAt">Start pump at</span><b id="startText">30%</b></div>
-<div class="line"><span data-i18n="stopPumpAt">Stop pump at</span><b id="stopText">90%</b></div>
-</div>
-</div>
+  <div class="card hero">
+    <div class="tank" aria-hidden="true">
+      <div class="water empty" id="water"><div class="wave"></div></div>
+      <div class="mark" id="markStop" hidden><span></span></div>
+      <div class="mark start" id="markStart" hidden><span></span></div>
+      <div class="pct" id="pctBig">—</div>
+    </div>
+    <div class="readout">
+      <div class="label" data-i18n="water_in_tank"></div>
+      <div class="liters"><span id="litersBig">—</span> <small>L</small></div>
+      <div class="muted" id="ofCap"></div>
+      <div class="state info" id="stateText"></div>
+      <div class="estimate"><span data-i18n="estimate"></span>: <b id="estText">—</b></div>
+      <div class="bar"><i id="barFill"></i></div>
+      <dl class="facts">
+        <div><dt data-i18n="empty_space"></dt><dd id="emptyL">—</dd></div>
+        <div><dt data-i18n="level"></dt><dd id="levelCm">—</dd></div>
+        <div><dt data-i18n="last_seen"></dt><dd id="lastSeen">—</dd></div>
+        <div><dt data-i18n="signal"></dt><dd id="rssi">—</dd></div>
+      </dl>
+    </div>
+  </div>
 
-<div class="card" style="margin-top:18px">
-<h3 data-i18n="usageToday">USAGE TODAY</h3><div class="sub" data-i18n="estimatedConsumption">Estimated water consumption</div>
-<div class="historyCards" style="margin-top:14px">
-<div><span class="sub" data-i18n="used">Used</span><div class="historyValue" id="usageUsed">—</div></div>
-<div><span class="sub" data-i18n="pumpCycles">Pump cycles</span><div class="historyValue" id="usageCycles">—</div></div>
-<div><span class="sub" data-i18n="lastUpdate">Last update</span><div class="historyValue" id="usageLastUpdate" style="font-size:19px">—</div></div>
-</div>
-</div>
-</div>
-</div>
+  <div class="card">
+    <div class="pumpTop">
+      <div class="pumpState"><span class="lamp" id="lamp"></span><span id="pumpText">—</span></div>
+      <div class="seg" role="group">
+        <button id="modeAuto" data-i18n="mode_auto"></button>
+        <button id="modeManual" data-i18n="mode_manual"></button>
+      </div>
+    </div>
+    <p class="muted" id="modeDesc"></p>
+    <div class="btns">
+      <button class="btn on" id="btnOn" data-i18n="btn_on"></button>
+      <button class="btn off" id="btnOff" data-i18n="btn_off"></button>
+    </div>
+    <p class="note" id="cmdNote"></p>
+  </div>
 </section>
 
-<section id="settings" class="page">
-<div class="card">
-<h3 data-i18n="tankProfile">TANK PROFILE</h3><div class="sub" data-i18n="chooseTank">Choose one registered tank model or configure a custom tank.</div>
-<div class="settingsGrid" style="margin-top:18px">
-<div class="sectionTitle" data-i18n="manufacturer">MANUFACTURER</div>
-<div class="tree">
-<button onclick="openTree('penguin')"><span class="arrow">›</span> Penguin</button>
-<div id="penguin" class="child">
-<button onclick="openTree('penguinGeneral')"><span class="arrow">›</span> General Tank</button>
-<div id="penguinGeneral" class="child">
-<button onclick="selectTank('Penguin','General Tank','TB 32',300,97,69)"><span class="arrow">•</span> TB 32 — 300 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 55',520,118,83)"><span class="arrow">•</span> TB 55 — 520 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 70',650,135.5,88)"><span class="arrow">•</span> TB 70 — 650 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 80',800,177,83)"><span class="arrow">•</span> TB 80 — 800 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 110',1050,142,105)"><span class="arrow">•</span> TB 110 — 1.050 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 120',1200,163,105)"><span class="arrow">•</span> TB 120 — 1.200 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 160',1550,168,116)"><span class="arrow">•</span> TB 160 — 1.550 L</button>
-<button onclick="selectTank('Penguin','General Tank','TB 200',2000,156.4,144)"><span class="arrow">•</span> TB 200 — 2.000 L</button>
-</div>
-<button onclick="openTree('penguinDrain')"><span class="arrow">›</span> Total Drain</button>
-<div id="penguinDrain" class="child">
-<button onclick="selectTank('Penguin','Total Drain','TD 60',600,174,77)"><span class="arrow">•</span> TD 60 — 600 L</button>
-<button onclick="selectTank('Penguin','Total Drain','TD 80',800,165,93)"><span class="arrow">•</span> TD 80 — 800 L</button>
-<button onclick="selectTank('Penguin','Total Drain','TD 110',1050,182,104)"><span class="arrow">•</span> TD 110 — 1.050 L</button>
-<button onclick="selectTank('Penguin','Total Drain','TD 150',1500,190,118)"><span class="arrow">•</span> TD 150 — 1.500 L</button>
-<button onclick="selectTank('Penguin','Total Drain','TD 200',2000,211,129)"><span class="arrow">•</span> TD 200 — 2.000 L</button>
-</div>
-</div>
+<!-- ================= TANDON ================= -->
+<section id="pg-tank" class="page">
+  <div class="card">
+    <h2 data-i18n="tank_title"></h2>
+    <p class="muted" data-i18n="tank_desc"></p>
+    <div class="chips" id="brandChips"></div>
+    <div class="models" id="modelList"></div>
+    <div id="customBox" hidden>
+      <label class="field"><span data-i18n="capacity"></span><input type="number" id="customCap" inputmode="numeric" min="10" placeholder="1200"></label>
+      <label class="field"><span data-i18n="height"></span><input type="number" id="customHeight" inputmode="decimal" min="40" placeholder="160"></label>
+      <p class="hint" data-i18n="height_hint"></p>
+    </div>
+  </div>
 
-<button onclick="openTree('m')"><span class="arrow">›</span> MPOIN</button>
-<div id="m" class="child">
-<button onclick="selectTank('MPOIN','Wave','1200L WAVE',1200,157,107)"><span class="arrow">•</span> Wave — 1.200 L</button>
-<button onclick="selectTank('MPOIN','Tall','1200L TALL',1200,192,91)"><span class="arrow">•</span> Tall — 1.200 L</button>
-<button onclick="selectTank('MPOIN','Drain','1200L DRAIN',1200,196,107)"><span class="arrow">•</span> Drain — 1.200 L</button>
-<button onclick="selectTank('MPOIN','Stack','1200L STACK',1200,155,110)"><span class="arrow">•</span> Stack — 1.200 L</button>
-<button onclick="selectTank('MPOIN','U-Ground','1200L U-GROUND',1200,188,101)"><span class="arrow">•</span> U-Ground — 1.200 L</button>
-</div>
-
-<button onclick="openTree('prime')"><span class="arrow">›</span> Prime</button>
-<div id="prime" class="child">
-<button onclick="selectTank('Prime','Blow','PRBL 550',550,121,79)"><span class="arrow">•</span> PRBL 550 — 550 L</button>
-<button onclick="selectTank('Prime','Blow','PRBL 1100',1100,139,103)"><span class="arrow">•</span> PRBL 1100 — 1.100 L</button>
-<button onclick="selectTank('Prime','Premier','PR 2000',2000,180,125)"><span class="arrow">•</span> PR 2000 — 2.000 L</button>
-<button onclick="selectTank('Prime','Premier','PR 5000',5000,221,182)"><span class="arrow">•</span> PR 5000 — 5.000 L</button>
-</div>
-
-<button onclick="openTree('lucky')"><span class="arrow">›</span> Lucky Polytank</button>
-<div id="lucky" class="child">
-<button onclick="selectTank('Lucky Polytank','Standard','LS 110',1100,136,106.5)"><span class="arrow">•</span> LS 110 — 1.100 L</button>
-<button onclick="selectTank('Lucky Polytank','Standard','LS 235',2350,179,136)"><span class="arrow">•</span> LS 235 — 2.350 L</button>
-<button onclick="selectTank('Lucky Polytank','Standard','LS 500',5000,229,181.5)"><span class="arrow">•</span> LS 500 — 5.000 L</button>
-<button onclick="selectTank('Lucky Polytank','Anti Bacteria','LAB 110',1100,138.5,107)"><span class="arrow">•</span> LAB 110 — 1.100 L</button>
-<button onclick="selectTank('Lucky Polytank','Underground','LPT 1250',1250,155,108)"><span class="arrow">•</span> LPT 1250 — 1.250 L</button>
-<button onclick="selectTank('Lucky Polytank','Square','Tangki Petak',1000,100,'124 x 109')"><span class="arrow">•</span> Tangki Petak — 1.000 L</button>
-</div>
-
-<button onclick="openTree('custom')"><span class="arrow">›</span> <span data-i18n="customTank">Custom Tank</span></button>
-<div id="custom" class="child">
-<div class="field"><label data-i18n="capacityLiter">CAPACITY (LITER)</label><input id="customCap" type="number" data-i18n-placeholder="exampleCapacity" placeholder="Contoh: 1200"></div>
-<div class="field" style="margin-top:8px"><label data-i18n="tankHeightInput">TANK HEIGHT (CM)</label><input id="customHeight" type="number" data-i18n-placeholder="exampleHeight" placeholder="Contoh: 160"></div>
-<button class="save" onclick="saveCustom()" data-i18n="saveCustom">SAVE CUSTOM TANK</button>
-</div>
-</div>
-
-<div class="note" data-i18n="profileNote">Profil tandon di sini hanya untuk tampilan. Perhitungan level dan volume memakai kalibrasi di kode ESP32.</div>
-
-<div class="sectionTitle" style="margin-top:18px" data-i18n="automaticPumpControl">AUTOMATIC PUMP CONTROL</div>
-<div class="field"><label data-i18n="startPumpWhen">START PUMP WHEN LEVEL REACHES (%)</label><input id="startInput" type="number" min="1" max="99" value="30"></div>
-<div class="field"><label data-i18n="stopPumpWhen">STOP PUMP WHEN LEVEL REACHES (%)</label><input id="stopInput" type="number" min="1" max="100" value="90"></div>
-<button class="save" onclick="saveAuto()" data-i18n="saveSettings">SAVE SETTINGS</button>
-</div>
-</div>
+  <div class="card">
+    <h3 data-i18n="tank_selected"></h3>
+    <div class="summary" id="tankSummary"></div>
+    <label class="field"><span data-i18n="gap"></span><input type="number" id="gapInput" inputmode="decimal" min="20" max="60"></label>
+    <p class="hint" data-i18n="gap_hint"></p>
+    <button class="btn primary" id="saveTank" data-i18n="save"></button>
+    <p class="note" id="tankNote"></p>
+  </div>
 </section>
 
-<section id="history" class="page">
-<div class="grid">
-<div class="card"><h3 data-i18n="waterUsage">WATER USAGE</h3><div class="sub" data-i18n="simpleConsumption">Simple consumption summary</div>
-<div class="historyCards" style="margin-top:20px">
-<div class="kpi"><span data-i18n="today">TODAY</span><strong id="usageTodayCard">—</strong></div>
-<div class="kpi"><span data-i18n="thisWeek">THIS WEEK</span><strong id="usageWeek">—</strong></div>
-<div class="kpi"><span data-i18n="thisMonth">THIS MONTH</span><strong id="usageMonth">—</strong></div>
-</div>
-<div class="sub" style="margin-top:18px" data-i18n="dailyChart">Pemakaian 7 hari terakhir</div>
-<div class="chart" id="usageChart"></div>
-<div class="days" id="usageChartDays"></div>
-</div>
-<div class="card"><h3 data-i18n="pumpUsage">PUMP USAGE</h3><div class="sub" data-i18n="pumpCycleDescription">Number of automatic pump cycles</div>
-<div class="historyValue" id="usageCyclesBig" style="font-size:42px;margin-top:28px">—</div>
-<div class="line"><span data-i18n="today">Today</span><b id="usageTodayCycles">—</b></div>
-<div class="line"><span data-i18n="thisWeek">This week</span><b id="usageWeekCycles">—</b></div>
-<div class="line"><span data-i18n="thisMonth">This month</span><b id="usageMonthCycles">—</b></div>
-<div class="note" data-i18n="historyNote">Data riwayat diperbarui berdasarkan data yang diterima sistem.</div>
-</div>
-</div>
+<!-- ================= ATUR POMPA ================= -->
+<section id="pg-pump" class="page">
+  <div class="card">
+    <h2 data-i18n="auto_title"></h2>
+    <p class="muted" id="usableInfo"></p>
+
+    <div class="thr">
+      <div class="thrLabel"><span class="dot start"></span><span data-i18n="start_at"></span></div>
+      <div class="pair">
+        <label class="unit"><input type="number" id="startPct" inputmode="decimal" min="5" max="90" step="1"><em>%</em></label>
+        <span class="eq">=</span>
+        <label class="unit"><input type="number" id="startL" inputmode="numeric" min="0" step="10"><em>L</em></label>
+      </div>
+      <input type="range" id="startRange" min="5" max="90" step="1" aria-label="start">
+    </div>
+
+    <div class="thr">
+      <div class="thrLabel"><span class="dot stop"></span><span data-i18n="stop_at"></span></div>
+      <div class="pair">
+        <label class="unit"><input type="number" id="stopPct" inputmode="decimal" min="15" max="95" step="1"><em>%</em></label>
+        <span class="eq">=</span>
+        <label class="unit"><input type="number" id="stopL" inputmode="numeric" min="0" step="10"><em>L</em></label>
+      </div>
+      <input type="range" id="stopRange" min="15" max="95" step="1" aria-label="stop">
+    </div>
+
+    <div class="preview" aria-hidden="true"><i id="pvBand"></i><span class="s" id="pvS"></span><span class="e" id="pvE"></span></div>
+    <p class="hint" id="pvText"></p>
+  </div>
+
+  <div class="card">
+    <h3 data-i18n="dry_title"></h3>
+    <p class="muted" data-i18n="dry_explain"></p>
+    <label class="field"><span data-i18n="dry_desc"></span>
+      <div class="inline"><input type="number" id="dryMin" min="3" max="60" inputmode="numeric"><b data-i18n="minutes"></b></div>
+    </label>
+    <button class="btn primary" id="saveAuto" data-i18n="save"></button>
+    <p class="note" id="autoNote"></p>
+  </div>
 </section>
 
-<section id="language" class="page">
-<div class="card">
-<h3 data-i18n="languageSettings">PENGATURAN BAHASA</h3>
-<div class="sub" data-i18n="languageDesc">Pilih bahasa antarmuka CONTROLLER TANDON.</div>
-<div class="languageGrid" style="margin-top:22px">
-<div class="langGroup">
-<div class="sectionTitle" data-i18n="international">BAHASA INTERNASIONAL</div>
-<button type="button" class="langOption activeLang" data-lang="id" onclick="setLanguage('id',this)"><span>🇮🇩</span><div><b>Bahasa Indonesia</b><small>Indonesia</small></div></button>
-<button type="button" class="langOption" data-lang="en" onclick="setLanguage('en',this)"><span>🇬🇧</span><div><b>English</b><small>Internasional</small></div></button>
-<button type="button" class="langOption" data-lang="ar" onclick="setLanguage('ar',this)"><span>🇸🇦</span><div><b>العربية</b><small>العربية</small></div></button>
-</div>
-<div class="langGroup">
-<div class="sectionTitle" data-i18n="regional">BAHASA DAERAH</div>
-<button type="button" class="langOption" data-lang="jv" onclick="setLanguage('jv',this)"><span>🟤</span><div><b>Jawa</b><small>Jawa</small></div></button>
-<button type="button" class="langOption" data-lang="su" onclick="setLanguage('su',this)"><span>🟢</span><div><b>Sunda</b><small>Sunda</small></div></button>
-<button type="button" class="langOption" data-lang="ban" onclick="setLanguage('ban',this)"><span>🔵</span><div><b>Banjar</b><small>Banjar</small></div></button>
-<button type="button" class="langOption" data-lang="min" onclick="setLanguage('min',this)"><span>🟣</span><div><b>Minangkabau</b><small>Sumatera Barat</small></div></button>
-<button type="button" class="langOption" data-lang="bbc" onclick="setLanguage('bbc',this)"><span>🟤</span><div><b>Batak Toba</b><small>Sumatera Utara</small></div></button>
-<button type="button" class="langOption" data-lang="bug" onclick="setLanguage('bug',this)"><span>🟡</span><div><b>Bugis</b><small>Sulawesi Selatan</small></div></button>
-</div>
-</div>
-<div class="note" data-i18n="languageNote">Bahasa yang dipilih akan diterapkan ke seluruh antarmuka yang tersedia.</div>
-</div>
+<!-- ================= RIWAYAT ================= -->
+<section id="pg-history" class="page">
+  <div class="card">
+    <h2 data-i18n="history_title"></h2>
+    <div class="totals">
+      <div class="tot"><div class="k" data-i18n="today"></div><div class="v" id="uToday">—</div><div class="s" id="sToday"></div></div>
+      <div class="tot"><div class="k" data-i18n="week"></div><div class="v" id="uWeek">—</div><div class="s" id="sWeek"></div></div>
+      <div class="tot"><div class="k" data-i18n="month"></div><div class="v" id="uMonth">—</div><div class="s" id="sMonth"></div></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3 data-i18n="chart_7d"></h3>
+    <div class="chart" id="chart"></div>
+  </div>
+  <div class="card">
+    <h3 data-i18n="events"></h3>
+    <ul class="events" id="events"></ul>
+  </div>
+</section>
+
+<!-- ================= BAHASA ================= -->
+<section id="pg-lang" class="page">
+  <div class="card">
+    <h2 data-i18n="lang_title"></h2>
+    <p class="muted" data-i18n="lang_desc"></p>
+    <div class="group" data-i18n="lang_regional"></div>
+    <div class="langs" id="langRegional"></div>
+    <div class="group" data-i18n="lang_national"></div>
+    <div class="langs" id="langNational"></div>
+  </div>
 </section>
 </main>
 </div>
 
 <script>
-// ============================================================
-// TERJEMAHAN
-// Kunci yang tidak ada di suatu bahasa otomatis memakai Bahasa Indonesia.
-// ============================================================
-const translations = {
+// =====================================================================
+// PENGATURAN KONEKSI
+// =====================================================================
+const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
+const DEVICE_ID    = 'tandon-01';
+const T_DATA = 'controller_tandon_data', T_CFG = 'controller_tandon_config',
+      T_HIST = 'controller_tandon_history', T_EV = 'controller_tandon_events';
+const OFFLINE_MS = 15000;
+
+// =====================================================================
+// DAFTAR TANDON  [model, kapasitas liter, tinggi cm]
+// =====================================================================
+const TANKS = {
+  'Penguin': [
+    ['TB 32',300,97],['TB 55',520,118],['TB 70',650,135.5],['TB 80',800,177],
+    ['TB 110',1050,142],['TB 120',1200,163],['TB 160',1550,168],['TB 200',2000,156.4],
+    ['TD 60',600,174],['TD 80',800,165],['TD 110',1050,182],['TD 150',1500,190],['TD 200',2000,211]
+  ],
+  'MPOIN': [
+    ['Wave 1200',1200,157],['Tall 1200',1200,192],['Drain 1200',1200,196],
+    ['Stack 1200',1200,155],['U-Ground 1200',1200,188]
+  ],
+  'Prime': [['PRBL 550',550,121],['PRBL 1100',1100,139],['PR 2000',2000,180],['PR 5000',5000,221]],
+  'Lucky Polytank': [
+    ['LS 110',1100,136],['LS 235',2350,179],['LS 500',5000,229],
+    ['LAB 110',1100,138.5],['LPT 1250',1250,155],['Tangki Petak',1000,100]
+  ]
+};
+const CUSTOM = '__custom';
+
+// =====================================================================
+// BAHASA
+// Teks yang belum diterjemahkan otomatis memakai Bahasa Indonesia.
+// =====================================================================
+const LANGS = [
+  {code:'bjn', name:'Bahasa Banjar',  region:'Kalimantan Selatan', group:'regional'},
+  {code:'jv',  name:'Basa Jawa',      region:'Jawa',               group:'regional'},
+  {code:'su',  name:'Basa Sunda',     region:'Jawa Barat',         group:'regional'},
+  {code:'min', name:'Baso Minang',    region:'Sumatera Barat',     group:'regional'},
+  {code:'bbc', name:'Hata Batak Toba',region:'Sumatera Utara',     group:'regional'},
+  {code:'bug', name:'Basa Ugi',       region:'Sulawesi Selatan',   group:'regional'},
+  {code:'id',  name:'Bahasa Indonesia',region:'Nasional',          group:'national'},
+  {code:'en',  name:'English',        region:'International',      group:'national'}
+];
+
+const I18N = {
 id:{
-dashboard:"Dashboard",settings:"Pengaturan",history:"Riwayat",language:"Bahasa",
-tankMonitor:"MONITOR TANDON",pumpControl:"KONTROL POMPA",usageToday:"PEMAKAIAN HARI INI",
-tankProfile:"PROFIL TANDON",waterUsage:"PEMAKAIAN AIR",pumpUsage:"PENGGUNAAN POMPA",
-waterLevel:"KETINGGIAN AIR",estimatedVolume:"PERKIRAAN VOLUME",sensor:"SENSOR",pump:"POMPA",
-realtimeLevel:"Pemantauan ketinggian air secara langsung",currentWaterLevel:"Ketinggian air saat ini",
-tankCapacity:"Kapasitas tandon",tankHeight:"Tinggi tandon",sensorDistance:"Jarak sensor",remainingWater:"Sisa ruang",normal:"NORMAL",
-manualAuto:"Kontrol manual / otomatis berdasarkan ketinggian air",pumpOff:"POMPA MATI",pumpOn:"POMPA HIDUP",
-manual:"MANUAL",auto:"OTOMATIS",
-automaticControl:"Kontrol Otomatis",autoDescription:"Pompa hidup saat air rendah dan mati saat ketinggian sasaran tercapai.",
-autoBrowserNote:"Mode otomatis hanya berjalan selama halaman ini terbuka.",
-startPumpAt:"Hidupkan pompa pada",stopPumpAt:"Matikan pompa pada",saveSettings:"SIMPAN PENGATURAN",
-estimatedConsumption:"Perkiraan pemakaian air",used:"Terpakai",pumpCycles:"Siklus pompa",lastUpdate:"Pembaruan terakhir",
-chooseTank:"Pilih model tandon yang tersedia atau gunakan tandon khusus.",manufacturer:"MEREK",
-customTank:"Tandon Khusus",capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"TINGGI TANDON (CM)",
-saveCustom:"SIMPAN TANDON KHUSUS",simpleConsumption:"Ringkasan pemakaian sederhana",today:"HARI INI",
-thisWeek:"7 HARI",thisMonth:"BULAN INI",pumpCycleDescription:"Jumlah siklus pompa (bulan ini)",
-historyNote:"Riwayat diperbarui berdasarkan data yang diterima sistem.",
-profileNote:"Profil tandon di sini hanya untuk tampilan. Perhitungan level dan volume memakai kalibrasi di kode ESP32.",
-tagline:"SISTEM PEMANTAUAN TINGGI AIR CERDAS",waitingData:"MENUNGGU DATA",waiting:"MENUNGGU",offline:"PERANGKAT OFFLINE",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Status",automaticPumpControl:"KONTROL POMPA OTOMATIS",startPumpWhen:"HIDUPKAN POMPA SAAT KETINGGIAN MENCAPAI (%)",stopPumpWhen:"MATIKAN POMPA SAAT KETINGGIAN MENCAPAI (%)",on:"HIDUP",off:"MATI",turningOn:"MENGHIDUPKAN...",turningOff:"MEMATIKAN...",pumpSendFailed:"Perintah pompa gagal dikirim ke Supabase.",exampleCapacity:"Contoh: 1200",exampleHeight:"Contoh: 160",dailyChart:"Pemakaian 7 hari terakhir",customSaved:"Tandon khusus tersimpan.",settingsSaved:"Pengaturan otomatis tersimpan.",fillTank:"Isi kapasitas dan tinggi tandon terlebih dahulu.",invalidThreshold:"Batas hidup pompa harus lebih rendah daripada batas mati pompa.",languageSettings:"PENGATURAN BAHASA",languageDesc:"Pilih bahasa antarmuka CONTROLLER TANDON.",
-international:"BAHASA INTERNASIONAL",regional:"BAHASA DAERAH",
-mon:"Sen",tue:"Sel",wed:"Rab",thu:"Kam",fri:"Jum",sat:"Sab",sun:"Min",languageNote:"Bahasa yang dipilih diterapkan ke seluruh antarmuka yang tersedia. Nama merek, model, dan satuan pengukuran tetap dipertahankan."
+  nav_home:'Beranda',nav_tank:'Tandon',nav_pump:'Atur Pompa',nav_history:'Riwayat',nav_lang:'Bahasa',
+  online:'Terhubung',offline:'Alat tidak terhubung',connecting:'Menghubungkan…',
+  water_in_tank:'Air di tandon',of_capacity:'dari {cap} L',level:'Tinggi air',empty_space:'Ruang kosong',
+  last_seen:'Data terakhir',signal:'Sinyal WiFi',
+  estimate:'Perkiraan air habis',est_hours:'± {h} jam lagi',est_days:'± {d} hari lagi',est_filling:'sedang diisi',
+  est_unknown:'data belum cukup',est_long:'lebih dari 2 hari',
+  pump_on:'Pompa nyala',pump_off:'Pompa mati',mode_auto:'Otomatis',mode_manual:'Manual',
+  mode_auto_desc:'Pompa nyala sendiri saat air tinggal {start}, mati saat sudah {stop}.',
+  mode_manual_desc:'Nyalakan dan matikan pompa dengan tombol di bawah.',
+  btn_on:'Nyalakan',btn_off:'Matikan',sending:'Mengirim perintah…',waiting_device:'Menunggu alat menjalankan perintah…',
+  cmd_fail:'Perintah gagal dikirim. Periksa internet.',cmd_timeout:'Alat belum merespons. Periksa listrik dan WiFi alat.',
+  manual_only:'Tombol hanya bisa dipakai di mode Manual.',
+  status_ok:'Air aman',status_low:'Air hampir habis',status_full:'Tandon penuh',status_filling:'Sedang mengisi',
+  sensor_err:'Sensor tidak terbaca',device_offline:'Alat tidak terhubung',waiting:'Menunggu data dari alat…',
+  alarm_DRY_RUN:'Pompa dimatikan karena air tidak naik. Periksa sumur/PDAM atau pipa.',
+  alarm_SENSOR:'Sensor tidak terbaca. Pompa dimatikan supaya aman. Periksa kabel sensor.',
+  alarm_OVERFLOW:'Pompa dimatikan karena tandon sudah penuh.',
+  reset_alarm:'Sudah dicek, aktifkan lagi',
+  mk_start:'Nyala {p}%',mk_stop:'Mati {p}%',
+  tank_title:'Pilih tandon',tank_desc:'Pilih merek, lalu ukuran tandon Anda.',tank_custom:'Ukuran sendiri',
+  tank_selected:'Tandon yang dipakai',capacity:'Kapasitas (liter)',height:'Tinggi tandon (cm)',
+  height_hint:'Ukur dari sensor sampai dasar tandon.',
+  gap:'Jarak sensor ke air penuh (cm)',gap_hint:'Biasanya 25 cm. Sensor tidak bisa membaca lebih dekat dari 20 cm.',
+  sum_model:'Model',sum_cap:'Kapasitas',sum_height:'Tinggi',sum_usable:'Isi terbaca sensor',
+  save:'Simpan',saved:'Tersimpan. Alat memakai pengaturan baru dalam beberapa detik.',save_fail:'Gagal menyimpan. Periksa internet.',
+  fill_tank:'Isi kapasitas dan tinggi tandon dulu.',
+  auto_title:'Atur pompa otomatis',usable_info:'Tandon Anda menampung ± {u} liter yang terbaca sensor. Isi persen atau liter, yang lain menyesuaikan.',
+  start_at:'Pompa nyala saat air tinggal',stop_at:'Pompa mati saat air sudah',
+  pv_text:'Pompa akan mengisi ± {l} liter setiap kali nyala.',
+  threshold_err:'Batas nyala harus lebih kecil dari batas mati, selisih paling sedikit 10%.',
+  dry_title:'Pengaman pompa kering',dry_explain:'Kalau pompa nyala tapi air tidak naik (sumur kering, PDAM mati, pipa bocor), pompa dimatikan agar tidak rusak.',
+  dry_desc:'Matikan jika air tidak naik selama',minutes:'menit',
+  history_title:'Riwayat pemakaian',today:'Hari ini',week:'7 hari terakhir',month:'Bulan ini',
+  pump_summary:'Pompa nyala {n} kali, total {m}',chart_7d:'Air terpakai 7 hari terakhir',events:'Catatan kejadian',
+  no_data:'Belum ada data.',hours_short:'jam',minutes_short:'menit',
+  ev_PUMP_ON:'Pompa nyala',ev_PUMP_OFF:'Pompa mati',ev_DRY_RUN:'Pompa kering, dimatikan',ev_SENSOR_ERROR:'Sensor tidak terbaca',
+  ev_SENSOR_OK:'Sensor normal lagi',ev_OVERFLOW_STOP:'Tandon penuh, pompa dimatikan',ev_LOW_WATER:'Air hampir habis',ev_BOOT:'Alat dinyalakan',
+  r_AUTO:'otomatis',r_MANUAL:'dari tombol',r_SAFETY:'pengaman',
+  lang_title:'Bahasa',lang_desc:'Pilih bahasa yang paling mudah Anda mengerti.',lang_regional:'Bahasa daerah',lang_national:'Nasional & internasional',
+  days:['Min','Sen','Sel','Rab','Kam','Jum','Sab']
 },
 en:{
-dashboard:"Dashboard",settings:"Settings",history:"History",language:"Language",
-tankMonitor:"TANK MONITOR",pumpControl:"PUMP CONTROL",usageToday:"TODAY'S USAGE",tankProfile:"TANK PROFILE",
-waterUsage:"WATER USAGE",pumpUsage:"PUMP USAGE",waterLevel:"WATER LEVEL",estimatedVolume:"ESTIMATED VOLUME",
-sensor:"SENSOR",pump:"PUMP",realtimeLevel:"Real-time water level monitoring",currentWaterLevel:"Current water level",
-tankCapacity:"Tank capacity",tankHeight:"Tank height",sensorDistance:"Sensor distance",remainingWater:"Free space",normal:"NORMAL",
-manualAuto:"Manual control / automatic water-level control",pumpOff:"PUMP OFF",pumpOn:"PUMP ON",manual:"MANUAL",auto:"AUTO",
-automaticControl:"Automatic Control",
-autoDescription:"Turn the pump on at low level and off when the target level is reached.",
-autoBrowserNote:"Automatic mode only runs while this page is open.",
-startPumpAt:"Start pump at",
-stopPumpAt:"Stop pump at",saveSettings:"SAVE SETTINGS",estimatedConsumption:"Estimated water consumption",used:"Used",
-pumpCycles:"Pump cycles",lastUpdate:"Last update",chooseTank:"Choose a registered tank model or configure a custom tank.",
-manufacturer:"MANUFACTURER",customTank:"Custom Tank",capacityLiter:"CAPACITY (LITER)",tankHeightInput:"TANK HEIGHT (CM)",
-saveCustom:"SAVE CUSTOM TANK",simpleConsumption:"Simple consumption summary",today:"TODAY",thisWeek:"7 DAYS",
-thisMonth:"THIS MONTH",pumpCycleDescription:"Number of pump cycles (this month)",
-historyNote:"History is updated from the data received by the system.",
-profileNote:"The tank profile here is for display only. Level and volume are calculated with the calibration in the ESP32 code.",
-tagline:"SMART WATER LEVEL SYSTEM",waitingData:"WAITING FOR DATA",waiting:"WAITING",offline:"DEVICE OFFLINE",sensorError:"SENSOR ERROR",safe:"SAFE",status:"Status",automaticPumpControl:"AUTOMATIC PUMP CONTROL",startPumpWhen:"START PUMP WHEN LEVEL REACHES (%)",stopPumpWhen:"STOP PUMP WHEN LEVEL REACHES (%)",on:"ON",off:"OFF",turningOn:"TURNING ON...",turningOff:"TURNING OFF...",pumpSendFailed:"Failed to send pump command to Supabase.",exampleCapacity:"Example: 1200",exampleHeight:"Example: 160",dailyChart:"Usage over the last 7 days",customSaved:"Custom tank saved.",settingsSaved:"Automatic settings saved.",fillTank:"Enter the tank capacity and height first.",invalidThreshold:"The pump start threshold must be lower than the pump stop threshold.",languageSettings:"LANGUAGE SETTINGS",languageDesc:"Choose the CONTROLLER TANDON interface language.",
-international:"INTERNATIONAL",regional:"REGIONAL LANGUAGES",
-mon:"Mon",tue:"Tue",wed:"Wed",thu:"Thu",fri:"Fri",sat:"Sat",sun:"Sun",
-languageNote:"The selected language is applied across the available interface. Brand names, model names, and measurement units remain unchanged."
+  nav_home:'Home',nav_tank:'Tank',nav_pump:'Pump setup',nav_history:'History',nav_lang:'Language',
+  online:'Connected',offline:'Device offline',connecting:'Connecting…',
+  water_in_tank:'Water in tank',of_capacity:'of {cap} L',level:'Water height',empty_space:'Empty space',
+  last_seen:'Last data',signal:'WiFi signal',
+  estimate:'Water runs out in',est_hours:'about {h} hours',est_days:'about {d} days',est_filling:'filling now',
+  est_unknown:'not enough data yet',est_long:'more than 2 days',
+  pump_on:'Pump on',pump_off:'Pump off',mode_auto:'Automatic',mode_manual:'Manual',
+  mode_auto_desc:'The pump turns on by itself at {start} and off at {stop}.',
+  mode_manual_desc:'Turn the pump on and off with the buttons below.',
+  btn_on:'Turn on',btn_off:'Turn off',sending:'Sending command…',waiting_device:'Waiting for the device…',
+  cmd_fail:'Command not sent. Check the internet.',cmd_timeout:'The device has not responded. Check its power and WiFi.',
+  manual_only:'These buttons work in Manual mode only.',
+  status_ok:'Water is fine',status_low:'Water almost empty',status_full:'Tank is full',status_filling:'Filling',
+  sensor_err:'Sensor not reading',device_offline:'Device offline',waiting:'Waiting for data from the device…',
+  alarm_DRY_RUN:'Pump stopped because the water did not rise. Check the well, water supply or pipes.',
+  alarm_SENSOR:'Sensor not reading. Pump stopped for safety. Check the sensor cable.',
+  alarm_OVERFLOW:'Pump stopped because the tank is full.',
+  reset_alarm:'Checked, enable again',
+  mk_start:'On {p}%',mk_stop:'Off {p}%',
+  tank_title:'Choose your tank',tank_desc:'Pick the brand, then the size.',tank_custom:'Custom size',
+  tank_selected:'Tank in use',capacity:'Capacity (liters)',height:'Tank height (cm)',
+  height_hint:'Measure from the sensor down to the tank floor.',
+  gap:'Sensor to full water line (cm)',gap_hint:'Usually 25 cm. The sensor cannot read closer than 20 cm.',
+  sum_model:'Model',sum_cap:'Capacity',sum_height:'Height',sum_usable:'Readable by sensor',
+  save:'Save',saved:'Saved. The device will use the new settings in a few seconds.',save_fail:'Could not save. Check the internet.',
+  fill_tank:'Enter the tank capacity and height first.',
+  auto_title:'Automatic pump',usable_info:'Your tank holds about {u} liters the sensor can read. Type percent or liters; the other updates.',
+  start_at:'Pump turns on when water drops to',stop_at:'Pump turns off when water reaches',
+  pv_text:'Each time, the pump adds about {l} liters.',
+  threshold_err:'The on level must be at least 10% below the off level.',
+  dry_title:'Dry-run protection',dry_explain:'If the pump runs but the water does not rise (dry well, supply cut, leaking pipe), it is stopped to protect it.',
+  dry_desc:'Stop if the water does not rise for',minutes:'minutes',
+  history_title:'Water usage',today:'Today',week:'Last 7 days',month:'This month',
+  pump_summary:'Pump ran {n} times, {m} in total',chart_7d:'Water used, last 7 days',events:'Event log',
+  no_data:'No data yet.',hours_short:'h',minutes_short:'min',
+  ev_PUMP_ON:'Pump on',ev_PUMP_OFF:'Pump off',ev_DRY_RUN:'Dry run, pump stopped',ev_SENSOR_ERROR:'Sensor not reading',
+  ev_SENSOR_OK:'Sensor back to normal',ev_OVERFLOW_STOP:'Tank full, pump stopped',ev_LOW_WATER:'Water almost empty',ev_BOOT:'Device started',
+  r_AUTO:'automatic',r_MANUAL:'button',r_SAFETY:'protection',
+  lang_title:'Language',lang_desc:'Choose the language that is easiest for you.',lang_regional:'Regional languages',lang_national:'National & international',
+  days:['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 },
-ar:{
-dashboard:"لوحة التحكم",settings:"الإعدادات",history:"السجل",language:"اللغة",
-tankMonitor:"مراقبة الخزان",pumpControl:"التحكم في المضخة",usageToday:"استهلاك اليوم",tankProfile:"ملف الخزان",
-waterUsage:"استهلاك المياه",pumpUsage:"استخدام المضخة",waterLevel:"مستوى المياه",estimatedVolume:"الحجم التقديري",
-sensor:"الحساس",pump:"المضخة",realtimeLevel:"مراقبة مستوى المياه مباشرة",currentWaterLevel:"مستوى المياه الحالي",
-tankCapacity:"سعة الخزان",tankHeight:"ارتفاع الخزان",sensorDistance:"مسافة الحساس",remainingWater:"المساحة المتبقية",normal:"طبيعي",
-manualAuto:"تحكم يدوي / تلقائي حسب مستوى المياه",pumpOff:"المضخة متوقفة",pumpOn:"المضخة تعمل",manual:"يدوي",auto:"تلقائي",
-automaticControl:"التحكم التلقائي",autoDescription:"تشغيل المضخة عند انخفاض المستوى وإيقافها عند بلوغ المستوى المطلوب.",
-autoBrowserNote:"يعمل الوضع التلقائي فقط أثناء فتح هذه الصفحة.",
-startPumpAt:"تشغيل المضخة عند",stopPumpAt:"إيقاف المضخة عند",saveSettings:"حفظ الإعدادات",
-estimatedConsumption:"الاستهلاك التقديري للمياه",used:"المستهلك",pumpCycles:"دورات المضخة",lastUpdate:"آخر تحديث",
-chooseTank:"اختر طراز خزان مسجل أو خزانًا مخصصًا.",manufacturer:"الشركة المصنعة",customTank:"خزان مخصص",
-capacityLiter:"السعة (لتر)",tankHeightInput:"ارتفاع الخزان (سم)",saveCustom:"حفظ الخزان المخصص",
-simpleConsumption:"ملخص الاستهلاك",today:"اليوم",thisWeek:"7 أيام",thisMonth:"هذا الشهر",
-pumpCycleDescription:"عدد دورات المضخة (هذا الشهر)",historyNote:"يتم تحديث السجل من البيانات التي يستقبلها النظام.",
-profileNote:"ملف الخزان هنا للعرض فقط. يتم حساب المستوى والحجم بمعايرة كود ESP32.",
-tagline:"نظام ذكي لمراقبة مستوى المياه",waitingData:"بانتظار البيانات",waiting:"بانتظار",offline:"الجهاز غير متصل",sensorError:"خطأ في الحساس",safe:"آمن",status:"الحالة",
-automaticPumpControl:"التحكم التلقائي في المضخة",startPumpWhen:"تشغيل المضخة عندما يصل المستوى إلى (%)",stopPumpWhen:"إيقاف المضخة عندما يصل المستوى إلى (%)",
-on:"تشغيل",off:"إيقاف",turningOn:"جارٍ التشغيل...",turningOff:"جارٍ الإيقاف...",pumpSendFailed:"فشل إرسال أمر المضخة إلى Supabase.",
-exampleCapacity:"مثال: 1200",exampleHeight:"مثال: 160",dailyChart:"الاستهلاك خلال آخر 7 أيام",customSaved:"تم حفظ الخزان المخصص.",settingsSaved:"تم حفظ الإعدادات التلقائية.",
-fillTank:"أدخل سعة الخزان وارتفاعه أولًا.",invalidThreshold:"يجب أن يكون حد التشغيل أقل من حد الإيقاف.",
-languageSettings:"إعدادات اللغة",languageDesc:"اختر لغة واجهة CONTROLLER TANDON.",international:"لغات دولية",regional:"لغات محلية",
-mon:"الإثنين",tue:"الثلاثاء",wed:"الأربعاء",thu:"الخميس",fri:"الجمعة",sat:"السبت",sun:"الأحد",
-languageNote:"تُطبق اللغة المختارة على الواجهة المتاحة. تبقى أسماء العلامات والطرازات ووحدات القياس كما هي."
+bjn:{
+  nav_home:'Baranda',nav_tank:'Tandon',nav_pump:'Atur Pompa',nav_history:'Riwayat',nav_lang:'Bahasa',
+  online:'Tasambung',offline:'Alat kada tasambung',connecting:'Manyambung…',
+  water_in_tank:'Banyu di tandon',of_capacity:'matan {cap} L',level:'Tinggi banyu',empty_space:'Nang masih kosong',
+  last_seen:'Data tarakhir',signal:'Sinyal WiFi',
+  estimate:'Kira-kira banyu habis',est_hours:'± {h} jam lagi',est_days:'± {d} hari lagi',est_filling:'lagi diisi',
+  est_unknown:'data balum cukup',est_long:'labih matan 2 hari',
+  pump_on:'Pompa hidup',pump_off:'Pompa mati',mode_auto:'Otomatis',mode_manual:'Manual',
+  mode_auto_desc:'Pompa hidup surang mun banyu tinggal {start}, mati mun sudah {stop}.',
+  mode_manual_desc:'Hidupakan wan matiakan pompa pakai tumbol di bawah.',
+  btn_on:'Hidupakan',btn_off:'Matiakan',sending:'Mangirim parintah…',waiting_device:'Mahadang alat manjalanakan parintah…',
+  cmd_fail:'Parintah kada takirim. Cek internet.',cmd_timeout:'Alat balum manjawab. Cek listrik wan WiFi alat.',
+  manual_only:'Tumbol ini kawa dipakai di mode Manual haja.',
+  status_ok:'Banyu aman',status_low:'Banyu handak habis',status_full:'Tandon sudah pinuh',status_filling:'Lagi mangisi',
+  sensor_err:'Sensor kada tabaca',device_offline:'Alat kada tasambung',waiting:'Mahadang data matan alat…',
+  alarm_DRY_RUN:'Pompa dimatiakan karena banyu kada naik. Cek sumur/PDAM atawa pipa.',
+  alarm_SENSOR:'Sensor kada tabaca. Pompa dimatiakan supaya aman. Cek kabel sensor.',
+  alarm_OVERFLOW:'Pompa dimatiakan karena tandon sudah pinuh.',
+  reset_alarm:'Sudah dicek, hidupakan pulang',
+  mk_start:'Hidup {p}%',mk_stop:'Mati {p}%',
+  tank_title:'Pilih tandon',tank_desc:'Pilih merek, imbah itu ukuran tandon pian.',tank_custom:'Ukuran surang',
+  tank_selected:'Tandon nang dipakai',capacity:'Kapasitas (liter)',height:'Tinggi tandon (cm)',
+  height_hint:'Ukur matan sensor sampai ka dasar tandon.',
+  gap:'Jarak sensor ka banyu pinuh (cm)',gap_hint:'Biasanya 25 cm. Sensor kada kawa mambaca labih parak matan 20 cm.',
+  sum_model:'Model',sum_cap:'Kapasitas',sum_height:'Tinggi',sum_usable:'Isi nang tabaca sensor',
+  save:'Simpan',saved:'Sudah tasimpan. Alat mamakai pangaturan hanyar dalam babarapa detik.',save_fail:'Kada tasimpan. Cek internet.',
+  fill_tank:'Isi dahulu kapasitas wan tinggi tandon.',
+  auto_title:'Atur pompa otomatis',usable_info:'Tandon pian kawa ma-isi ± {u} liter nang tabaca sensor. Isi persen atawa liter, nang lain manyasuaiakan.',
+  start_at:'Pompa hidup mun banyu tinggal',stop_at:'Pompa mati mun banyu sudah',
+  pv_text:'Satiap kali hidup, pompa mangisi ± {l} liter.',
+  threshold_err:'Batas hidup harus labih randah matan batas mati, salisih paling sadikit 10%.',
+  dry_title:'Pangaman pompa karing',dry_explain:'Mun pompa hidup tapi banyu kada naik (sumur karing, PDAM mati, pipa bucur), pompa dimatiakan supaya kada rusak.',
+  dry_desc:'Matiakan mun banyu kada naik salawas',minutes:'menit',
+  history_title:'Riwayat pamakaian',today:'Hari ini',week:'7 hari tadi',month:'Bulan ini',
+  pump_summary:'Pompa hidup {n} kali, samunyaan {m}',chart_7d:'Banyu tapakai 7 hari tadi',events:'Catatan kajadian',
+  no_data:'Balum ada data.',hours_short:'jam',minutes_short:'menit',
+  ev_PUMP_ON:'Pompa hidup',ev_PUMP_OFF:'Pompa mati',ev_DRY_RUN:'Pompa karing, dimatiakan',ev_SENSOR_ERROR:'Sensor kada tabaca',
+  ev_SENSOR_OK:'Sensor normal pulang',ev_OVERFLOW_STOP:'Tandon pinuh, pompa dimatiakan',ev_LOW_WATER:'Banyu handak habis',ev_BOOT:'Alat dihidupakan',
+  r_AUTO:'otomatis',r_MANUAL:'matan tumbol',r_SAFETY:'pangaman',
+  lang_title:'Bahasa',lang_desc:'Pilih bahasa nang paling mudah pian pahami.',lang_regional:'Bahasa daerah',lang_national:'Nasional wan internasional',
+  days:['Ahd','Snn','Sls','Arb','Kms','Jmt','Sbt']
 },
 jv:{
-dashboard:"Dasbor",settings:"Setelan",history:"Riwayat",language:"Basa",
-tankMonitor:"PAMANTAUAN TANDON",pumpControl:"KONTROL POMPA",usageToday:"PANGGUNAAN DINA IKI",tankProfile:"PROFIL TANDON",
-waterUsage:"PANGGUNAAN BANYU",pumpUsage:"PANGGUNAAN POMPA",waterLevel:"TINGKAT BANYU",estimatedVolume:"PERKIRAAN ISI",
-sensor:"SENSOR",pump:"POMPA",realtimeLevel:"Pantauan tingkat banyu wektu nyata",currentWaterLevel:"Tingkat banyu saiki",
-tankCapacity:"Kapasitas tandon",tankHeight:"Dhuwuré tandon",sensorDistance:"Jarak sensor",normal:"NORMAL",
-manualAuto:"Kontrol manual / otomatis miturut tingkat banyu",pumpOff:"POMPA MATI",pumpOn:"POMPA URIP",
-manual:"MANUAL",auto:"OTOMATIS",
-automaticControl:"Kontrol Otomatis",autoDescription:"Pompa urip nalika banyu sithik lan mati nalika tekan tingkat sing wis ditemtokake.",
-startPumpAt:"Uripaké pompa nalika",stopPumpAt:"Pateni pompa nalika",saveSettings:"SIMPEN SETELAN",
-estimatedConsumption:"Perkiraan panggunaan banyu",used:"Digunakake",pumpCycles:"Siklus pompa",lastUpdate:"Nganyari pungkasan",
-chooseTank:"Pilih model tandon sing wis ana utawa gawe tandon khusus.",manufacturer:"MEREK",customTank:"Tandon Khusus",
-capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"DHUWUR TANDON (CM)",saveCustom:"SIMPEN TANDON KHUSUS",
-simpleConsumption:"Ringkesan panggunaan",today:"DINA IKI",thisMonth:"WULAN IKI",
-historyNote:"Riwayat dianyari saka data sing ditampa sistem.",
-tagline:"SISTEM PAMANTAUAN TINGKAT BANYU CERDAS",waitingData:"NUNGGU DATA",waiting:"NUNGGU",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Status",automaticPumpControl:"KONTROL POMPA OTOMATIS",startPumpWhen:"URIPAKÉ POMPA YÉN TINGKAT BANYU TEKAN (%)",stopPumpWhen:"PATENI POMPA YÉN TINGKAT BANYU TEKAN (%)",on:"URIP",off:"MATI",exampleCapacity:"Tuladha: 1200",exampleHeight:"Tuladha: 160",customSaved:"Tandon khusus wis disimpen.",settingsSaved:"Setelan otomatis wis disimpen.",fillTank:"Isi kapasitas lan dhuwuré tandon dhisik.",invalidThreshold:"Bates urip pompa kudu luwih endhek tinimbang bates mati pompa.",languageSettings:"SETELAN BASA",languageDesc:"Pilih basa antarmuka CONTROLLER TANDON.",international:"BASA INTERNASIONAL",
-regional:"BASA DAERAH",languageNote:"Basa sing dipilih ditrapake ing antarmuka sing kasedhiya. Jeneng merek, model, lan satuan ukuran tetep padha."
+  nav_home:'Beranda',nav_tank:'Tandon',nav_pump:'Setel Pompa',nav_history:'Riwayat',nav_lang:'Basa',
+  online:'Nyambung',offline:'Alat ora nyambung',connecting:'Nyambungake…',
+  water_in_tank:'Banyu ing tandon',of_capacity:'saka {cap} L',level:'Dhuwure banyu',empty_space:'Sing isih kosong',
+  last_seen:'Data pungkasan',signal:'Sinyal WiFi',
+  estimate:'Kira-kira banyu entek',est_hours:'± {h} jam maneh',est_days:'± {d} dina maneh',est_filling:'lagi diisi',
+  est_unknown:'data durung cukup',est_long:'luwih saka 2 dina',
+  pump_on:'Pompa urip',pump_off:'Pompa mati',mode_auto:'Otomatis',mode_manual:'Manual',
+  mode_auto_desc:'Pompa urip dhewe yen banyu kari {start}, mati yen wis {stop}.',
+  mode_manual_desc:'Uripna lan pateni pompa nganggo tombol ing ngisor.',
+  btn_on:'Uripna',btn_off:'Pateni',sending:'Ngirim prentah…',waiting_device:'Ngenteni alat nglakoni prentah…',
+  cmd_fail:'Prentah gagal dikirim. Priksa internet.',cmd_timeout:'Alat durung nanggapi. Priksa listrik lan WiFi alat.',
+  manual_only:'Tombol iki mung kanggo mode Manual.',
+  status_ok:'Banyu aman',status_low:'Banyu meh entek',status_full:'Tandon wis kebak',status_filling:'Lagi ngisi',
+  sensor_err:'Sensor ora kewaca',device_offline:'Alat ora nyambung',waiting:'Ngenteni data saka alat…',
+  alarm_DRY_RUN:'Pompa dipateni amarga banyu ora mundhak. Priksa sumur/PDAM utawa pipa.',
+  alarm_SENSOR:'Sensor ora kewaca. Pompa dipateni supaya aman. Priksa kabel sensor.',
+  alarm_OVERFLOW:'Pompa dipateni amarga tandon wis kebak.',
+  reset_alarm:'Wis dicek, uripna maneh',
+  mk_start:'Urip {p}%',mk_stop:'Mati {p}%',
+  tank_title:'Pilih tandon',tank_desc:'Pilih merek, banjur ukuran tandon panjenengan.',tank_custom:'Ukuran dhewe',
+  tank_selected:'Tandon sing dienggo',capacity:'Kapasitas (liter)',height:'Dhuwur tandon (cm)',
+  height_hint:'Ukur saka sensor nganti dhasar tandon.',
+  gap:'Jarak sensor menyang banyu kebak (cm)',gap_hint:'Biasane 25 cm. Sensor ora bisa maca luwih cedhak saka 20 cm.',
+  sum_model:'Model',sum_cap:'Kapasitas',sum_height:'Dhuwur',sum_usable:'Isi sing kewaca sensor',
+  save:'Simpen',saved:'Wis kesimpen. Alat nganggo setelan anyar sawetara detik maneh.',save_fail:'Gagal nyimpen. Priksa internet.',
+  fill_tank:'Isi kapasitas lan dhuwure tandon dhisik.',
+  auto_title:'Setel pompa otomatis',usable_info:'Tandon panjenengan isine ± {u} liter sing kewaca sensor. Isi persen utawa liter, liyane nyesuekake.',
+  start_at:'Pompa urip yen banyu kari',stop_at:'Pompa mati yen banyu wis',
+  pv_text:'Saben urip, pompa ngisi ± {l} liter.',
+  threshold_err:'Wates urip kudu luwih cilik tinimbang wates mati, bedane paling sethithik 10%.',
+  dry_title:'Pengaman pompa garing',dry_explain:'Yen pompa urip nanging banyu ora mundhak (sumur asat, PDAM mati, pipa bocor), pompa dipateni supaya ora rusak.',
+  dry_desc:'Pateni yen banyu ora mundhak suwene',minutes:'menit',
+  history_title:'Riwayat panganggone',today:'Dina iki',week:'7 dina kepungkur',month:'Sasi iki',
+  pump_summary:'Pompa urip {n} kaping, gunggunge {m}',chart_7d:'Banyu kanggo 7 dina kepungkur',events:'Cathetan kedadeyan',
+  no_data:'Durung ana data.',hours_short:'jam',minutes_short:'menit',
+  ev_PUMP_ON:'Pompa urip',ev_PUMP_OFF:'Pompa mati',ev_DRY_RUN:'Pompa garing, dipateni',ev_SENSOR_ERROR:'Sensor ora kewaca',
+  ev_SENSOR_OK:'Sensor normal maneh',ev_OVERFLOW_STOP:'Tandon kebak, pompa dipateni',ev_LOW_WATER:'Banyu meh entek',ev_BOOT:'Alat diuripake',
+  r_AUTO:'otomatis',r_MANUAL:'saka tombol',r_SAFETY:'pengaman',
+  lang_title:'Basa',lang_desc:'Pilih basa sing paling gampang dimangerteni.',lang_regional:'Basa daerah',lang_national:'Nasional lan internasional',
+  days:['Min','Sen','Sel','Rab','Kem','Jem','Set']
 },
 su:{
-dashboard:"Dasbor",settings:"Pangaturan",history:"Riwayat",language:"Basa",
-tankMonitor:"PAMANTAUAN TANDON",pumpControl:"KONTROL POMPA",usageToday:"PAMAKÉAN DINTEN IEU",tankProfile:"PROFIL TANDON",
-waterUsage:"PAMAKÉAN CAI",pumpUsage:"PAMAKÉAN POMPA",waterLevel:"TINGKAT CAI",estimatedVolume:"PERKIRAAN VOLUME",
-sensor:"SENSOR",pump:"POMPA",realtimeLevel:"Pangawasan tingkat cai sacara langsung",currentWaterLevel:"Tingkat cai ayeuna",
-tankCapacity:"Kapasitas tandon",tankHeight:"Jangkungna tandon",sensorDistance:"Jarak sensor",normal:"NORMAL",
-manualAuto:"Kontrol manual / otomatis dumasar kana tingkat cai",pumpOff:"POMPA PAREUM",pumpOn:"POMPA HURUNG",
-manual:"MANUAL",auto:"OTOMATIS",
-automaticControl:"Kontrol Otomatis",autoDescription:"Pompa hurung nalika cai handap jeung pareum nalika ngahontal tingkat tujuan.",
-startPumpAt:"Hurungkeun pompa dina",stopPumpAt:"Pareuman pompa dina",saveSettings:"SIMPEN SETELAN",
-estimatedConsumption:"Perkiraan pamakéan cai",used:"Kapaké",pumpCycles:"Siklus pompa",lastUpdate:"Pembaruan pamungkas",
-chooseTank:"Pilih modél tandon anu geus aya atawa jieun tandon husus.",manufacturer:"MEREK",customTank:"Tandon Husus",
-capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"JANGKUNGNA TANDON (CM)",saveCustom:"SIMPEN TANDON HUSUS",
-simpleConsumption:"Ringkesan pamakéan",today:"DINTEN IEU",thisMonth:"BULAN IEU",
-tagline:"SISTEM PAMANTAUAN TINGKAT CAI CERDAS",waitingData:"NGADAGOAN DATA",waiting:"NGADAGOAN",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Status",automaticPumpControl:"KONTROL POMPA OTOMATIS",startPumpWhen:"HURUNGKEUN POMPA NALIKA TINGKAT CAI NEPI KA (%)",stopPumpWhen:"PAREUMKEUN POMPA NALIKA TINGKAT CAI NEPI KA (%)",on:"HURUNG",off:"PAREUM",exampleCapacity:"Conto: 1200",exampleHeight:"Conto: 160",customSaved:"Tandon husus geus disimpen.",settingsSaved:"Setelan otomatis geus disimpen.",fillTank:"Eusian kapasitas jeung jangkungna tandon heula.",invalidThreshold:"Wates hurung pompa kudu leuwih handap tibatan wates pareum pompa.",languageSettings:"SETELAN BASA",languageDesc:"Pilih basa antarbeungeut CONTROLLER TANDON.",international:"BASA INTERNASIONAL",
-regional:"BASA DAÉRAH",languageNote:"Basa anu dipilih diterapkeun kana antarbeungeut anu sayogi. Ngaran merek, modél, jeung satuan ukuran tetep."
+  nav_home:'Beranda',nav_tank:'Tandon',nav_pump:'Atur Pompa',nav_history:'Riwayat',nav_lang:'Basa',
+  online:'Nyambung',offline:'Alat teu nyambung',connecting:'Nyambungkeun…',
+  water_in_tank:'Cai dina tandon',of_capacity:'tina {cap} L',level:'Jangkungna cai',empty_space:'Nu kénéh kosong',
+  last_seen:'Data panungtung',signal:'Sinyal WiFi',
+  estimate:'Kira-kira cai béak',est_hours:'± {h} jam deui',est_days:'± {d} poé deui',est_filling:'keur dieusian',
+  est_unknown:'data can cukup',est_long:'leuwih ti 2 poé',
+  pump_on:'Pompa hurung',pump_off:'Pompa pareum',mode_auto:'Otomatis',mode_manual:'Manual',
+  mode_auto_desc:'Pompa hurung sorangan lamun cai kari {start}, pareum lamun geus {stop}.',
+  mode_manual_desc:'Hurungkeun jeung pareuman pompa maké tombol di handap.',
+  btn_on:'Hurungkeun',btn_off:'Pareuman',sending:'Ngirim paréntah…',waiting_device:'Ngadagoan alat ngajalankeun paréntah…',
+  cmd_fail:'Paréntah gagal dikirim. Pariksa internét.',cmd_timeout:'Alat can ngabales. Pariksa listrik jeung WiFi alat.',
+  manual_only:'Tombol ieu ngan pikeun mode Manual.',
+  status_ok:'Cai aman',status_low:'Cai ampir béak',status_full:'Tandon geus pinuh',status_filling:'Keur ngeusian',
+  sensor_err:'Sensor teu kabaca',device_offline:'Alat teu nyambung',waiting:'Ngadagoan data ti alat…',
+  alarm_DRY_RUN:'Pompa dipareuman sabab cai teu naék. Pariksa sumur/PDAM atawa pipa.',
+  alarm_SENSOR:'Sensor teu kabaca. Pompa dipareuman sangkan aman. Pariksa kabel sensor.',
+  alarm_OVERFLOW:'Pompa dipareuman sabab tandon geus pinuh.',
+  reset_alarm:'Geus dipariksa, hurungkeun deui',
+  mk_start:'Hurung {p}%',mk_stop:'Pareum {p}%',
+  tank_title:'Pilih tandon',tank_desc:'Pilih merek, terus ukuran tandon anjeun.',tank_custom:'Ukuran sorangan',
+  tank_selected:'Tandon nu dipaké',capacity:'Kapasitas (liter)',height:'Jangkung tandon (cm)',
+  height_hint:'Ukur ti sensor nepi ka dasar tandon.',
+  gap:'Jarak sensor ka cai pinuh (cm)',gap_hint:'Biasana 25 cm. Sensor teu bisa maca leuwih deukeut ti 20 cm.',
+  sum_model:'Modél',sum_cap:'Kapasitas',sum_height:'Jangkung',sum_usable:'Eusi nu kabaca sensor',
+  save:'Simpen',saved:'Geus disimpen. Alat bakal maké setélan anyar sababaraha detik deui.',save_fail:'Gagal nyimpen. Pariksa internét.',
+  fill_tank:'Eusian kapasitas jeung jangkung tandon heula.',
+  auto_title:'Setél pompa otomatis',usable_info:'Tandon anjeun ngamuat ± {u} liter nu kabaca sensor. Eusian persén atawa liter, nu séjén nyaluyukeun.',
+  start_at:'Pompa hurung lamun cai kari',stop_at:'Pompa pareum lamun cai geus',
+  pv_text:'Unggal hurung, pompa ngeusian ± {l} liter.',
+  threshold_err:'Wates hurung kudu leuwih leutik ti wates pareum, bédana sahenteuna 10%.',
+  dry_title:'Pangaman pompa garing',dry_explain:'Lamun pompa hurung tapi cai teu naék (sumur saat, PDAM pareum, pipa bocor), pompa dipareuman sangkan teu ruksak.',
+  dry_desc:'Pareuman lamun cai teu naék salila',minutes:'menit',
+  history_title:'Riwayat pamakéan',today:'Poé ieu',week:'7 poé ka tukang',month:'Bulan ieu',
+  pump_summary:'Pompa hurung {n} kali, jumlahna {m}',chart_7d:'Cai kapaké 7 poé ka tukang',events:'Catetan kajadian',
+  no_data:'Can aya data.',hours_short:'jam',minutes_short:'menit',
+  ev_PUMP_ON:'Pompa hurung',ev_PUMP_OFF:'Pompa pareum',ev_DRY_RUN:'Pompa garing, dipareuman',ev_SENSOR_ERROR:'Sensor teu kabaca',
+  ev_SENSOR_OK:'Sensor normal deui',ev_OVERFLOW_STOP:'Tandon pinuh, pompa dipareuman',ev_LOW_WATER:'Cai ampir béak',ev_BOOT:'Alat dihurungkeun',
+  r_AUTO:'otomatis',r_MANUAL:'tina tombol',r_SAFETY:'pangaman',
+  lang_title:'Basa',lang_desc:'Pilih basa nu panggampangna kaharti.',lang_regional:'Basa daérah',lang_national:'Nasional jeung internasional',
+  days:['Min','Sen','Sal','Reb','Kem','Jum','Sap']
 },
-ban:{
-dashboard:"Dasbor",settings:"Pangaturan",history:"Riwayat",language:"Bahasa",
-tankMonitor:"PAMANTAUAN TANDON",pumpControl:"KONTROL POMPA",usageToday:"PAMAKAIAN HARI INI",tankProfile:"PROFIL TANDON",
-waterUsage:"PAMAKAIAN BANYU",pumpUsage:"PAMAKAIAN POMPA",waterLevel:"TINGGI BANYU",estimatedVolume:"PERKIRAAN ISI",
-sensor:"SENSOR",pump:"POMPA",realtimeLevel:"Pamantauan tinggi banyu langsung",currentWaterLevel:"Tinggi banyu wayah ini",
-tankCapacity:"Kapasitas tandon",tankHeight:"Tinggi tandon",sensorDistance:"Jarak sensor",normal:"NORMAL",
-manualAuto:"Kontrol manual / otomatis manurut tinggi banyu",pumpOff:"POMPA MATI",pumpOn:"POMPA HIDUP",
-manual:"MANUAL",auto:"OTOMATIS",
-automaticControl:"Kontrol Otomatis",autoDescription:"Pompa hidup mun banyu randah wan mati mun sudah sampai ka tinggi tujuan.",
-startPumpAt:"Hidupakan pompa mun sampai",stopPumpAt:"Matikan pompa mun sampai",saveSettings:"SIMPAN PANGATURAN",
-estimatedConsumption:"Perkiraan pamakaian banyu",used:"Tarpakai",pumpCycles:"Siklus pompa",lastUpdate:"Pembaruan tarakhir",
-chooseTank:"Pilihi model tandon nang sudah tersedia atawa atur tandon khusus.",manufacturer:"MEREK",customTank:"Tandon Khusus",
-capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"TINGGI TANDON (CM)",saveCustom:"SIMPAN TANDON KHUSUS",
-simpleConsumption:"Ringkasan pamakaian",today:"HARI INI",thisMonth:"BULAN INI",
-tagline:"SISTEM PAMANTAUAN TINGGI BANYU CAGAR",waitingData:"MEHADANG DATA",waiting:"MEHADANG",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Kaadaan",automaticPumpControl:"KONTROL POMPA OTOMATIS",startPumpWhen:"HIDUPAKAN POMPA MUN TINGGI BANYU MANCAPAI (%)",stopPumpWhen:"MATIKAN POMPA MUN TINGGI BANYU MANCAPAI (%)",on:"HIDUP",off:"MATI",exampleCapacity:"Contoh: 1200",exampleHeight:"Contoh: 160",customSaved:"Tandon khusus sudah tasimpan.",settingsSaved:"Pangaturan otomatis sudah tasimpan.",fillTank:"Isi dahulu kapasitas wan tinggi tandon.",invalidThreshold:"Batas hidup pompa harus labih randah daripada batas mati pompa.",languageSettings:"PANGATURAN BAHASA",languageDesc:"Pilih bahasa antarmuka CONTROLLER TANDON.",international:"BAHASA INTERNASIONAL",
-regional:"BAHASA DAERAH",languageNote:"Bahasa nang dipilih dipakai di seluruh antarmuka nang tersedia. Ngaran merek, model, wan satuan ukuran tetap dipakai."
-},
+// --- Tiga bahasa di bawah baru sebagian; teks lain memakai Bahasa Indonesia.
+// --- Mohon dicek penutur asli sebelum lomba.
 min:{
-dashboard:"Dasbor",settings:"Pangaturan",history:"Riwayat",language:"Baso",
-tankMonitor:"PAMANTAUAN TANGKI",pumpControl:"KONTROL POMPA",usageToday:"PAMAKAIAN HARI INI",tankProfile:"PROFIL TANGKI",
-waterUsage:"PAMAKAIAN AIA",pumpUsage:"PAMAKAIAN POMPA",waterLevel:"TINGGI AIA",estimatedVolume:"PERKIRAAN ISI",
-sensor:"SENSOR",pump:"POMPA",realtimeLevel:"Pamantauan tinggi aia sacaro langsung",currentWaterLevel:"Tinggi aia kini",
-tankCapacity:"Kapasitas tangki",tankHeight:"Tinggi tangki",sensorDistance:"Jarak sensor",normal:"NORMAL",
-manualAuto:"Kontrol manual / otomatis manuruik tinggi aia",pumpOff:"POMPA MATI",pumpOn:"POMPA HIDUP",manual:"MANUAL",auto:"OTOMATIS",
-automaticControl:"Kontrol Otomatis",autoDescription:"Pompa hiduik pado saat aia randah dan mati pado saat mancapai tingkat tujuan.",
-startPumpAt:"Hiduikkan pompa pado",stopPumpAt:"Matikan pompa pado",saveSettings:"SIMPAN PANGATURAN",estimatedConsumption:"Perkiraan pamakaian aia",used:"Tarpakai",pumpCycles:"Siklus pompa",lastUpdate:"Pambaruan tarakhir",
-chooseTank:"Pilih model tangki nan tersedia atau atur tangki khusus.",manufacturer:"MEREK",customTank:"Tangki Khusus",capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"TINGGI TANGKI (CM)",saveCustom:"SIMPAN TANGKI KHUSUS",
-simpleConsumption:"Ringkasan pamakaian",today:"HARI INI",thisMonth:"BULAN INI",historyNote:"Riwayat isi diperbarui dari data nan diterima sistem.",
-tagline:"SISTEM PAMANTAUAN TINGGI AIA",waitingData:"MANANTI DATA",waiting:"MANANTI",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Kaadaan",automaticPumpControl:"KONTROL POMPA OTOMATIS",
-startPumpWhen:"HIDUIKKAN POMPA BILO TINGGI AIA MANCAPAI (%)",stopPumpWhen:"MATIKAN POMPA BILO TINGGI AIA MANCAPAI (%)",on:"HIDUP",off:"MATI",exampleCapacity:"Contoh: 1200",exampleHeight:"Contoh: 160",customSaved:"Tangki khusus tasimpan.",settingsSaved:"Pangaturan otomatis tasimpan.",fillTank:"Isi kapasitas dan tinggi tangki dulu.",invalidThreshold:"Batas hidup pompa harus labiah randah dari batas mati pompa.",languageSettings:"PANGATURAN BASO",languageDesc:"Pilih baso antarmuka CONTROLLER TANDON.",international:"BASO INTERNASIONAL",regional:"BASO DAERAH",languageNote:"Baso nan dipilih dipakai di seluruh antarmuka. Ngaran merek, model, dan satuan ukuran tetap."
+  nav_home:'Baranda',nav_pump:'Atur Pompa',nav_history:'Riwayaik',nav_lang:'Baso',
+  online:'Tasambuang',offline:'Alat indak tasambuang',connecting:'Manyambuang…',
+  water_in_tank:'Aia di tandon',level:'Tinggi aia',estimate:'Kiro-kiro aia abih',est_hours:'± {h} jam lai',
+  pump_on:'Pompa iduik',pump_off:'Pompa mati',
+  mode_auto_desc:'Pompa iduik surang kalau aia tingga {start}, mati kalau alah {stop}.',
+  mode_manual_desc:'Iduikkan jo matikan pompa pakai tombol di bawah.',
+  btn_on:'Iduikkan',btn_off:'Matikan',
+  status_ok:'Aia aman',status_low:'Aia ampia abih',status_full:'Tandon alah panuah',status_filling:'Sadang maisi',
+  sensor_err:'Sensor indak tabaco',device_offline:'Alat indak tasambuang',waiting:'Mananti data dari alat…',
+  alarm_DRY_RUN:'Pompa dimatikan dek aia indak naiak. Pareso sumua/PDAM atau pipa.',
+  start_at:'Pompa iduik kalau aia tingga',stop_at:'Pompa mati kalau aia alah',
+  save:'Simpan',today:'Hari ko',lang_title:'Baso',lang_regional:'Baso daerah'
 },
 bbc:{
-dashboard:"Dasbor",settings:"Pangaturan",history:"Riwayat",language:"Hata",tankMonitor:"PAMANTAUAN TANGKI",pumpControl:"KONTROL POMPA",usageToday:"PAMAKAIAN ARI ON",tankProfile:"PROFIL TANGKI",
-waterUsage:"PAMAKAIAN AEK",pumpUsage:"PAMAKAIAN POMPA",waterLevel:"TINGKAT AEK",estimatedVolume:"PERKIRAAN ISI",sensor:"SENSOR",pump:"POMPA",realtimeLevel:"Pamantauan tingkat aek langsung",currentWaterLevel:"Tingkat aek saonari",
-tankCapacity:"Kapasitas tangki",tankHeight:"Tinggi tangki",sensorDistance:"Jarak sensor",normal:"NORMAL",manualAuto:"Kontrol manual / otomatis mangihuthon tingkat aek",pumpOff:"POMPA MATE",pumpOn:"POMPA MANGALUA",manual:"MANUAL",auto:"OTOMATIS",
-automaticControl:"Kontrol Otomatis",autoDescription:"Pompa mangalua molo aek randah jala mate molo dung sahat tu tingkat tujuan.",startPumpAt:"Hidupkon pompa di",stopPumpAt:"Matehon pompa di",saveSettings:"SIMPEN PANGATURAN",estimatedConsumption:"Perkiraan pamakaian aek",used:"Tar pake",pumpCycles:"Siklus pompa",lastUpdate:"Pambaruan na parpudi",
-chooseTank:"Pillit model tangki naung adong manang atur tangki khusus.",manufacturer:"MEREK",customTank:"Tangki Khusus",capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"TINGGI TANGKI (CM)",saveCustom:"SIMPEN TANGKI KHUSUS",simpleConsumption:"Ringkasan pamakaian",today:"ARI ON",thisMonth:"BULAN ON",historyNote:"Riwayat isi diperbarui sian data na ditarima sistem.",
-tagline:"SISTEM PAMANTAUAN TINGKAT AEK",waitingData:"PAIMA DATA",waiting:"PAIMA",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Kaadaan",automaticPumpControl:"KONTROL POMPA OTOMATIS",startPumpWhen:"HIDUPKON POMPA MANDAPAT TINGKAT AEK (%)",stopPumpWhen:"MATEHON POMPA MANDAPAT TINGKAT AEK (%)",on:"MANGALUA",off:"MATE",exampleCapacity:"Contoh: 1200",exampleHeight:"Contoh: 160",customSaved:"Tangki khusus nunga tasimpan.",settingsSaved:"Pangaturan otomatis nunga tasimpan.",fillTank:"Isi kapasitas dohot tinggi tangki jolo.",invalidThreshold:"Batas hidup pompa ingkon lamok sian batas mati pompa.",languageSettings:"PANGATURAN HATA",languageDesc:"Pillit hata antarmuka CONTROLLER TANDON.",international:"HATA INTERNASIONAL",regional:"HATA DAERAH",languageNote:"Hata na dipillit dipake di saluhut antarmuka. Ngaran merek, model, dohot satuan ukuran tetap."
+  nav_lang:'Hata',online:'Marhubungan',
+  water_in_tank:'Aek di tandon',level:'Timbo ni aek',
+  pump_on:'Pompa hidup',pump_off:'Pompa mate',btn_on:'Hidupkon',btn_off:'Matehon',
+  status_ok:'Aek aman',status_low:'Aek naeng suda',status_full:'Tandon nunga gok',
+  waiting:'Paima data sian alat…',today:'Sadari on',lang_title:'Hata',lang_regional:'Hata daerah'
 },
 bug:{
-dashboard:"Dasbor",settings:"Pangaturan",history:"Riwayat",language:"Basa",tankMonitor:"PAMANTAUAN TANGKI",pumpControl:"KONTROL POMPA",usageToday:"PAMAKAIAN ESSO",tankProfile:"PROFIL TANGKI",
-waterUsage:"PAMAKAIAN UWAE",pumpUsage:"PAMAKAIAN POMPA",waterLevel:"TINGKAT UWAE",estimatedVolume:"PERKIRAAN ISI",sensor:"SENSOR",pump:"POMPA",realtimeLevel:"Pamantauan tingkat uwae langsung",currentWaterLevel:"Tingkat uwae makkua",tankCapacity:"Kapasitas tangki",tankHeight:"Tinggi tangki",sensorDistance:"Jarak sensor",normal:"NORMAL",manualAuto:"Kontrol manual / otomatis berdasarkan tingkat uwae",pumpOff:"POMPA MATE",pumpOn:"POMPA MALAKKA",manual:"MANUAL",auto:"OTOMATIS",automaticControl:"Kontrol Otomatis",autoDescription:"Pompa malakka narekko uwae rennuangngi na mate narekko maraja.",startPumpAt:"Malakkan pompa padata",stopPumpAt:"Mateang pompa padata",saveSettings:"SIMPEN PANGATURAN",estimatedConsumption:"Perkiraan pamakaian uwae",used:"Tarpake",pumpCycles:"Siklus pompa",lastUpdate:"Pembaruan terakhir",chooseTank:"Pilih model tangki atau atur tangki khusus.",manufacturer:"MEREK",customTank:"Tangki Khusus",capacityLiter:"KAPASITAS (LITER)",tankHeightInput:"TINGGI TANGKI (CM)",saveCustom:"SIMPEN TANGKI KHUSUS",simpleConsumption:"Ringkasan pamakaian",today:"ESSO",thisMonth:"BULAN INI",historyNote:"Riwayat isi berdasarkan data nan ditarima sistem.",tagline:"SISTEM PAMANTAUAN TINGKAT UWAE",waitingData:"ATTANRE DATA",waiting:"ATTANRE",sensorError:"SENSOR ERROR",safe:"AMAN",status:"Status",automaticPumpControl:"KONTROL POMPA OTOMATIS",startPumpWhen:"MALAKKAN POMPA NAREKKO TINGKAT UWAE SAMPAI (%)",stopPumpWhen:"MATEANG POMPA NAREKKO TINGKAT UWAE SAMPAI (%)",on:"MALAKKA",off:"MATE",exampleCapacity:"Contoh: 1200",exampleHeight:"Contoh: 160",customSaved:"Tangki khusus tasimpan.",settingsSaved:"Pangaturan otomatis tasimpan.",fillTank:"Isi kapasitas wan tinggi tangki dulu.",invalidThreshold:"Batas hidup pompa harus lebih randah daripada batas mati pompa.",languageSettings:"PANGATURAN BASA",languageDesc:"Pilih basa antarmuka CONTROLLER TANDON.",international:"BASA INTERNASIONAL",regional:"BASA DAERAH",languageNote:"Basa nan dipilih dipakai di seluruh antarmuka. Ngaran merek, model, wan satuan ukuran tetap."
+  nav_lang:'Basa',
+  water_in_tank:'Uwae ri tandon',
+  pump_on:'Pompa mattuo',pump_off:'Pompa mate',
+  status_ok:'Uwae aman',status_low:'Uwae maelo cappu',status_full:'Tandon pennoni',
+  today:'Essoe',lang_title:'Basa',lang_regional:'Basa daerah'
 }
 };
 
-// ============================================================
-// HELPER
-// ============================================================
-function safeGet(key,fallback){ try{ const v=localStorage.getItem(key); return v===null?fallback:v; }catch(e){ return fallback; } }
-function safeSet(key,val){ try{ localStorage.setItem(key,val); }catch(e){} }
-function currentLang(){ return safeGet("controllerTandonLanguage","id"); }
-function T(){ return Object.assign({}, translations.id, translations[currentLang()]||{}); }
-function $(id){ return document.getElementById(id); }
-function fmtL(v){ return Math.round(Number(v)||0).toLocaleString('id-ID')+' L'; }
+let LANG = 'id';
+try { LANG = localStorage.getItem('tandonLang') || 'bjn'; } catch(e) { LANG = 'bjn'; }
 
-// ============================================================
+function t(key, vars){
+  let s = (I18N[LANG] && I18N[LANG][key] !== undefined) ? I18N[LANG][key]
+        : (I18N.id[key] !== undefined ? I18N.id[key] : key);
+  if (vars && typeof s === 'string') for (const k in vars) s = s.split('{'+k+'}').join(vars[k]);
+  return s;
+}
+
+// =====================================================================
+// UTIL
+// =====================================================================
+const $ = id => document.getElementById(id);
+const nf = (v, d=0) => Number(v).toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
+const clamp = (v,a,b) => Math.max(a, Math.min(b, v));
+const dev = 'device_id=eq.' + encodeURIComponent(DEVICE_ID);
+
+async function api(path, {method='GET', body, prefer} = {}){
+  const headers = {apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, Accept:'application/json'};
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  if (prefer) headers.Prefer = prefer;
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    method, headers, cache:'no-store', body: body !== undefined ? JSON.stringify(body) : undefined
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(res.status + ' ' + text);
+  return text ? JSON.parse(text) : null;
+}
+
+function note(id, msg, kind){
+  const el = $(id); el.textContent = msg || '';
+  el.className = 'note' + (kind ? ' ' + kind : '');
+}
+
+function usableOf(cap, h, gap){ return h > gap ? cap * (h - gap) / h : 0; }
+function cfgUsable(){ const c = S.cfg; return c ? usableOf(+c.capacity_liters, +c.tank_height_cm, +c.full_gap_cm) : 0; }
+function fmtDuration(min){
+  min = Math.round(min);
+  if (min < 60) return min + ' ' + t('minutes_short');
+  return nf(Math.floor(min/60)) + ' ' + t('hours_short') + ' ' + (min%60) + ' ' + t('minutes_short');
+}
+function witaDate(d){ return d.toLocaleDateString('en-CA',{timeZone:'Asia/Makassar'}); }
+
+// =====================================================================
 // STATE
-// ============================================================
-let tank={brand:"Penguin",family:"General Tank",model:"TB 120",cap:1200,height:163,diameter:105};
-let level=null;                 // % dari ESP32
-let lastLevelCm=null, lastSensorDistance=null, lastVolume=null, lastRemaining=null;
-let pumpActual=null;            // pump_on dari ESP32 (status relay sebenarnya)
-let remotePumpCommand=null;     // pump_command di Supabase
-let pendingPumpCommand=null, pendingPumpSince=0, pumpCommandBusy=false;
-let auto=safeGet("ctAuto","0")==="1";
-let start=Number(safeGet("ctStart","30"))||30;
-let stop=Number(safeGet("ctStop","90"))||90;
-
-let everReceived=false;         // pernah dapat data
-let deviceOnline=false;         // ESP32 masih kirim data
-let sensorState="waiting";
-let lastDataAt=0;               // waktu (browser) data baru terakhir terdeteksi
-let lastUpdatedAt=null;         // nilai updated_at terakhir
-
-// ============================================================
-// SUPABASE
-// ============================================================
-const SUPABASE_URL = 'https://rczihhduxywzcwhtphbw.supabase.co';
-const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_BnzsEVG8ajJYL1ksPJsOSg_G5bntZEl';
-const SUPABASE_TABLE = 'controller_tandon_data';
-const HISTORY_TABLE = 'controller_tandon_history';
-const DEVICE_ID = 'tandon-01';
-const SUPABASE_POLL_MS = 2000;
-const OFFLINE_AFTER_MS = 15000;   // ESP32 kirim tiap 2 dtk; 15 dtk tanpa data = offline
-const PUMP_PENDING_TIMEOUT_MS = 10000;
-
-const SB_HEADERS = {
-  'Accept':'application/json',
-  'apikey':SUPABASE_PUBLISHABLE_KEY,
-  'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY
+// =====================================================================
+const S = {
+  data:null, cfg:null, lastStamp:null, lastChange:0,
+  pending:null, estimate:null, usage:[], events:[],
+  draft:null, brand:null, dirtyAuto:false, dirtyGap:false
 };
+const isOnline = () => S.lastChange && (Date.now() - S.lastChange < OFFLINE_MS);
 
-// ============================================================
-// NAVIGASI
-// ============================================================
-function showPage(id,btn){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  $(id).classList.add('active');
-  document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
-  if(btn) btn.classList.add('active');
-  $('pageTitle').textContent=T()[id]||id;
-}
-function openTree(id){ const e=$(id); if(e) e.classList.toggle('open'); }
+// =====================================================================
+// BERANDA
+// =====================================================================
+function renderHome(){
+  const d = S.data, c = S.cfg, online = isOnline();
 
-// ============================================================
-// PROFIL TANDON (hanya tampilan)
-// ============================================================
-function selectTank(brand,family,model,cap,height,diameter){
-  tank={brand,family,model,cap,height,diameter};
-  updateTankMeta();
-  alert(T().tankProfile+": "+brand+" "+model+" — "+cap.toLocaleString("id-ID")+" L");
-}
-function saveCustom(){
-  const cap=Number($('customCap').value), height=Number($('customHeight').value);
-  if(!cap||!height){ alert(T().fillTank); return; }
-  tank={brand:"Custom",family:"Custom Tank",model:"CUSTOM",cap,height,diameter:"—"};
-  updateTankMeta();
-  alert(T().customSaved);
-}
-function updateTankMeta(){
-  $('selectedLabel').textContent=`${tank.brand} • ${tank.family} • ${tank.model} • ${Number(tank.cap).toLocaleString('id-ID')} L`;
-  $('capValue').textContent=Number(tank.cap||0).toLocaleString('id-ID')+' L';
-  $('heightValue').textContent=Number(tank.height||0).toFixed(1)+' cm';
-}
+  const pill = $('connPill');
+  pill.className = 'pill ' + (!d ? 'wait' : online ? 'ok' : 'bad');
+  $('connText').textContent = !d ? t('connecting') : online ? t('online') : t('offline');
 
-// ============================================================
-// TAMPILAN LEVEL
-// ============================================================
-function updateLevel(){
-  if(level===null) return;
-  const pct=level.toFixed(1)+"%";
-  const vol=(lastVolume!=null)?lastVolume:tank.cap*level/100;
-  const cm=(lastLevelCm!=null)?lastLevelCm:tank.height*level/100;
-  const rem=(lastRemaining!=null)?lastRemaining:Math.max(0,tank.cap-vol);
+  if (c) $('tankLabel').textContent = `${c.tank_brand || ''} ${c.tank_model || ''}, ${nf(c.capacity_liters)} L`;
 
-  $('levelKpi').textContent=pct;
-  $('tankPct').textContent=pct;
-  $('volumeKpi').textContent=fmtL(vol);
-  $('tankLiters').textContent=fmtL(vol);
-  $('cmValue').innerHTML=Number(cm).toFixed(1)+' <span class="unit">cm</span>';
-  $('distanceValue').textContent=lastSensorDistance==null?'—':Number(lastSensorDistance).toFixed(1)+' cm';
-  $('remainingValue').textContent=fmtL(rem);
-  $('water').style.height=level+"%";
-  $('meter').style.width=level+"%";
-}
+  const valid = d && !d.sensor_error && d.level_percent != null;
+  const pct = valid ? clamp(+d.level_percent, 0, 100) : null;
+  const usable = valid && d.usable_liters ? +d.usable_liters : cfgUsable();
+  const vol = valid ? +d.volume_liters : null;
 
-function updateSystemStatus(){
-  const t=T();
-  const box=$('systemStatus'), top=$('systemStatusText'), sensor=$('sensorKpi'), tankStatus=$('tankStatus');
-  box.classList.remove('wait','ok','error');
-  sensor.classList.remove('ok','warn','error');
-  tankStatus.classList.remove('ok','warn','error');
+  const water = $('water');
+  water.style.height = (pct ?? 0) + '%';
+  water.classList.toggle('empty', !pct || pct < 1);
+  $('pctBig').textContent = pct == null ? '—' : nf(pct) + '%';
+  $('litersBig').textContent = vol == null ? '—' : nf(vol);
+  $('ofCap').textContent = usable ? t('of_capacity', {cap: nf(usable)}) : '';
+  $('barFill').style.width = (pct ?? 0) + '%';
+  $('emptyL').textContent = vol == null ? '—' : nf(Math.max(0, usable - vol)) + ' L';
+  $('levelCm').textContent = valid ? nf(d.level_cm, 1) + ' cm' : '—';
+  $('lastSeen').textContent = S.lastChange ? new Date(S.lastChange).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
+  $('rssi').textContent = d && d.wifi_rssi != null ? d.wifi_rssi + ' dBm' : '—';
 
-  if(!everReceived){
-    box.classList.add('wait'); top.textContent=t.waitingData;
-    sensor.classList.add('warn'); sensor.textContent=t.waiting;
-    tankStatus.classList.add('warn'); tankStatus.textContent=t.waitingData;
-    return;
+  // garis batas nyala/mati di gambar tandon
+  const auto = c && c.mode === 'auto';
+  for (const [id, val, key] of [['markStart', c && c.start_percent, 'mk_start'], ['markStop', c && c.stop_percent, 'mk_stop']]){
+    const m = $(id);
+    m.hidden = !auto;
+    if (auto){ m.style.bottom = val + '%'; m.firstElementChild.textContent = t(key, {p: nf(val)}); }
   }
-  if(!deviceOnline){
-    box.classList.add('error'); top.textContent=t.offline;
-    sensor.classList.add('warn'); sensor.textContent=t.waiting;
-    tankStatus.classList.add('error'); tankStatus.textContent=t.offline;
-    return;
+
+  // status dalam kalimat sederhana
+  let st = 'info', txt;
+  if (!d) txt = t('waiting');
+  else if (!online) { st = 'bad'; txt = t('device_offline'); }
+  else if (d.sensor_error) { st = 'bad'; txt = t('sensor_err'); }
+  else if (d.pump_on) { st = 'info'; txt = t('status_filling'); }
+  else if (c && pct >= Math.min(95, c.stop_percent)) { st = 'ok'; txt = t('status_full'); }
+  else if (pct <= Math.max(15, c ? c.start_percent : 15)) { st = 'warn'; txt = t('status_low'); }
+  else { st = 'ok'; txt = t('status_ok'); }
+  const se = $('stateText'); se.className = 'state ' + (st === 'ok' ? '' : st); se.textContent = txt;
+
+  $('estText').textContent = estimateText(online, d, vol);
+
+  // pompa
+  const on = !!(d && d.pump_on);
+  $('lamp').classList.toggle('on', on && online);
+  $('pumpText').textContent = !d ? '—' : (on ? t('pump_on') : t('pump_off'));
+  $('modeAuto').classList.toggle('active', !!auto);
+  $('modeManual').classList.toggle('active', !!c && !auto);
+  $('modeDesc').textContent = !c ? '' : auto
+      ? t('mode_auto_desc', {start: nf(c.start_percent)+'% ('+nf(c.start_percent/100*cfgUsable())+' L)', stop: nf(c.stop_percent)+'% ('+nf(c.stop_percent/100*cfgUsable())+' L)'})
+      : t('mode_manual_desc');
+  const lock = !c || auto || !online || !!S.pending;
+  $('btnOn').disabled = lock || on;
+  $('btnOff').disabled = lock || !on;
+
+  // alarm
+  const box = $('alarmBox');
+  const alarm = d && online ? d.alarm : '';
+  box.hidden = !alarm;
+  if (alarm){
+    $('alarmText').textContent = t('alarm_' + alarm);
+    $('alarmReset').hidden = alarm === 'SENSOR';
   }
-  if(sensorState==='error'){
-    box.classList.add('error'); top.textContent=t.sensorError;
-    sensor.classList.add('error'); sensor.textContent=t.sensorError;
-    tankStatus.classList.add('error'); tankStatus.textContent=t.sensorError;
-    return;
-  }
-  box.classList.add('ok'); top.textContent=t.safe;
-  sensor.classList.add('ok'); sensor.textContent=t.normal;
-  tankStatus.classList.add('ok'); tankStatus.textContent=t.safe;
 }
 
-// ============================================================
-// TAMPILAN POMPA
-// ============================================================
-function renderPump(){
-  const t=T();
-  const k=$('pumpKpi'), st=$('pumpState'), dot=$('pumpDot');
-  dot.classList.remove('on','pending');
-
-  if(pendingPumpCommand!==null){
-    st.textContent=pendingPumpCommand?t.turningOn:t.turningOff;
-    dot.classList.add('pending');
-  }else if(pumpActual===null){
-    st.textContent='—';
-  }else{
-    st.textContent=pumpActual?t.pumpOn:t.pumpOff;
-    if(pumpActual) dot.classList.add('on');
-  }
-  k.textContent=pumpActual===null?'—':(pumpActual?t.on:t.off);
-
-  $('btnPumpOn').disabled=pumpCommandBusy;
-  $('btnPumpOff').disabled=pumpCommandBusy;
+function estimateText(online, d, vol){
+  if (!online || !d || vol == null) return '—';
+  if (d.pump_on) return t('est_filling');
+  const e = S.estimate;
+  if (!e || e.kind === 'unknown') return t('est_unknown');
+  if (e.kind === 'long') return t('est_long');
+  const h = vol / e.rate;
+  if (h > 48) return t('est_long');
+  if (h >= 24) return t('est_days', {d: nf(h/24, 1)});
+  return t('est_hours', {h: nf(h, h < 10 ? 1 : 0)});
 }
 
-// ============================================================
-// TERIMA DATA DARI SUPABASE
-// ============================================================
-function receiveESPData(data, isFresh){
-  data=data||{};
-
-  if(isFresh){
-    everReceived=true;
-    deviceOnline=true;
-    lastDataAt=Date.now();
-  }
-
-  sensorState=(data.sensor_error===true)?'error':'ok';
-
-  const num=v=>Number.isFinite(Number(v))&&v!==null?Number(v):null;
-  const lp=num(data.level_percent); if(lp!==null) level=Math.max(0,Math.min(100,lp));
-  const lc=num(data.level_cm); if(lc!==null) lastLevelCm=lc;
-  const dc=num(data.distance_cm); if(dc!==null) lastSensorDistance=dc;
-  const vl=num(data.volume_liters); if(vl!==null) lastVolume=vl;
-  const rl=num(data.remaining_liters); if(rl!==null) lastRemaining=rl;
-  const cl=num(data.capacity_liters); if(cl!==null) tank.cap=cl;
-  const th=num(data.tank_height_cm); if(th!==null) tank.height=th;
-
-  if(typeof data.pump_command==='boolean' && !pumpCommandBusy){
-    remotePumpCommand=data.pump_command;
-  }
-
-  if(typeof data.pump_on==='boolean'){
-    pumpActual=data.pump_on;
-  }
-
-  // Selesaikan status "MENGHIDUPKAN..." / "MEMATIKAN..."
-  if(pendingPumpCommand!==null && !pumpCommandBusy){
-    if(pumpActual===pendingPumpCommand || Date.now()-pendingPumpSince>PUMP_PENDING_TIMEOUT_MS){
-      pendingPumpCommand=null;
-      pendingPumpSince=0;
-    }
-  }
-
-  if(data.updated_at){
-    $('usageLastUpdate').textContent=new Date(data.updated_at).toLocaleTimeString('id-ID');
-  }
-
-  updateTankMeta();
-  updateLevel();
-  updateSystemStatus();
-  renderPump();
-  autoLogic();
-}
-
-let supabasePollBusy=false;
-async function pollSupabase(){
-  if(supabasePollBusy) return;
-  supabasePollBusy=true;
+async function pollData(){
   try{
-    const url=SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+
-      '?select=device_id,distance_cm,level_cm,level_percent,volume_liters,remaining_liters,capacity_liters,tank_height_cm,pump_on,sensor_error,wifi_rssi,pump_command,updated_at'+
-      '&device_id=eq.'+encodeURIComponent(DEVICE_ID)+'&limit=1';
-
-    const res=await fetch(url,{method:'GET',cache:'no-store',headers:SB_HEADERS});
-    if(!res.ok) throw new Error('Supabase HTTP '+res.status);
-    const rows=await res.json();
-    if(!Array.isArray(rows)||!rows.length) return;
-
-    const row=rows[0];
-    let fresh;
-
-    if(!row.updated_at){
-      // Tidak ada updated_at: anggap selalu baru (cara lama)
-      fresh=true;
-    }else if(lastUpdatedAt===null){
-      // Poll pertama: cek umur data
-      fresh=(Date.now()-Date.parse(row.updated_at))<OFFLINE_AFTER_MS;
-    }else{
-      // Data baru jika updated_at berubah
-      fresh=(row.updated_at!==lastUpdatedAt);
-    }
-    lastUpdatedAt=row.updated_at||null;
-
-    // Tampilkan nilai terakhir walaupun perangkat offline
-    if(!fresh && !everReceived) everReceived=true;
-
-    receiveESPData(row,fresh);
-  }catch(e){
-    console.warn('Supabase:',e.message);
-  }finally{
-    supabasePollBusy=false;
-  }
-}
-
-// Cek perangkat offline
-setInterval(function(){
-  const wasOnline=deviceOnline;
-  deviceOnline=lastDataAt>0 && (Date.now()-lastDataAt)<OFFLINE_AFTER_MS;
-  if(wasOnline!==deviceOnline){ updateSystemStatus(); }
-},1000);
-
-// ============================================================
-// PERINTAH POMPA
-// ============================================================
-async function syncPumpToSupabase(value){
-  if(pumpCommandBusy) return;
-
-  pumpCommandBusy=true;
-  pendingPumpCommand=!!value;
-  pendingPumpSince=Date.now();
-  renderPump();
-
-  const url=SUPABASE_URL+'/rest/v1/'+SUPABASE_TABLE+'?device_id=eq.'+encodeURIComponent(DEVICE_ID);
-
-  try{
-    const res=await fetch(url,{
-      method:'PATCH',
-      cache:'no-store',
-      headers:Object.assign({'Content-Type':'application/json','Prefer':'return=minimal'},SB_HEADERS),
-      // updated_at TIDAK dikirim: kolom itu khusus penanda data dari ESP32
-      body:JSON.stringify({pump_command:!!value})
-    });
-
-    const text=await res.text();
-    if(!res.ok) throw new Error('HTTP '+res.status+' '+text);
-
-    remotePumpCommand=!!value;
-    pendingPumpSince=Date.now();
-    console.log('PUMP COMMAND SENT:',value?'ON':'OFF');
-  }catch(err){
-    console.error('PUMP COMMAND ERROR:',err);
-    pendingPumpCommand=null;
-    pendingPumpSince=0;
-    alert(T().pumpSendFailed+'\n\n'+err.message);
-  }finally{
-    pumpCommandBusy=false;
-    renderPump();
-  }
-}
-
-function setPump(v){
-  syncPumpToSupabase(!!v);
-}
-
-// ============================================================
-// MODE OTOMATIS
-// ============================================================
-function renderAuto(){
-  const t=T();
-  $('autoToggle').classList.toggle('on',auto);
-  $('modeLabel').textContent=auto?t.auto:t.manual;
-  $('startText').textContent=start+"%";
-  $('stopText').textContent=stop+"%";
-  $('startInput').value=start;
-  $('stopInput').value=stop;
-}
-function toggleAuto(){
-  auto=!auto;
-  safeSet("ctAuto",auto?"1":"0");
-  renderAuto();
-  autoLogic();
-}
-function autoLogic(){
-  if(!auto || !deviceOnline || sensorState!=='ok' || level===null) return;
-  if(pumpCommandBusy || pendingPumpCommand!==null) return;
-
-  // Hanya kirim perintah jika berbeda dari perintah sekarang
-  if(level<=start && remotePumpCommand!==true) setPump(true);
-  else if(level>=stop && remotePumpCommand!==false) setPump(false);
-}
-function saveAuto(){
-  const s=Number($('startInput').value), e=Number($('stopInput').value);
-  if(!s||!e||s>=e){ alert(T().invalidThreshold); return; }
-  start=s; stop=e;
-  safeSet("ctStart",String(start));
-  safeSet("ctStop",String(stop));
-  renderAuto();
-  autoLogic();
-  alert(T().settingsSaved);
-}
-
-// ============================================================
-// RIWAYAT
-// Data diambil bertahap: pertama sekali sejak awal bulan / 7 hari,
-// lalu hanya data BARU saja (hemat kuota).
-// ============================================================
-let historyRows=[];
-let historyLastTs=null;
-let historyBusy=false;
-
-function historyRangeStart(){
-  const now=new Date();
-  const todayStart=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  const weekStart=new Date(todayStart); weekStart.setDate(weekStart.getDate()-6);
-  const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
-  return {todayStart,weekStart,monthStart,rangeStart:(weekStart<monthStart?weekStart:monthStart)};
-}
-
-async function fetchHistorySince(sinceIso){
-  const PAGE=1000, out=[];
-  for(let page=0;page<100;page++){
-    const url=SUPABASE_URL+'/rest/v1/'+HISTORY_TABLE+
-      '?select=created_at,volume_liters,pump_on'+
-      '&device_id=eq.'+encodeURIComponent(DEVICE_ID)+
-      '&created_at=gt.'+encodeURIComponent(sinceIso)+
-      '&order=created_at.asc&limit='+PAGE+'&offset='+(page*PAGE);
-    const res=await fetch(url,{method:'GET',cache:'no-store',headers:SB_HEADERS});
-    if(!res.ok) throw new Error('Supabase history HTTP '+res.status);
-    const rows=await res.json();
-    if(!Array.isArray(rows)) break;
-    out.push(...rows);
-    if(rows.length<PAGE) break;
-  }
-  return out;
-}
-
-async function loadRealHistory(){
-  if(historyBusy) return;
-  historyBusy=true;
-  try{
-    const r=historyRangeStart();
-    const since=historyLastTs||r.rangeStart.toISOString();
-    const newRows=await fetchHistorySince(since);
-
-    if(newRows.length){
-      historyRows.push(...newRows);
-      historyLastTs=newRows[newRows.length-1].created_at;
-    }
-
-    // Buang data yang sudah di luar rentang
-    historyRows=historyRows.filter(x=>new Date(x.created_at)>=r.rangeStart);
-
-    renderHistory(r);
-  }catch(e){
-    console.warn('HISTORY:',e.message);
-  }finally{
-    historyBusy=false;
-  }
-}
-
-function renderHistory(r){
-  const t=T();
-  const rows=historyRows.filter(x=>Number.isFinite(Number(x.volume_liters)));
-
-  // Ambang anti-noise: sensor bergetar ±0,5 cm = beberapa liter.
-  // Penurunan baru dihitung setelah melewati ambang ini.
-  const TH=Math.max(5,(Number(tank.cap)||1000)*0.005);
-
-  const days=[];
-  for(let i=0;i<7;i++){ const d=new Date(r.weekStart); d.setDate(d.getDate()+i); days.push({date:d,used:0}); }
-
-  let usedToday=0, usedWeek=0, usedMonth=0;
-  let cyclesToday=0, cyclesWeek=0, cyclesMonth=0;
-  let anchor=rows.length?Number(rows[0].volume_liters):0;
-
-  for(let i=1;i<rows.length;i++){
-    const curr=Number(rows[i].volume_liters);
-    const dt=new Date(rows[i].created_at);
-
-    // Pemakaian (penurunan volume)
-    if(anchor-curr>=TH){
-      const used=anchor-curr;
-      if(dt>=r.todayStart) usedToday+=used;
-      if(dt>=r.weekStart){
-        usedWeek+=used;
-        const idx=Math.floor((new Date(dt.getFullYear(),dt.getMonth(),dt.getDate())-r.weekStart)/86400000);
-        if(days[idx]) days[idx].used+=used;
+    const rows = await api(T_DATA + '?select=*&' + dev);
+    const d = rows && rows[0];
+    if (d){
+      if (d.updated_at !== S.lastStamp){
+        const first = S.lastStamp === null;
+        S.lastStamp = d.updated_at;
+        S.lastChange = first ? Math.min(Date.now(), Date.parse(d.updated_at)) : Date.now();
       }
-      if(dt>=r.monthStart) usedMonth+=used;
-      anchor=curr;
-    }else if(curr-anchor>=TH){
-      // Pengisian -> geser titik acuan
-      anchor=curr;
+      S.data = d;
+      checkPending();
     }
+  }catch(e){ console.warn('data:', e.message); }
+  renderHome();
+}
 
-    // Siklus pompa = perubahan OFF -> ON
-    if(rows[i].pump_on===true && rows[i-1].pump_on!==true){
-      if(dt>=r.todayStart) cyclesToday++;
-      if(dt>=r.weekStart) cyclesWeek++;
-      if(dt>=r.monthStart) cyclesMonth++;
-    }
+async function sendCommand(on){
+  if (!S.cfg || S.cfg.mode !== 'manual'){ note('cmdNote', t('manual_only'), 'err'); return; }
+  note('cmdNote', t('sending'));
+  try{
+    const seq = await api('rpc/tandon_send_command', {method:'POST', body:{p_device:DEVICE_ID, p_on:on}});
+    S.pending = {seq:Number(seq), on, since:Date.now()};
+    note('cmdNote', t('waiting_device'));
+  }catch(e){
+    S.pending = null;
+    note('cmdNote', t('cmd_fail'), 'err');
+  }
+  renderHome();
+}
+
+function checkPending(){
+  const p = S.pending;
+  if (!p || !S.data) return;
+  if (Number(S.data.applied_cmd_seq) >= p.seq && S.data.pump_on === p.on){
+    S.pending = null; note('cmdNote', '');
+  } else if (Number(S.data.applied_cmd_seq) >= p.seq && Date.now() - p.since > 6000){
+    S.pending = null; note('cmdNote', '');   // diterima tapi ditahan pengaman; alarm akan tampil
+  } else if (Date.now() - p.since > 15000){
+    S.pending = null; note('cmdNote', t('cmd_timeout'), 'err');
+  }
+}
+
+async function setMode(mode){
+  if (!S.cfg || S.cfg.mode === mode) return;
+  const prev = S.cfg.mode;
+  S.cfg.mode = mode; renderHome();
+  try{
+    await api(T_CFG + '?' + dev, {method:'PATCH', body:{mode}, prefer:'return=minimal'});
+    note('cmdNote', '');
+  }catch(e){
+    S.cfg.mode = prev; note('cmdNote', t('save_fail'), 'err'); renderHome();
+  }
+}
+
+async function resetAlarm(){
+  try{
+    await api('rpc/tandon_reset_alarm', {method:'POST', body:{p_device:DEVICE_ID}});
+    note('cmdNote', t('waiting_device'));
+  }catch(e){ note('cmdNote', t('save_fail'), 'err'); }
+}
+
+// =====================================================================
+// PENGATURAN (dibaca dari Supabase)
+// =====================================================================
+async function loadConfig(force){
+  try{
+    const rows = await api(T_CFG + '?select=*&' + dev);
+    if (!rows || !rows[0]) return;
+    S.cfg = rows[0];
+    if (force || !S.dirtyAuto) fillAuto();
+    if (force || !S.dirtyGap) $('gapInput').value = S.cfg.full_gap_cm;
+    if (!S.brand) S.brand = TANKS[S.cfg.tank_brand] ? S.cfg.tank_brand : CUSTOM;
+    renderTankPage();
+    renderHome();
+  }catch(e){ console.warn('config:', e.message); }
+}
+
+// =====================================================================
+// HALAMAN TANDON
+// =====================================================================
+function tankChoice(){
+  if (S.draft) return S.draft;
+  const c = S.cfg;
+  return c ? {brand:c.tank_brand, model:c.tank_model, cap:+c.capacity_liters, height:+c.tank_height_cm} : null;
+}
+
+function renderTankPage(){
+  const chips = $('brandChips'); chips.innerHTML = '';
+  for (const b of [...Object.keys(TANKS), CUSTOM]){
+    const el = document.createElement('button');
+    el.className = 'chip' + (S.brand === b ? ' active' : '');
+    el.textContent = b === CUSTOM ? t('tank_custom') : b;
+    el.onclick = () => { S.brand = b; if (b === CUSTOM) updateCustomDraft(); renderTankPage(); };
+    chips.appendChild(el);
   }
 
-  $('usageUsed').textContent=fmtL(usedToday);
-  $('usageTodayCard').textContent=fmtL(usedToday);
-  $('usageWeek').textContent=(usedWeek/1000).toFixed(2)+' kL';
-  $('usageMonth').textContent=(usedMonth/1000).toFixed(2)+' kL';
-  $('usageCycles').textContent=cyclesToday+'×';
-  $('usageCyclesBig').textContent=cyclesMonth+'×';
-  $('usageTodayCycles').textContent=cyclesToday+'×';
-  $('usageWeekCycles').textContent=cyclesWeek+'×';
-  $('usageMonthCycles').textContent=cyclesMonth+'×';
+  const cur = tankChoice();
+  const list = $('modelList'); list.innerHTML = '';
+  $('customBox').hidden = S.brand !== CUSTOM;
+  if (S.brand && S.brand !== CUSTOM){
+    for (const [model, cap, h] of TANKS[S.brand]){
+      const el = document.createElement('button');
+      const active = cur && cur.brand === S.brand && cur.model === model;
+      el.className = 'model' + (active ? ' active' : '');
+      el.innerHTML = `<b>${model}</b><span>${nf(cap)} L, ${nf(h,1)} cm</span>`;
+      el.onclick = () => { S.draft = {brand:S.brand, model, cap, height:h}; note('tankNote',''); renderTankPage(); };
+      list.appendChild(el);
+    }
+  } else if (S.brand === CUSTOM && cur && cur.brand === 'Custom'){
+    if (!$('customCap').value) $('customCap').value = cur.cap;
+    if (!$('customHeight').value) $('customHeight').value = cur.height;
+  }
 
-  // Grafik 7 hari
-  const dayKeys=['sun','mon','tue','wed','thu','fri','sat'];
-  const max=Math.max(1,...days.map(d=>d.used));
-  $('usageChart').innerHTML=days.map(d=>
-    `<div class="bar" style="height:${Math.max(3,d.used/max*100)}%" title="${fmtL(d.used)}"></div>`).join('');
-  $('usageChartDays').innerHTML=days.map(d=>`<span>${t[dayKeys[d.date.getDay()]]}</span>`).join('');
+  const gap = +$('gapInput').value || 25;
+  const sum = $('tankSummary');
+  if (!cur){ sum.innerHTML = ''; return; }
+  sum.innerHTML =
+    `<div><span>${t('sum_model')}</span><b>${cur.brand} ${cur.model}</b></div>
+     <div><span>${t('sum_cap')}</span><b>${nf(cur.cap)} L</b></div>
+     <div><span>${t('sum_height')}</span><b>${nf(cur.height,1)} cm</b></div>
+     <div><span>${t('sum_usable')}</span><b>± ${nf(usableOf(cur.cap, cur.height, gap))} L</b></div>`;
 }
 
-// ============================================================
+function updateCustomDraft(){
+  const cap = +$('customCap').value, h = +$('customHeight').value;
+  S.draft = (cap > 0 && h > 0) ? {brand:'Custom', model:'Custom', cap, height:h} : null;
+}
+
+async function saveTank(){
+  if (S.brand === CUSTOM) updateCustomDraft();
+  const cur = tankChoice();
+  const gap = +$('gapInput').value;
+  if (!cur || !(cur.cap > 0) || !(cur.height > 40)){ note('tankNote', t('fill_tank'), 'err'); return; }
+  if (!(gap >= 20 && gap <= 60) || cur.height - gap < 20){ note('tankNote', t('gap_hint'), 'err'); return; }
+  try{
+    await api(T_CFG + '?' + dev, {method:'PATCH', prefer:'return=minimal', body:{
+      tank_brand:cur.brand, tank_model:cur.model, capacity_liters:cur.cap, tank_height_cm:cur.height, full_gap_cm:gap
+    }});
+    S.draft = null; S.dirtyGap = false;
+    note('tankNote', t('saved'), 'good');
+    await loadConfig(true);
+  }catch(e){ note('tankNote', t('save_fail'), 'err'); console.warn(e); }
+}
+
+// =====================================================================
+// ATUR POMPA: persen <-> liter saling terhubung
+// =====================================================================
+function fillAuto(){
+  const c = S.cfg; if (!c) return;
+  setThr('start', +c.start_percent);
+  setThr('stop',  +c.stop_percent);
+  $('dryMin').value = c.dry_run_minutes;
+  S.dirtyAuto = false;
+  drawPreview();
+}
+
+function setThr(kind, pct){
+  const u = cfgUsable();
+  $(kind+'Pct').value = Math.round(pct*10)/10;
+  $(kind+'Range').value = pct;
+  $(kind+'L').value = Math.round(pct/100*u);
+}
+
+function onThr(kind, src){
+  const u = cfgUsable();
+  let p;
+  if (src === 'L'){
+    p = u > 0 ? (+$(kind+'L').value) / u * 100 : 0;
+    p = Math.round(p*10)/10;
+    $(kind+'Pct').value = p;
+    $(kind+'Range').value = p;
+  } else {
+    p = src === 'range' ? +$(kind+'Range').value : +$(kind+'Pct').value;
+    if (src === 'range') $(kind+'Pct').value = p; else $(kind+'Range').value = p;
+    $(kind+'L').value = Math.round(p/100*u);
+  }
+  S.dirtyAuto = true;
+  note('autoNote','');
+  drawPreview();
+}
+
+function drawPreview(){
+  const s = clamp(+$('startPct').value || 0, 0, 100), e = clamp(+$('stopPct').value || 0, 0, 100);
+  $('pvBand').style.left = s + '%';
+  $('pvBand').style.width = Math.max(0, e - s) + '%';
+  $('pvS').style.left = s + '%';
+  $('pvE').style.left = e + '%';
+  $('usableInfo').textContent = t('usable_info', {u: nf(cfgUsable())});
+  $('pvText').textContent = e > s ? t('pv_text', {l: nf((e - s)/100*cfgUsable())}) : '';
+}
+
+async function saveAuto(){
+  const s = +$('startPct').value, e = +$('stopPct').value, dry = Math.round(+$('dryMin').value);
+  if (!(s >= 5 && s <= 90 && e >= 15 && e <= 95 && e - s >= 10)){ note('autoNote', t('threshold_err'), 'err'); return; }
+  if (!(dry >= 3 && dry <= 60)){ $('dryMin').value = clamp(dry || 10, 3, 60); return; }
+  try{
+    await api(T_CFG + '?' + dev, {method:'PATCH', prefer:'return=minimal',
+      body:{start_percent:s, stop_percent:e, dry_run_minutes:dry}});
+    S.dirtyAuto = false;
+    note('autoNote', t('saved'), 'good');
+    await loadConfig(true);
+  }catch(err){ note('autoNote', t('save_fail'), 'err'); console.warn(err); }
+}
+
+// =====================================================================
+// FITUR: PERKIRAAN AIR HABIS (dari pemakaian 6 jam terakhir)
+// =====================================================================
+async function loadEstimate(){
+  try{
+    const since = new Date(Date.now() - 6*3600e3).toISOString();
+    const rows = await api(`${T_HIST}?select=created_at,volume_liters,sensor_error&${dev}&created_at=gte.${encodeURIComponent(since)}&order=created_at.asc&limit=1000`);
+    const pts = (rows || []).filter(r => !r.sensor_error && Number.isFinite(+r.volume_liters));
+    if (pts.length < 20){ S.estimate = {kind:'unknown'}; return; }
+
+    const B = new Map();
+    for (const r of pts){
+      const k = Math.floor(Date.parse(r.created_at) / 600000);
+      const b = B.get(k) || {s:0, n:0}; b.s += +r.volume_liters; b.n++; B.set(k, b);
+    }
+    const keys = [...B.keys()].sort((a,b) => a - b);
+    const dead = Math.max(3, cfgUsable() * 0.005);
+    let used = 0;
+    for (let i = 1; i < keys.length; i++){
+      if (keys[i] - keys[i-1] > 3) continue;
+      const a = B.get(keys[i-1]), b = B.get(keys[i]);
+      const diff = a.s/a.n - b.s/b.n;
+      if (diff > dead) used += diff;
+    }
+    const hours = (Date.parse(pts[pts.length-1].created_at) - Date.parse(pts[0].created_at)) / 3600e3;
+    const rate = hours > 0.5 ? used / hours : 0;
+    S.estimate = rate < 1 ? {kind:'long'} : {kind:'rate', rate};
+  }catch(e){ console.warn('estimate:', e.message); }
+  renderHome();
+}
+
+// =====================================================================
+// RIWAYAT
+// =====================================================================
+async function loadHistory(){
+  try{
+    const [usage, events] = await Promise.all([
+      api('rpc/tandon_usage_daily', {method:'POST', body:{p_device:DEVICE_ID, p_days:31}}),
+      api(`${T_EV}?select=created_at,type,reason,level_percent&${dev}&order=created_at.desc&limit=15`)
+    ]);
+    S.usage = usage || []; S.events = events || [];
+  }catch(e){ console.warn('history:', e.message); }
+  renderHistory();
+}
+
+function renderHistory(){
+  const byDay = new Map(S.usage.map(r => [r.day, r]));
+  const today = witaDate(new Date());
+  const base = new Date(today + 'T12:00:00Z');
+  const days = [];
+  for (let i = 6; i >= 0; i--){
+    const dt = new Date(base.getTime() - i*86400e3);
+    days.push({key: dt.toISOString().slice(0,10), dow: dt.getUTCDay()});
+  }
+
+  const sum = rows => rows.reduce((a, r) => ({
+    used: a.used + (+r.used_liters || 0), min: a.min + (+r.pump_minutes || 0), n: a.n + (+r.pump_starts || 0)
+  }), {used:0, min:0, n:0});
+  const rToday = sum(S.usage.filter(r => r.day === today));
+  const rWeek  = sum(S.usage.filter(r => r.day >= days[0].key));
+  const rMonth = sum(S.usage.filter(r => r.day.slice(0,7) === today.slice(0,7)));
+
+  for (const [id, r] of [['Today', rToday], ['Week', rWeek], ['Month', rMonth]]){
+    $('u'+id).textContent = nf(r.used) + ' L';
+    $('s'+id).textContent = t('pump_summary', {n: nf(r.n), m: fmtDuration(r.min)});
+  }
+
+  const names = t('days');
+  const max = Math.max(1, ...days.map(d => +(byDay.get(d.key)?.used_liters || 0)));
+  $('chart').innerHTML = days.map(d => {
+    const v = +(byDay.get(d.key)?.used_liters || 0);
+    return `<div class="col${d.key === today ? ' today' : ''}"><b>${v ? nf(v) : ''}</b><i style="height:${Math.max(2, v/max*100)}%"></i><span>${names[d.dow]}</span></div>`;
+  }).join('');
+
+  const icons = {PUMP_ON:'▶️',PUMP_OFF:'⏹',DRY_RUN:'⚠️',SENSOR_ERROR:'⚠️',SENSOR_OK:'✅',OVERFLOW_STOP:'🛑',LOW_WATER:'💧',BOOT:'🔌'};
+  const ul = $('events');
+  if (!S.events.length){ ul.innerHTML = `<li><span class="et">${t('no_data')}</span></li>`; return; }
+  ul.innerHTML = S.events.map(e => {
+    const when = new Date(e.created_at).toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+    const sub = [e.reason ? t('r_'+e.reason) : '', e.level_percent != null ? nf(e.level_percent)+'%' : ''].filter(Boolean).join(', ');
+    return `<li><span class="ei">${icons[e.type] || '•'}</span><span class="et">${t('ev_'+e.type)}<small>${sub}</small></span><time>${when}</time></li>`;
+  }).join('');
+}
+
+// =====================================================================
 // BAHASA
-// ============================================================
-function setLanguage(lang,el){
-  if(!translations[lang]) lang='id';
-  safeSet("controllerTandonLanguage",lang);
-  const t=T();
-  document.querySelectorAll("[data-i18n]").forEach(node=>{ const k=node.getAttribute("data-i18n"); if(t[k]) node.textContent=t[k]; });
-  document.querySelectorAll("[data-i18n-placeholder]").forEach(node=>{ const k=node.getAttribute("data-i18n-placeholder"); if(t[k]) node.placeholder=t[k]; });
-  document.querySelectorAll(".langOption").forEach(x=>x.classList.toggle("activeLang",x.dataset.lang===lang));
-  document.documentElement.lang=lang;
-  document.documentElement.classList.toggle("rtl",lang==="ar");
-
-  const active=document.querySelector(".page.active")?.id||"dashboard";
-  $("pageTitle").textContent=t[active]||active;
-
-  // PENTING: hanya ubah tampilan, JANGAN kirim perintah pompa
-  renderPump();
-  renderAuto();
-  updateSystemStatus();
-  renderHistory(historyRangeStart());
+// =====================================================================
+function renderLangs(){
+  for (const g of ['regional', 'national']){
+    const box = $(g === 'regional' ? 'langRegional' : 'langNational');
+    box.innerHTML = '';
+    for (const l of LANGS.filter(x => x.group === g)){
+      const b = document.createElement('button');
+      b.className = 'lang' + (l.code === LANG ? ' active' : '');
+      b.innerHTML = `<b>${l.name}</b><span>${l.region}</span>`;
+      b.onclick = () => setLang(l.code);
+      box.appendChild(b);
+    }
+  }
 }
 
-// ============================================================
-// START
-// ============================================================
-updateTankMeta();
-setLanguage(currentLang());
+function setLang(code){
+  LANG = code;
+  try { localStorage.setItem('tandonLang', code); } catch(e) {}
+  document.documentElement.lang = code;
+  document.querySelectorAll('[data-i18n]').forEach(n => n.textContent = t(n.dataset.i18n));
+  renderLangs(); renderHome(); renderTankPage(); drawPreview(); renderHistory();
+}
 
-pollSupabase();
-loadRealHistory();
-setInterval(pollSupabase,SUPABASE_POLL_MS);
-setInterval(loadRealHistory,30000);
+// =====================================================================
+// NAVIGASI & EVENT
+// =====================================================================
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'pg-' + b.dataset.page));
+  if (b.dataset.page === 'history') loadHistory();
+  window.scrollTo(0, 0);
+});
+
+$('btnOn').onclick  = () => sendCommand(true);
+$('btnOff').onclick = () => sendCommand(false);
+$('modeAuto').onclick   = () => setMode('auto');
+$('modeManual').onclick = () => setMode('manual');
+$('alarmReset').onclick = resetAlarm;
+$('saveTank').onclick = saveTank;
+$('saveAuto').onclick = saveAuto;
+$('gapInput').oninput = () => { S.dirtyGap = true; renderTankPage(); };
+$('customCap').oninput = $('customHeight').oninput = () => { updateCustomDraft(); renderTankPage(); };
+for (const k of ['start', 'stop']){
+  $(k+'Pct').oninput   = () => onThr(k, 'pct');
+  $(k+'L').oninput     = () => onThr(k, 'L');
+  $(k+'Range').oninput = () => onThr(k, 'range');
+}
+$('dryMin').oninput = () => { S.dirtyAuto = true; };
+
+// =====================================================================
+// MULAI
+// =====================================================================
+setLang(LANG);
+loadConfig(true).then(() => { loadEstimate(); loadHistory(); });
+pollData();
+setInterval(pollData, 2000);
+setInterval(() => loadConfig(false), 15000);
+setInterval(loadEstimate, 60000);
+setInterval(() => { if ($('pg-history').classList.contains('active')) loadHistory(); }, 60000);
+setInterval(renderHome, 5000);   // supaya status "tidak terhubung" muncul walau tanpa data baru
 </script>
 </body>
 </html>
