@@ -485,7 +485,7 @@ bjn:{
   nav_home:'Baranda',nav_tank:'Tandon',nav_pump:'Atur Pompa',nav_history:'Riwayat',nav_lang:'Bahasa',
   online:'Tasambung',offline:'Alat kada tasambung',connecting:'Manyambung…',
   water_in_tank:'Banyu di tandon',of_capacity:'matan {cap} L',level:'Tinggi banyu',empty_space:'Nang masih kosong',
-  last_seen:'Data tarakhir',signal:'Sinyal WiFi',
+  last_seen:'Data paampihan',signal:'Sinyal WiFi',
   estimate:'Kira-kira banyu habis',est_hours:'± {h} jam lagi',est_days:'± {d} hari lagi',est_filling:'lagi diisi',
   est_unknown:'data balum cukup',est_long:'labih matan 2 hari',
   pump_on:'Pompa hidup',pump_off:'Pompa mati',mode_auto:'Otomatis',mode_manual:'Manual',
@@ -494,17 +494,17 @@ bjn:{
   btn_on:'Hidupakan',btn_off:'Matiakan',sending:'Mangirim parintah…',waiting_device:'Mahadang alat manjalanakan parintah…',
   cmd_fail:'Parintah kada takirim. Cek internet.',cmd_timeout:'Alat balum manjawab. Cek listrik wan WiFi alat.',
   manual_only:'Tumbol ini kawa dipakai di mode Manual haja.',
-  status_ok:'Banyu aman',status_low:'Banyu handak habis',status_full:'Tandon sudah pinuh',status_filling:'Lagi mangisi',
+  status_ok:'Banyu aman',status_low:'Banyu handak habis',status_full:'Tandon sudah hibak',status_filling:'Lagi mangisi',
   sensor_err:'Sensor kada tabaca',device_offline:'Alat kada tasambung',waiting:'Mahadang data matan alat…',
   alarm_DRY_RUN:'Pompa dimatiakan karena banyu kada naik. Cek sumur/PDAM atawa pipa.',
   alarm_SENSOR:'Sensor kada tabaca. Pompa dimatiakan supaya aman. Cek kabel sensor.',
-  alarm_OVERFLOW:'Pompa dimatiakan karena tandon sudah pinuh.',
+  alarm_OVERFLOW:'Pompa dimatiakan karena tandon sudah hibak.',
   reset_alarm:'Sudah dicek, hidupakan pulang',
   mk_start:'Hidup {p}%',mk_stop:'Mati {p}%',
   tank_title:'Pilih tandon',tank_desc:'Pilih merek, imbah itu ukuran tandon pian.',tank_custom:'Ukuran surang',
   tank_selected:'Tandon nang dipakai',capacity:'Kapasitas (liter)',height:'Tinggi tandon (cm)',
   height_hint:'Ukur matan sensor sampai ka dasar tandon.',
-  gap:'Jarak sensor ka banyu pinuh (cm)',gap_hint:'Biasanya 25 cm. Sensor kada kawa mambaca labih parak matan 20 cm.',
+  gap:'Jarak sensor ka banyu hibak (cm)',gap_hint:'Biasanya 25 cm. Sensor kada kawa mambaca labih parak matan 20 cm.',
   sum_model:'Model',sum_cap:'Kapasitas',sum_height:'Tinggi',sum_usable:'Isi nang tabaca sensor',
   save:'Simpan',saved:'Sudah tasimpan. Alat mamakai pangaturan hanyar dalam babarapa detik.',save_fail:'Kada tasimpan. Cek internet.',
   fill_tank:'Isi dahulu kapasitas wan tinggi tandon.',
@@ -518,7 +518,7 @@ bjn:{
   pump_summary:'Pompa hidup {n} kali, samunyaan {m}',chart_7d:'Banyu tapakai 7 hari tadi',events:'Catatan kajadian',
   no_data:'Balum ada data.',hours_short:'jam',minutes_short:'menit',
   ev_PUMP_ON:'Pompa hidup',ev_PUMP_OFF:'Pompa mati',ev_DRY_RUN:'Pompa karing, dimatiakan',ev_SENSOR_ERROR:'Sensor kada tabaca',
-  ev_SENSOR_OK:'Sensor normal pulang',ev_OVERFLOW_STOP:'Tandon pinuh, pompa dimatiakan',ev_LOW_WATER:'Banyu handak habis',ev_BOOT:'Alat dihidupakan',
+  ev_SENSOR_OK:'Sensor normal pulang',ev_OVERFLOW_STOP:'Tandon hibak, pompa dimatiakan',ev_LOW_WATER:'Banyu handak habis',ev_BOOT:'Alat dihidupakan',
   r_AUTO:'otomatis',r_MANUAL:'matan tumbol',r_SAFETY:'pangaman',
   lang_title:'Bahasa',lang_desc:'Pilih bahasa nang paling mudah pian pahami.',lang_regional:'Bahasa daerah',lang_national:'Nasional wan internasional',
   days:['Ahd','Snn','Sls','Arb','Kms','Jmt','Sbt']
@@ -1124,7 +1124,7 @@ $('dryMin').oninput = () => { S.dirtyAuto = true; };
 setLang(LANG);
 loadConfig(true).then(() => { loadEstimate(); loadHistory(); });
 pollData();
-setInterval(pollData, 2000);
+setInterval(pollData, 1500);
 setInterval(() => loadConfig(false), 15000);
 setInterval(loadEstimate, 60000);
 setInterval(() => { if ($('pg-history').classList.contains('active')) loadHistory(); }, 60000);
