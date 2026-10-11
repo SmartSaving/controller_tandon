@@ -9,178 +9,281 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* ===================== WARNA (gelap & terang) ===================== */
 :root{
-  --bg:#06131c;--panel:#0c1f2c;--panel2:#0f2738;--line:#1c3a4d;
-  --text:#e9f5fa;--muted:#8fabb8;--water:#2fb6f2;--water2:#7fe0ff;
-  --ok:#3ddc97;--warn:#ffbf5a;--bad:#ff6170;--r:18px;
+  --r:20px;--ok:#2fd18b;--warn:#f5a524;--bad:#ff5c6c;
+  --bg:#06131c;--bg2:#0e3247;--panel:#0c1f2c;--panel2:#10283a;--line:#1d3b4f;
+  --text:#e9f5fa;--muted:#8fabb8;--water:#2fb6f2;--water2:#7fe0ff;--waterDeep:#1478aa;
+  --chip:#0a2433;--input:#061822;--tankEdge:#b8d8e3;--tankBg:#071a25;
+  --shadow:0 12px 32px rgba(0,0,0,.28);--onAccent:#04131b;--soft:rgba(255,255,255,.03);
 }
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    --bg:#e9f3f7;--bg2:#cfe7f2;--panel:#ffffff;--panel2:#f7fbfd;--line:#d3e3ea;
+    --text:#0c2330;--muted:#567180;--water:#1aa3e3;--water2:#5ccdf6;--waterDeep:#0d74a8;
+    --chip:#eef6f9;--input:#f7fbfd;--tankEdge:#7aa9bb;--tankBg:#f1f8fb;
+    --shadow:0 12px 32px rgba(12,35,48,.08);--onAccent:#ffffff;--soft:rgba(12,35,48,.03);
+    --ok:#12a86a;--warn:#c97a00;--bad:#e03445;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#e9f3f7;--bg2:#cfe7f2;--panel:#ffffff;--panel2:#f7fbfd;--line:#d3e3ea;
+  --text:#0c2330;--muted:#567180;--water:#1aa3e3;--water2:#5ccdf6;--waterDeep:#0d74a8;
+  --chip:#eef6f9;--input:#f7fbfd;--tankEdge:#7aa9bb;--tankBg:#f1f8fb;
+  --shadow:0 12px 32px rgba(12,35,48,.08);--onAccent:#ffffff;--soft:rgba(12,35,48,.03);
+  --ok:#12a86a;--warn:#c97a00;--bad:#e03445;
+}
+
 *{box-sizing:border-box}
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 html,body{margin:0;color:var(--text);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
-body{background:radial-gradient(1100px 560px at 85% -10%,#123a52 0,transparent 60%),var(--bg);min-height:100vh;padding-bottom:86px}
-button{font:inherit;cursor:pointer}
+body{background:radial-gradient(1100px 560px at 85% -10%,var(--bg2) 0,transparent 60%),var(--bg);min-height:100vh;padding-bottom:88px;transition:background-color .3s}
+button{font:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:3px solid var(--water2);outline-offset:2px}
-.app{max-width:1080px;margin:0 auto;padding:16px}
+.app{max-width:1120px;margin:0 auto;padding:16px}
 
-/* header */
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+/* ===================== HEADER ===================== */
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
 .brand{display:flex;gap:12px;align-items:center;min-width:0}
-.logo{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(160deg,#1a5a7d,#0d2c3e);font-size:22px}
-h1{font-size:19px;margin:0}
+.logo{flex:none;width:46px;height:46px;border-radius:15px;display:grid;place-items:center;background:linear-gradient(160deg,var(--water),var(--waterDeep));box-shadow:0 6px 18px rgba(26,163,227,.35)}
+.logo svg{width:24px;height:24px}
+h1{font-size:19px;margin:0;letter-spacing:-.2px}
 .brand p{margin:2px 0 0;color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:600;white-space:nowrap}
+.topRight{display:flex;align-items:center;gap:8px}
+.clock{font-size:13px;color:var(--muted);font-weight:700;white-space:nowrap}
+@media(max-width:480px){.clock{display:none}}
+.pill{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:13px;font-weight:700;white-space:nowrap}
 .pill i{width:9px;height:9px;border-radius:50%;background:var(--warn)}
-.pill.ok i{background:var(--ok);box-shadow:0 0 0 4px rgba(61,220,151,.15)}
+.pill.ok i{background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 20%,transparent)}
 .pill.bad i{background:var(--bad)}
+.iconBtn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;font-size:17px}
 
-/* nav */
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(6,19,28,.96);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px))}
-.tabs button{background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border-radius:12px;font-size:11.5px;font-weight:600}
+/* ===================== NAV ===================== */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(5,1fr);background:color-mix(in srgb,var(--bg) 94%,transparent);border-top:1px solid var(--line);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));backdrop-filter:blur(10px)}
+.tabs button{background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 2px;border-radius:14px;font-size:11.5px;font-weight:700}
 .tabs .ic{font-size:20px;line-height:1}
 .tabs button.active{color:var(--text);background:var(--panel2)}
 @media(min-width:860px){
   body{padding-bottom:0}
-  .tabs{position:static;display:flex;gap:6px;background:none;border:0;padding:0;margin-bottom:18px}
+  .tabs{position:static;display:flex;gap:6px;background:none;border:0;padding:0;margin-bottom:18px;backdrop-filter:none}
   .tabs button{flex-direction:row;gap:8px;padding:10px 16px;font-size:14px;border:1px solid transparent}
-  .tabs button.active{border-color:var(--line)}
+  .tabs button.active{border-color:var(--line);background:var(--panel)}
 }
 
-/* layout */
+/* ===================== LAYOUT ===================== */
 .page{display:none}
-.page.active{display:block}
+.page.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.homeGrid{display:grid;gap:14px}
 @media(min-width:860px){
-  #pg-home.active{display:grid;grid-template-columns:1.45fr 1fr;gap:14px;align-items:start}
-  #pg-home .alarm{grid-column:1/-1}
-  #pg-home .card{margin-bottom:0}
+  .homeGrid{grid-template-columns:1.45fr 1fr;align-items:start}
+  .homeGrid .card{margin-bottom:0}
+  .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  .twoCol .card{margin-bottom:0}
 }
-.card{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+.stack{display:grid;gap:14px}
+.homeGrid .card,.stack .card{margin-bottom:0}
+.card{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}
 h2{font-size:18px;margin:0 0 4px}
-h3{font-size:15px;margin:0 0 10px}
-.muted{color:var(--muted);font-size:14px;margin:0;line-height:1.5}
+h3{font-size:15.5px;margin:0 0 10px}
+.muted{color:var(--muted);font-size:14px;margin:0;line-height:1.55}
+.rowBetween{display:flex;justify-content:space-between;align-items:center;gap:12px}
 
-.btn{border:0;border-radius:14px;padding:15px 16px;font-weight:800;font-size:17px;color:#04131b}
-.btn:disabled{opacity:.3;cursor:not-allowed}
-.btn.on{background:var(--ok)}
+.btn{border:0;border-radius:15px;padding:15px 16px;font-weight:800;font-size:17px;color:var(--onAccent);transition:transform .1s,opacity .2s}
+.btn:active:not(:disabled){transform:scale(.98)}
+.btn:disabled{opacity:.28;cursor:not-allowed}
+.btn.on{background:var(--ok);color:#04131b}
 .btn.off{background:var(--bad);color:#fff}
 .btn.primary{background:var(--water);width:100%;margin-top:16px}
-.btn.small{padding:9px 14px;font-size:14px;background:var(--warn);margin-top:10px}
+.btn.small{padding:9px 14px;font-size:14px;background:var(--warn);color:#1b1200;margin-top:10px}
 .note{min-height:1.3em;font-size:14px;color:var(--muted);margin:10px 0 0}
 .note.err{color:var(--bad)}
 .note.good{color:var(--ok)}
 
-/* alarm */
-.alarm{display:flex;gap:12px;align-items:flex-start;background:rgba(255,97,112,.12);border:1px solid rgba(255,97,112,.55);border-radius:var(--r);padding:14px 16px;margin-bottom:14px}
-.alarm[hidden]{display:none}
-.alarm .ai{font-size:26px;line-height:1}
-.alarm b{display:block;font-size:15px;line-height:1.45}
+/* ===================== BANNER ===================== */
+.banner{display:flex;gap:12px;align-items:flex-start;border-radius:var(--r);padding:14px 16px;margin-bottom:14px;border:1px solid}
+.banner[hidden]{display:none}
+.banner .ai{font-size:24px;line-height:1.1}
+.banner b{display:block;font-size:15px;line-height:1.45}
+.banner.bad{background:color-mix(in srgb,var(--bad) 12%,transparent);border-color:color-mix(in srgb,var(--bad) 55%,transparent)}
+.banner.warn{background:color-mix(in srgb,var(--warn) 12%,transparent);border-color:color-mix(in srgb,var(--warn) 55%,transparent)}
 
-/* hero tank */
-.hero{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
-@media(max-width:540px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}.facts{text-align:left;width:100%}}
-.tank{position:relative;width:150px;height:240px;border:4px solid #b8d8e3;border-top-width:10px;border-radius:30px 30px 22px 22px;overflow:hidden;background:#071a25}
-.water{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(to top,#1478aa,var(--water));transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
+/* ===================== TANDON ===================== */
+.hero{display:grid;grid-template-columns:auto 1fr;gap:26px;align-items:center}
+@media(max-width:560px){.hero{grid-template-columns:1fr;justify-items:center;text-align:center}.facts{text-align:left;width:100%}}
+.tankWrap{position:relative;display:flex;align-items:flex-end;gap:8px;padding-top:26px}
+.pipe{position:absolute;top:0;left:-11px;width:48px;height:34px;border:7px solid var(--tankEdge);border-left:0;border-bottom:0;border-radius:0 14px 0 0;opacity:.8}
+.tank{position:relative;width:156px;height:250px;border:4px solid var(--tankEdge);border-radius:32px 32px 24px 24px;overflow:hidden;background:var(--tankBg)}
+.tank::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(to top,transparent 0 24%,color-mix(in srgb,var(--tankEdge) 25%,transparent) 24% 24.6%);z-index:1;pointer-events:none}
+.water{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(to top,var(--waterDeep),var(--water));transition:height 1.2s cubic-bezier(.2,.8,.2,1)}
 .wave{position:absolute;top:-6px;left:-50%;width:200%;height:7px;background:radial-gradient(ellipse 22px 7px at 50% 100%,var(--water) 98%,transparent 100%) 0 0/40px 7px repeat-x;animation:wave 3s linear infinite}
 .water.empty .wave{display:none}
 @keyframes wave{to{transform:translateX(40px)}}
-.pct{position:absolute;inset:0;display:grid;place-items:center;font-size:34px;font-weight:800;text-shadow:0 2px 10px rgba(0,0,0,.65);z-index:3}
+.stream{position:absolute;left:26px;top:0;width:7px;border-radius:0 0 4px 4px;background:repeating-linear-gradient(to bottom,var(--water2) 0 10px,transparent 10px 16px);background-size:100% 16px;animation:pour .45s linear infinite;opacity:0;transition:opacity .4s;z-index:2}
+.filling .stream{opacity:.9}
+@keyframes pour{to{background-position:0 16px}}
+.bubbles span{position:absolute;bottom:4px;width:7px;height:7px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6);opacity:0}
+.filling .bubbles span{animation:rise 2.4s ease-in infinite}
+.bubbles span:nth-child(1){left:18%;animation-delay:0s}
+.bubbles span:nth-child(2){left:42%;animation-delay:.7s;width:5px;height:5px}
+.bubbles span:nth-child(3){left:66%;animation-delay:1.3s}
+.bubbles span:nth-child(4){left:82%;animation-delay:1.9s;width:5px;height:5px}
+@keyframes rise{0%{transform:translateY(0);opacity:0}15%{opacity:.9}100%{transform:translateY(-140px);opacity:0}}
+.pct{position:absolute;inset:0;display:grid;place-items:center;z-index:3}
+.pct span{font-size:32px;font-weight:800;color:#fff;background:color-mix(in srgb,var(--waterDeep) 80%,transparent);padding:2px 12px;border-radius:14px;box-shadow:0 4px 14px rgba(0,0,0,.2)}
 .mark{position:absolute;left:0;right:0;border-top:2px dashed var(--ok);z-index:2;transition:bottom .6s}
-.mark span{position:absolute;right:4px;top:-19px;font-size:10.5px;font-weight:800;color:var(--ok);background:rgba(6,19,28,.85);padding:1px 6px;border-radius:6px}
+.mark span{position:absolute;right:4px;top:-20px;font-size:10.5px;font-weight:800;color:var(--ok);background:color-mix(in srgb,var(--bg) 85%,transparent);padding:1px 6px;border-radius:6px}
 .mark.start{border-color:var(--warn)}
 .mark.start span{color:var(--warn);top:3px}
 .mark[hidden]{display:none}
+.scale{display:flex;flex-direction:column;justify-content:space-between;height:250px;font-size:10.5px;color:var(--muted);font-weight:700;padding:6px 0}
 .readout{min-width:0;width:100%}
-.readout .label{color:var(--muted);font-weight:600}
-.liters{font-size:54px;font-weight:800;line-height:1.05;letter-spacing:-1px;margin-top:2px}
+.readout .label{color:var(--muted);font-weight:700}
+.liters{font-size:56px;font-weight:800;line-height:1.05;letter-spacing:-1.5px;margin-top:2px;font-variant-numeric:tabular-nums}
 .liters small{font-size:22px;color:var(--muted);letter-spacing:0}
-.state{display:inline-block;margin:12px 0 8px;padding:7px 13px;border-radius:999px;font-weight:700;font-size:15px;background:rgba(61,220,151,.14);color:var(--ok)}
-.state.warn{background:rgba(255,191,90,.14);color:var(--warn)}
-.state.bad{background:rgba(255,97,112,.14);color:var(--bad)}
-.state.info{background:rgba(47,182,242,.15);color:var(--water2)}
+.state{display:inline-flex;align-items:center;gap:7px;margin:12px 0 8px;padding:7px 13px;border-radius:999px;font-weight:800;font-size:15px;background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.state.warn{background:color-mix(in srgb,var(--warn) 15%,transparent);color:var(--warn)}
+.state.bad{background:color-mix(in srgb,var(--bad) 15%,transparent);color:var(--bad)}
+.state.info{background:color-mix(in srgb,var(--water) 15%,transparent);color:var(--water)}
 .estimate{font-size:15px;color:var(--muted)}
 .estimate b{color:var(--text)}
-.bar{height:8px;background:#163243;border-radius:9px;overflow:hidden;margin:14px 0}
+.bar{height:8px;background:color-mix(in srgb,var(--line) 70%,transparent);border-radius:9px;overflow:hidden;margin:14px 0}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--water),var(--water2));transition:width 1.2s}
 .facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0}
-.facts div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.facts div{background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:9px 11px}
 dt{font-size:12px;color:var(--muted)}
-dd{margin:2px 0 0;font-weight:700}
+dd{margin:2px 0 0;font-weight:800}
 
-/* pump card */
+/* ===================== POMPA ===================== */
 .pumpTop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.pumpState{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:800}
-.lamp{width:18px;height:18px;border-radius:50%;background:#3a4f5b;flex:none}
-.lamp.on{background:var(--ok);box-shadow:0 0 0 6px rgba(61,220,151,.18),0 0 18px var(--ok)}
-.seg{display:flex;background:#08202d;border:1px solid var(--line);border-radius:13px;padding:3px}
-.seg button{border:0;background:none;color:var(--muted);padding:9px 14px;border-radius:10px;font-weight:700}
-.seg button.active{background:var(--water);color:#04131b}
+.pumpState{display:flex;align-items:center;gap:12px;font-size:22px;font-weight:800}
+.lamp{width:18px;height:18px;border-radius:50%;background:color-mix(in srgb,var(--muted) 50%,transparent);flex:none}
+.lamp.on{background:var(--ok);box-shadow:0 0 0 6px color-mix(in srgb,var(--ok) 20%,transparent),0 0 18px var(--ok);animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px color-mix(in srgb,var(--ok) 8%,transparent),0 0 10px var(--ok)}}
+.seg{display:flex;background:var(--chip);border:1px solid var(--line);border-radius:13px;padding:3px}
+.seg button{border:0;background:none;color:var(--muted);padding:9px 14px;border-radius:10px;font-weight:800}
+.seg button.active{background:var(--water);color:var(--onAccent)}
+.seg button:disabled{cursor:not-allowed}
 .btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.chipInfo{display:inline-flex;align-items:center;gap:6px;padding:7px 11px;border-radius:999px;background:var(--chip);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--muted)}
+.chipInfo.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,transparent)}
+.chipInfo.ok{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 45%,transparent)}
+.today{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.today div{background:var(--soft);border:1px solid var(--line);border-radius:13px;padding:10px 11px}
+.today b{display:block;font-size:19px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.today span{font-size:12px;color:var(--muted)}
 
-/* tank page */
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
-.chip{border:1px solid var(--line);background:#08202d;color:var(--text);padding:10px 15px;border-radius:999px;font-weight:700}
-.chip.active{background:var(--water);color:#04131b;border-color:transparent}
+/* ===================== FORM ===================== */
+.brandChips{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.chip{border:1px solid var(--line);background:var(--chip);padding:10px 15px;border-radius:999px;font-weight:700}
+.chip.active{background:var(--water);color:var(--onAccent);border-color:transparent}
 .models{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
-.model{text-align:left;border:1px solid var(--line);background:#08202d;color:var(--text);border-radius:14px;padding:12px}
+.model{text-align:left;border:1px solid var(--line);background:var(--chip);border-radius:14px;padding:12px}
 .model b{display:block;font-size:15px}
 .model span{color:var(--muted);font-size:13px}
 .model.active{border-color:var(--water);box-shadow:inset 0 0 0 1px var(--water)}
 .field{display:block;margin-top:12px}
-.field>span{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px;font-weight:600}
-input[type=number]{width:100%;background:#061822;border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font:inherit;font-size:18px;font-weight:700}
-.hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+.field>span{display:block;font-size:13.5px;color:var(--muted);margin-bottom:6px;font-weight:700}
+input[type=number],input[type=time]{width:100%;background:var(--input);border:1px solid var(--line);color:var(--text);border-radius:12px;padding:12px;font:inherit;font-size:18px;font-weight:800;color-scheme:light dark}
+input:disabled{opacity:.45}
+.hint{font-size:12.5px;color:var(--muted);margin-top:6px;line-height:1.5}
 .summary{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.summary div{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.summary div{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 .summary b{display:block;font-size:17px}
 .summary span{font-size:12.5px;color:var(--muted)}
-
-/* threshold */
-.thr{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.02)}
-.thrLabel{display:flex;align-items:center;gap:9px;font-weight:700;margin-bottom:10px}
+.thr{margin-top:14px;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--soft)}
+.thrLabel{display:flex;align-items:center;gap:9px;font-weight:800;margin-bottom:10px}
 .dot{width:12px;height:12px;border-radius:50%;flex:none}
 .dot.start{background:var(--warn)}
 .dot.stop{background:var(--ok)}
+.dot.w1{background:var(--water)}
+.dot.w2{background:var(--water2)}
 .pair{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center}
 .unit{position:relative;display:block}
 .unit input{padding-right:42px}
 .unit em{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-style:normal;color:var(--muted);font-weight:800}
 .eq{color:var(--muted);font-weight:800}
 input[type=range]{width:100%;margin-top:14px;accent-color:var(--water);height:28px}
-.preview{position:relative;height:18px;border-radius:9px;background:#163243;margin-top:16px;overflow:hidden}
-.preview i{position:absolute;top:0;bottom:0;background:rgba(47,182,242,.4)}
+.preview{position:relative;height:18px;border-radius:9px;background:color-mix(in srgb,var(--line) 70%,transparent);margin-top:16px;overflow:hidden}
+.preview i{position:absolute;top:0;bottom:0;background:color-mix(in srgb,var(--water) 45%,transparent)}
 .preview .s,.preview .e{position:absolute;top:0;bottom:0;width:3px}
 .preview .s{background:var(--warn)}
 .preview .e{background:var(--ok)}
 .inline{display:flex;align-items:center;gap:10px}
 .inline input{max-width:110px}
 
-/* history */
+/* switch */
+.switch{position:relative;display:inline-block;width:52px;height:30px;flex:none}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;z-index:1}
+.switch span{position:absolute;inset:0;border-radius:999px;background:color-mix(in srgb,var(--muted) 40%,transparent);transition:background .2s}
+.switch span::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 2px 6px rgba(0,0,0,.25)}
+.switch input:checked+span{background:var(--water)}
+.switch input:checked+span::after{transform:translateX(22px)}
+.switch input:focus-visible+span{outline:3px solid var(--water2);outline-offset:2px}
+
+/* jadwal */
+.win{margin-top:12px;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--soft)}
+.winHead{display:flex;align-items:center;gap:10px;font-weight:800}
+.times{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.win.off .times{opacity:.4;pointer-events:none}
+.timeline{position:relative;height:30px;border-radius:10px;background:color-mix(in srgb,var(--line) 70%,transparent);margin-top:16px;overflow:hidden}
+.timeline i{position:absolute;top:0;bottom:0}
+.timeline i.w1{background:color-mix(in srgb,var(--water) 70%,transparent)}
+.timeline i.w2{background:color-mix(in srgb,var(--water2) 60%,transparent)}
+.timeline .now{position:absolute;top:-2px;bottom:-2px;width:3px;background:var(--text);border-radius:2px}
+.tlLabels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);font-weight:700;margin-top:5px}
+.check{display:flex;gap:12px;align-items:flex-start;margin-top:14px;cursor:pointer}
+.check input{width:22px;height:22px;accent-color:var(--water);flex:none;margin-top:1px}
+.check b{display:block;font-size:14.5px}
+.check small{color:var(--muted);font-size:12.5px}
+#schedBody.disabled{opacity:.45;pointer-events:none}
+
+/* ===================== RIWAYAT ===================== */
 .totals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px}
-@media(max-width:540px){.totals{grid-template-columns:1fr}}
-.tot{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:rgba(255,255,255,.02)}
+@media(max-width:560px){.totals{grid-template-columns:1fr}}
+.tot{border:1px solid var(--line);border-radius:15px;padding:12px 14px;background:var(--soft)}
 .tot .k{color:var(--muted);font-size:13px;font-weight:700}
-.tot .v{font-size:27px;font-weight:800;margin:4px 0}
+.tot .v{font-size:27px;font-weight:800;margin:4px 0;font-variant-numeric:tabular-nums}
 .tot .s{font-size:13px;color:var(--muted);line-height:1.5}
 .chart{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:190px;margin-top:8px}
 .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px;font-size:12px;color:var(--muted)}
-.col i{width:100%;max-width:40px;border-radius:8px 8px 3px 3px;background:linear-gradient(to top,#1478aa,var(--water));min-height:4px;transition:height .8s}
+.col i{width:100%;max-width:40px;border-radius:8px 8px 3px 3px;background:linear-gradient(to top,var(--waterDeep),var(--water));min-height:4px;transition:height .8s}
 .col.today i{background:linear-gradient(to top,#24966a,var(--ok))}
 .col b{color:var(--text);font-size:11px}
+.lineChart svg{width:100%;height:auto;display:block}
+.lc-grid{stroke:var(--line);stroke-width:1}
+.lc-lab{fill:var(--muted);font-size:10px;font-weight:700;font-family:inherit}
+.lc-area{fill:color-mix(in srgb,var(--water) 28%,transparent)}
+.lc-line{fill:none;stroke:var(--water);stroke-width:2.5;stroke-linejoin:round}
+.lc-pump{fill:color-mix(in srgb,var(--ok) 22%,transparent)}
+.lc-start{stroke:var(--warn);stroke-dasharray:5 5;stroke-width:1.5}
+.lc-stop{stroke:var(--ok);stroke-dasharray:5 5;stroke-width:1.5}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);font-weight:700;margin-top:8px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:14px;height:10px;border-radius:3px;display:inline-block}
 .events{list-style:none;padding:0;margin:0;display:grid;gap:8px}
-.events li{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line)}
+.events li{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:13px;background:var(--soft);border:1px solid var(--line)}
 .events .ei{font-size:18px;flex:none}
-.events .et{flex:1;font-weight:600;font-size:14px;min-width:0}
+.events .et{flex:1;font-weight:700;font-size:14px;min-width:0}
 .events .et small{display:block;color:var(--muted);font-weight:500}
 .events time{font-size:12px;color:var(--muted);white-space:nowrap}
 
-/* language */
-.group{margin-top:18px;font-size:13px;color:var(--muted);font-weight:700}
+/* ===================== BAHASA ===================== */
+.group{margin-top:18px;font-size:13px;color:var(--muted);font-weight:800}
 .langs{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px;margin-top:8px}
-.lang{display:flex;flex-direction:column;align-items:flex-start;border:1px solid var(--line);background:#08202d;color:var(--text);border-radius:14px;padding:12px 14px;text-align:left}
+.lang{display:flex;flex-direction:column;align-items:flex-start;border:1px solid var(--line);background:var(--chip);border-radius:14px;padding:12px 14px;text-align:left}
 .lang b{font-size:16px}
 .lang span{color:var(--muted);font-size:13px}
 .lang.active{border-color:var(--water);box-shadow:inset 0 0 0 1px var(--water)}
 
-@media(prefers-reduced-motion:reduce){.wave{animation:none}.water,.bar i,.col i,.mark{transition:none}}
+/* ===================== TOAST ===================== */
+.toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);background:var(--text);color:var(--bg);padding:12px 18px;border-radius:14px;font-weight:700;font-size:14px;opacity:0;pointer-events:none;transition:all .25s;z-index:50;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.err{background:var(--bad);color:#fff}
+@media(min-width:860px){.toast{bottom:28px}}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
@@ -188,10 +291,14 @@ input[type=range]{width:100%;margin-top:14px;accent-color:var(--water);height:28
 
 <header class="top">
   <div class="brand">
-    <div class="logo" aria-hidden="true">💧</div>
+    <div class="logo" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2.5c-.3 0-.6.2-.8.4C9.6 5 5.5 10.2 5.5 14.2A6.5 6.5 0 0 0 18.5 14.2c0-4-4.1-9.2-5.7-11.3a1 1 0 0 0-.8-.4Zm-3 12.1a.9.9 0 0 1 .9.9 2.6 2.6 0 0 0 2.6 2.6.9.9 0 1 1 0 1.8 4.4 4.4 0 0 1-4.4-4.4.9.9 0 0 1 .9-.9Z"/></svg></div>
     <div><h1>Controller Tandon</h1><p id="tankLabel">—</p></div>
   </div>
-  <div class="pill wait" id="connPill"><i></i><span id="connText"></span></div>
+  <div class="topRight">
+    <span class="clock" id="clock"></span>
+    <div class="pill wait" id="connPill"><i></i><span id="connText"></span></div>
+    <button class="iconBtn" id="themeBtn" type="button">🌙</button>
+  </div>
 </header>
 
 <nav class="tabs" id="tabs">
@@ -203,119 +310,170 @@ input[type=range]{width:100%;margin-top:14px;accent-color:var(--water);height:28
 </nav>
 
 <main>
-<!-- ================= BERANDA ================= -->
+<!-- ======================= BERANDA ======================= -->
 <section id="pg-home" class="page active">
-  <div class="alarm" id="alarmBox" hidden>
+  <div class="banner bad" id="alarmBox" hidden>
     <div class="ai">⚠️</div>
     <div><b id="alarmText"></b><button class="btn small" id="alarmReset" data-i18n="reset_alarm"></button></div>
   </div>
-
-  <div class="card hero">
-    <div class="tank" aria-hidden="true">
-      <div class="water empty" id="water"><div class="wave"></div></div>
-      <div class="mark" id="markStop" hidden><span></span></div>
-      <div class="mark start" id="markStart" hidden><span></span></div>
-      <div class="pct" id="pctBig">—</div>
-    </div>
-    <div class="readout">
-      <div class="label" data-i18n="water_in_tank"></div>
-      <div class="liters"><span id="litersBig">—</span> <small>L</small></div>
-      <div class="muted" id="ofCap"></div>
-      <div class="state info" id="stateText"></div>
-      <div class="estimate"><span data-i18n="estimate"></span>: <b id="estText">—</b></div>
-      <div class="bar"><i id="barFill"></i></div>
-      <dl class="facts">
-        <div><dt data-i18n="empty_space"></dt><dd id="emptyL">—</dd></div>
-        <div><dt data-i18n="level"></dt><dd id="levelCm">—</dd></div>
-        <div><dt data-i18n="last_seen"></dt><dd id="lastSeen">—</dd></div>
-        <div><dt data-i18n="signal"></dt><dd id="rssi">—</dd></div>
-      </dl>
-    </div>
+  <div class="banner warn" id="panelBox" hidden>
+    <div class="ai">🔧</div>
+    <div><b id="panelText"></b></div>
   </div>
 
-  <div class="card">
-    <div class="pumpTop">
-      <div class="pumpState"><span class="lamp" id="lamp"></span><span id="pumpText">—</span></div>
-      <div class="seg" role="group">
-        <button id="modeAuto" data-i18n="mode_auto"></button>
-        <button id="modeManual" data-i18n="mode_manual"></button>
+  <div class="homeGrid">
+    <div class="card hero">
+      <div class="tankWrap" id="tankWrap" aria-hidden="true">
+        <div class="pipe"></div>
+        <div class="tank">
+          <div class="stream" id="stream"></div>
+          <div class="water empty" id="water"><div class="wave"></div><div class="bubbles"><span></span><span></span><span></span><span></span></div></div>
+          <div class="mark" id="markStop" hidden><span></span></div>
+          <div class="mark start" id="markStart" hidden><span></span></div>
+          <div class="pct"><span id="pctBig">—</span></div>
+        </div>
+        <div class="scale"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
+      </div>
+      <div class="readout">
+        <div class="label" data-i18n="water_in_tank"></div>
+        <div class="liters"><span id="litersBig">—</span> <small>L</small></div>
+        <div class="muted" id="ofCap"></div>
+        <div class="state info" id="stateText"></div>
+        <div class="estimate"><span data-i18n="estimate"></span>: <b id="estText">—</b></div>
+        <div class="bar"><i id="barFill"></i></div>
+        <dl class="facts">
+          <div><dt data-i18n="empty_space"></dt><dd id="emptyL">—</dd></div>
+          <div><dt data-i18n="level"></dt><dd id="levelCm">—</dd></div>
+          <div><dt data-i18n="last_seen"></dt><dd id="lastSeen">—</dd></div>
+          <div><dt data-i18n="signal"></dt><dd id="rssi">—</dd></div>
+        </dl>
       </div>
     </div>
-    <p class="muted" id="modeDesc"></p>
-    <div class="btns">
-      <button class="btn on" id="btnOn" data-i18n="btn_on"></button>
-      <button class="btn off" id="btnOff" data-i18n="btn_off"></button>
+
+    <div class="stack">
+      <div class="card">
+        <div class="pumpTop">
+          <div class="pumpState"><span class="lamp" id="lamp"></span><span id="pumpText">—</span></div>
+          <div class="seg" role="group">
+            <button id="modeAuto" data-i18n="mode_auto"></button>
+            <button id="modeManual" data-i18n="mode_manual"></button>
+          </div>
+        </div>
+        <p class="muted" id="modeDesc"></p>
+        <div class="btns">
+          <button class="btn on" id="btnOn" data-i18n="btn_on"></button>
+          <button class="btn off" id="btnOff" data-i18n="btn_off"></button>
+        </div>
+        <div class="chips" id="pumpChips"></div>
+        <p class="note" id="cmdNote"></p>
+      </div>
+
+      <div class="card">
+        <h3 data-i18n="today_card"></h3>
+        <div class="today">
+          <div><span data-i18n="used_water"></span><b id="tdUsed">—</b></div>
+          <div><span data-i18n="pump_times"></span><b id="tdStarts">—</b></div>
+          <div><span data-i18n="pump_duration"></span><b id="tdDur">—</b></div>
+        </div>
+      </div>
     </div>
-    <p class="note" id="cmdNote"></p>
   </div>
 </section>
 
-<!-- ================= TANDON ================= -->
+<!-- ======================= TANDON ======================= -->
 <section id="pg-tank" class="page">
-  <div class="card">
-    <h2 data-i18n="tank_title"></h2>
-    <p class="muted" data-i18n="tank_desc"></p>
-    <div class="chips" id="brandChips"></div>
-    <div class="models" id="modelList"></div>
-    <div id="customBox" hidden>
-      <label class="field"><span data-i18n="capacity"></span><input type="number" id="customCap" inputmode="numeric" min="10" placeholder="1200"></label>
-      <label class="field"><span data-i18n="height"></span><input type="number" id="customHeight" inputmode="decimal" min="40" placeholder="160"></label>
-      <p class="hint" data-i18n="height_hint"></p>
+  <div class="twoCol">
+    <div class="card">
+      <h2 data-i18n="tank_title"></h2>
+      <p class="muted" data-i18n="tank_desc"></p>
+      <div class="brandChips" id="brandChips"></div>
+      <div class="models" id="modelList"></div>
+      <div id="customBox" hidden>
+        <label class="field"><span data-i18n="capacity"></span><input type="number" id="customCap" inputmode="numeric" min="10" placeholder="1200"></label>
+        <label class="field"><span data-i18n="height"></span><input type="number" id="customHeight" inputmode="decimal" min="40" placeholder="160"></label>
+        <p class="hint" data-i18n="height_hint"></p>
+      </div>
     </div>
-  </div>
-
-  <div class="card">
-    <h3 data-i18n="tank_selected"></h3>
-    <div class="summary" id="tankSummary"></div>
-    <label class="field"><span data-i18n="gap"></span><input type="number" id="gapInput" inputmode="decimal" min="20" max="60"></label>
-    <p class="hint" data-i18n="gap_hint"></p>
-    <button class="btn primary" id="saveTank" data-i18n="save"></button>
-    <p class="note" id="tankNote"></p>
+    <div class="card">
+      <h3 data-i18n="tank_selected"></h3>
+      <div class="summary" id="tankSummary"></div>
+      <label class="field"><span data-i18n="gap"></span><input type="number" id="gapInput" inputmode="decimal" min="20" max="60"></label>
+      <p class="hint" data-i18n="gap_hint"></p>
+      <button class="btn primary" id="saveTank" data-i18n="save"></button>
+    </div>
   </div>
 </section>
 
-<!-- ================= ATUR POMPA ================= -->
+<!-- ======================= ATUR POMPA ======================= -->
 <section id="pg-pump" class="page">
-  <div class="card">
-    <h2 data-i18n="auto_title"></h2>
-    <p class="muted" id="usableInfo"></p>
-
-    <div class="thr">
-      <div class="thrLabel"><span class="dot start"></span><span data-i18n="start_at"></span></div>
-      <div class="pair">
-        <label class="unit"><input type="number" id="startPct" inputmode="decimal" min="5" max="90" step="1"><em>%</em></label>
-        <span class="eq">=</span>
-        <label class="unit"><input type="number" id="startL" inputmode="numeric" min="0" step="10"><em>L</em></label>
+  <div class="twoCol">
+    <div class="card">
+      <h2 data-i18n="auto_title"></h2>
+      <p class="muted" id="usableInfo"></p>
+      <div class="thr">
+        <div class="thrLabel"><span class="dot start"></span><span data-i18n="start_at"></span></div>
+        <div class="pair">
+          <label class="unit"><input type="number" id="startPct" inputmode="decimal" min="5" max="90" step="1"><em>%</em></label>
+          <span class="eq">=</span>
+          <label class="unit"><input type="number" id="startL" inputmode="numeric" min="0" step="10"><em>L</em></label>
+        </div>
+        <input type="range" id="startRange" min="5" max="90" step="1" aria-label="start">
       </div>
-      <input type="range" id="startRange" min="5" max="90" step="1" aria-label="start">
+      <div class="thr">
+        <div class="thrLabel"><span class="dot stop"></span><span data-i18n="stop_at"></span></div>
+        <div class="pair">
+          <label class="unit"><input type="number" id="stopPct" inputmode="decimal" min="15" max="95" step="1"><em>%</em></label>
+          <span class="eq">=</span>
+          <label class="unit"><input type="number" id="stopL" inputmode="numeric" min="0" step="10"><em>L</em></label>
+        </div>
+        <input type="range" id="stopRange" min="15" max="95" step="1" aria-label="stop">
+      </div>
+      <div class="preview" aria-hidden="true"><i id="pvBand"></i><span class="s" id="pvS"></span><span class="e" id="pvE"></span></div>
+      <p class="hint" id="pvText"></p>
+
+      <h3 style="margin-top:22px" data-i18n="dry_title"></h3>
+      <p class="muted" data-i18n="dry_explain"></p>
+      <label class="field"><span data-i18n="dry_desc"></span>
+        <div class="inline"><input type="number" id="dryMin" min="3" max="60" inputmode="numeric"><b data-i18n="minutes"></b></div>
+      </label>
+      <button class="btn primary" id="saveAuto" data-i18n="save"></button>
     </div>
 
-    <div class="thr">
-      <div class="thrLabel"><span class="dot stop"></span><span data-i18n="stop_at"></span></div>
-      <div class="pair">
-        <label class="unit"><input type="number" id="stopPct" inputmode="decimal" min="15" max="95" step="1"><em>%</em></label>
-        <span class="eq">=</span>
-        <label class="unit"><input type="number" id="stopL" inputmode="numeric" min="0" step="10"><em>L</em></label>
+    <div class="card">
+      <div class="rowBetween">
+        <h2 data-i18n="sched_title"></h2>
+        <label class="switch"><input type="checkbox" id="schedOn" aria-label="jadwal"><span></span></label>
       </div>
-      <input type="range" id="stopRange" min="15" max="95" step="1" aria-label="stop">
+      <p class="muted" data-i18n="sched_desc"></p>
+      <div id="schedBody">
+        <div class="win" id="win1">
+          <div class="winHead"><span class="dot w1"></span><span data-i18n="sched_w1"></span></div>
+          <div class="times">
+            <label class="field"><span data-i18n="sched_from"></span><input type="time" id="s1s"></label>
+            <label class="field"><span data-i18n="sched_to"></span><input type="time" id="s1e"></label>
+          </div>
+        </div>
+        <div class="win" id="win2">
+          <div class="winHead">
+            <label class="switch"><input type="checkbox" id="s2On" aria-label="jadwal 2"><span></span></label>
+            <span class="dot w2"></span><span data-i18n="sched_w2"></span>
+          </div>
+          <div class="times">
+            <label class="field"><span data-i18n="sched_from"></span><input type="time" id="s2s"></label>
+            <label class="field"><span data-i18n="sched_to"></span><input type="time" id="s2e"></label>
+          </div>
+        </div>
+        <div class="timeline" id="timeline"></div>
+        <div class="tlLabels"><span>00</span><span>06</span><span>12</span><span>18</span><span>24</span></div>
+        <label class="check"><input type="checkbox" id="schedFill"><span><b data-i18n="sched_fill"></b><small data-i18n="sched_fill_hint"></small></span></label>
+      </div>
+      <p class="hint" data-i18n="sched_auto_only"></p>
+      <button class="btn primary" id="saveSched" data-i18n="save"></button>
     </div>
-
-    <div class="preview" aria-hidden="true"><i id="pvBand"></i><span class="s" id="pvS"></span><span class="e" id="pvE"></span></div>
-    <p class="hint" id="pvText"></p>
-  </div>
-
-  <div class="card">
-    <h3 data-i18n="dry_title"></h3>
-    <p class="muted" data-i18n="dry_explain"></p>
-    <label class="field"><span data-i18n="dry_desc"></span>
-      <div class="inline"><input type="number" id="dryMin" min="3" max="60" inputmode="numeric"><b data-i18n="minutes"></b></div>
-    </label>
-    <button class="btn primary" id="saveAuto" data-i18n="save"></button>
-    <p class="note" id="autoNote"></p>
   </div>
 </section>
 
-<!-- ================= RIWAYAT ================= -->
+<!-- ======================= RIWAYAT ======================= -->
 <section id="pg-history" class="page">
   <div class="card">
     <h2 data-i18n="history_title"></h2>
@@ -326,16 +484,26 @@ input[type=range]{width:100%;margin-top:14px;accent-color:var(--water);height:28
     </div>
   </div>
   <div class="card">
-    <h3 data-i18n="chart_7d"></h3>
-    <div class="chart" id="chart"></div>
+    <h3 data-i18n="chart_24h"></h3>
+    <div class="lineChart" id="lineChart"></div>
+    <div class="legend">
+      <span><i style="background:var(--water)"></i><span data-i18n="level"></span></span>
+      <span><i style="background:color-mix(in srgb,var(--ok) 35%,transparent)"></i><span data-i18n="chart_pump"></span></span>
+    </div>
   </div>
-  <div class="card">
-    <h3 data-i18n="events"></h3>
-    <ul class="events" id="events"></ul>
+  <div class="twoCol">
+    <div class="card">
+      <h3 data-i18n="chart_7d"></h3>
+      <div class="chart" id="chart"></div>
+    </div>
+    <div class="card">
+      <h3 data-i18n="events"></h3>
+      <ul class="events" id="events"></ul>
+    </div>
   </div>
 </section>
 
-<!-- ================= BAHASA ================= -->
+<!-- ======================= BAHASA ======================= -->
 <section id="pg-lang" class="page">
   <div class="card">
     <h2 data-i18n="lang_title"></h2>
@@ -348,6 +516,7 @@ input[type=range]{width:100%;margin-top:14px;accent-color:var(--water);height:28
 </section>
 </main>
 </div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // =====================================================================
@@ -383,7 +552,6 @@ const CUSTOM = '__custom';
 
 // =====================================================================
 // BAHASA
-// Teks yang belum diterjemahkan otomatis memakai Bahasa Indonesia.
 // =====================================================================
 const LANGS = [
   {code:'bjn', name:'Bahasa Banjar',  region:'Kalimantan Selatan', group:'regional'},
@@ -639,14 +807,114 @@ bug:{
 }
 };
 
-let LANG = 'id';
-try { LANG = localStorage.getItem('tandonLang') || 'bjn'; } catch(e) { LANG = 'bjn'; }
+
+// ---- Teks baru v3 ----
+const I18N_V3 = {
+id:{
+  theme:'Ganti tampilan terang/gelap',today_card:'Hari ini',used_water:'Air terpakai',pump_times:'Pompa nyala',pump_duration:'Lama nyala',times:'kali',
+  sched_title:'Jadwal pompa',sched_desc:'Pompa otomatis hanya boleh nyala pada jam yang dipilih. Cocok jika air PDAM hanya mengalir di jam tertentu.',
+  sched_w1:'Jadwal 1',sched_w2:'Jadwal 2',sched_from:'Mulai',sched_to:'Sampai',
+  sched_fill:'Isi tandon sampai batas mati setiap jadwal mulai',sched_fill_hint:'Walaupun air belum turun ke batas nyala.',
+  sched_auto_only:'Jadwal hanya berlaku di mode Otomatis. Tombol manual tetap bisa dipakai kapan saja.',
+  sched_now_open:'Masuk jam jadwal',sched_now_closed:'Di luar jadwal, menunggu sampai {t}',sched_off:'Tanpa jadwal',
+  sched_nosync:'Jam alat belum sinkron, jadwal belum dipakai',sched_invalid:'Jam mulai dan jam selesai tidak boleh sama.',
+  dry_chip:'Pengaman kering {m} menit',
+  panel_bypass:'Saklar darurat aktif. Pompa dikendalikan langsung dari panel, pengaman otomatis tidak bekerja.',
+  panel_off:'Saklar panel di posisi MATI. Pompa tidak bisa dinyalakan.',
+  panel_lock:'Kembalikan saklar panel ke OTOMATIS untuk memakai tombol ini.',
+  chart_24h:'Isi tandon 24 jam terakhir',chart_pump:'Pompa nyala',
+  ev_PANEL_AUTO:'Saklar panel ke OTOMATIS',ev_PANEL_OFF:'Saklar panel ke MATI',ev_PANEL_BYPASS:'Saklar darurat dinyalakan',ev_BYPASS_FULL:'Tandon hampir tumpah saat mode darurat',
+  r_SCHEDULE:'jadwal',r_PANEL:'saklar panel'
+},
+en:{
+  theme:'Switch light/dark',today_card:'Today',used_water:'Water used',pump_times:'Pump starts',pump_duration:'Run time',times:'times',
+  sched_title:'Pump schedule',sched_desc:'The automatic pump only runs during the hours you choose. Useful when mains water only flows at certain times.',
+  sched_w1:'Schedule 1',sched_w2:'Schedule 2',sched_from:'From',sched_to:'Until',
+  sched_fill:'Fill the tank to the off level whenever a schedule starts',sched_fill_hint:'Even if the water has not dropped to the on level.',
+  sched_auto_only:'The schedule applies to Automatic mode only. Manual buttons work at any time.',
+  sched_now_open:'Within schedule',sched_now_closed:'Outside schedule, waiting until {t}',sched_off:'No schedule',
+  sched_nosync:'Device clock not synced yet, schedule paused',sched_invalid:'Start and end time cannot be the same.',
+  dry_chip:'Dry-run guard {m} min',
+  panel_bypass:'Emergency switch is on. The pump is controlled directly from the panel; automatic protection is not active.',
+  panel_off:'Panel switch is OFF. The pump cannot be started.',
+  panel_lock:'Turn the panel switch back to AUTO to use these buttons.',
+  chart_24h:'Tank level, last 24 hours',chart_pump:'Pump running',
+  ev_PANEL_AUTO:'Panel switch to AUTO',ev_PANEL_OFF:'Panel switch to OFF',ev_PANEL_BYPASS:'Emergency switch on',ev_BYPASS_FULL:'Tank almost overflowing in emergency mode',
+  r_SCHEDULE:'schedule',r_PANEL:'panel switch'
+},
+bjn:{
+  theme:'Ganti tampilan tarang/kalam',today_card:'Hari ini',used_water:'Banyu tapakai',pump_times:'Pompa hidup',pump_duration:'Lawas hidup',times:'kali',
+  sched_title:'Jadwal pompa',sched_desc:'Pompa otomatis cuma kawa hidup di jam nang dipilih. Cocok mun banyu PDAM mengalir di jam tertentu haja.',
+  sched_w1:'Jadwal 1',sched_w2:'Jadwal 2',sched_from:'Mulai',sched_to:'Sampai',
+  sched_fill:'Isi tandon sampai batas mati tiap jadwal mulai',sched_fill_hint:'Walaupun banyu balum turun ka batas hidup.',
+  sched_auto_only:'Jadwal cuma bapakai di mode Otomatis. Tumbol manual tetap kawa dipakai kapan haja.',
+  sched_now_open:'Masuk jam jadwal',sched_now_closed:'Di luar jadwal, mahadang sampai {t}',sched_off:'Kada pakai jadwal',
+  sched_nosync:'Jam alat balum sinkron, jadwal balum dipakai',sched_invalid:'Jam mulai wan jam sampai kada bulih sama.',
+  dry_chip:'Pangaman karing {m} menit',
+  panel_bypass:'Saklar darurat hidup. Pompa diatur langsung matan panel, pangaman otomatis kada bagawi.',
+  panel_off:'Saklar panel di posisi MATI. Pompa kada kawa dihidupakan.',
+  panel_lock:'Bulikakan saklar panel ka OTOMATIS gasan mamakai tumbol ini.',
+  chart_24h:'Isi tandon 24 jam tadi',chart_pump:'Pompa hidup',
+  ev_PANEL_AUTO:'Saklar panel ka OTOMATIS',ev_PANEL_OFF:'Saklar panel ka MATI',ev_PANEL_BYPASS:'Saklar darurat dihidupakan',ev_BYPASS_FULL:'Tandon handak tumpah wayah mode darurat',
+  r_SCHEDULE:'jadwal',r_PANEL:'saklar panel'
+},
+jv:{
+  theme:'Ganti tampilan padhang/peteng',today_card:'Dina iki',used_water:'Banyu kanggo',pump_times:'Pompa urip',pump_duration:'Suwene urip',times:'kaping',
+  sched_title:'Jadwal pompa',sched_desc:'Pompa otomatis mung oleh urip ing jam sing dipilih. Cocok yen banyu PDAM mung mili ing jam tartamtu.',
+  sched_w1:'Jadwal 1',sched_w2:'Jadwal 2',sched_from:'Wiwit',sched_to:'Nganti',
+  sched_fill:'Isi tandon nganti wates mati saben jadwal diwiwiti',sched_fill_hint:'Senajan banyu durung mudhun tekan wates urip.',
+  sched_auto_only:'Jadwal mung kanggo mode Otomatis. Tombol manual tetep bisa dienggo kapan wae.',
+  sched_now_open:'Mlebu jam jadwal',sched_now_closed:'Ing njaba jadwal, ngenteni nganti {t}',sched_off:'Tanpa jadwal',
+  sched_nosync:'Jam alat durung sinkron, jadwal durung dienggo',sched_invalid:'Jam wiwit lan jam rampung ora oleh padha.',
+  dry_chip:'Pengaman garing {m} menit',
+  panel_bypass:'Saklar darurat urip. Pompa diatur langsung saka panel, pengaman otomatis ora mlaku.',
+  panel_off:'Saklar panel ing posisi MATI. Pompa ora bisa diuripake.',
+  panel_lock:'Balekna saklar panel menyang OTOMATIS kanggo nganggo tombol iki.',
+  chart_24h:'Isi tandon 24 jam kepungkur',chart_pump:'Pompa urip',
+  ev_PANEL_AUTO:'Saklar panel menyang OTOMATIS',ev_PANEL_OFF:'Saklar panel menyang MATI',ev_PANEL_BYPASS:'Saklar darurat diuripake',ev_BYPASS_FULL:'Tandon meh luber nalika mode darurat',
+  r_SCHEDULE:'jadwal',r_PANEL:'saklar panel'
+},
+su:{
+  theme:'Ganti tampilan caang/poek',today_card:'Poé ieu',used_water:'Cai kapaké',pump_times:'Pompa hurung',pump_duration:'Lilana hurung',times:'kali',
+  sched_title:'Jadwal pompa',sched_desc:'Pompa otomatis ngan meunang hurung dina jam nu dipilih. Cocog lamun cai PDAM ngan ngocor dina jam nu tangtu.',
+  sched_w1:'Jadwal 1',sched_w2:'Jadwal 2',sched_from:'Ti',sched_to:'Nepi ka',
+  sched_fill:'Eusian tandon nepi ka wates pareum unggal jadwal dimimitian',sched_fill_hint:'Sanajan cai can turun nepi ka wates hurung.',
+  sched_auto_only:'Jadwal ngan pikeun mode Otomatis. Tombol manual tetep bisa dipaké iraha waé.',
+  sched_now_open:'Asup jam jadwal',sched_now_closed:'Di luar jadwal, ngadagoan nepi ka {t}',sched_off:'Tanpa jadwal',
+  sched_nosync:'Jam alat can sinkron, jadwal can dipaké',sched_invalid:'Jam mimiti jeung jam réngsé teu meunang sarua.',
+  dry_chip:'Pangaman garing {m} menit',
+  panel_bypass:'Saklar darurat hurung. Pompa diatur langsung ti panel, pangaman otomatis teu jalan.',
+  panel_off:'Saklar panel dina posisi PAREUM. Pompa teu bisa dihurungkeun.',
+  panel_lock:'Balikkeun saklar panel ka OTOMATIS pikeun maké tombol ieu.',
+  chart_24h:'Eusi tandon 24 jam ka tukang',chart_pump:'Pompa hurung',
+  ev_PANEL_AUTO:'Saklar panel ka OTOMATIS',ev_PANEL_OFF:'Saklar panel ka PAREUM',ev_PANEL_BYPASS:'Saklar darurat dihurungkeun',ev_BYPASS_FULL:'Tandon ampir bahé dina mode darurat',
+  r_SCHEDULE:'jadwal',r_PANEL:'saklar panel'
+}
+};
+for (const k in I18N_V3) I18N[k] = Object.assign(I18N[k] || {}, I18N_V3[k]);
+
+let LANG = 'bjn';
+try { LANG = localStorage.getItem('tandonLang') || 'bjn'; } catch(e) {}
 
 function t(key, vars){
   let s = (I18N[LANG] && I18N[LANG][key] !== undefined) ? I18N[LANG][key]
         : (I18N.id[key] !== undefined ? I18N.id[key] : key);
   if (vars && typeof s === 'string') for (const k in vars) s = s.split('{'+k+'}').join(vars[k]);
   return s;
+}
+
+// =====================================================================
+// TEMA TERANG / GELAP
+// =====================================================================
+function systemTheme(){ return matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
+let THEME = null;
+try { THEME = localStorage.getItem('tandonTheme'); } catch(e) {}
+function applyTheme(){
+  const th = THEME || systemTheme();
+  document.documentElement.dataset.theme = th;
+  document.querySelector('meta[name=theme-color]').content = th === 'light' ? '#e9f3f7' : '#06131c';
+  $('themeBtn').textContent = th === 'light' ? '🌙' : '☀️';
+  if (S.series) renderLineChart();
 }
 
 // =====================================================================
@@ -673,6 +941,13 @@ function note(id, msg, kind){
   const el = $(id); el.textContent = msg || '';
   el.className = 'note' + (kind ? ' ' + kind : '');
 }
+let toastTimer;
+function toast(msg, err){
+  const el = $('toast');
+  el.textContent = msg; el.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.className = 'toast' + (err ? ' err' : ''), 3200);
+}
 
 function usableOf(cap, h, gap){ return h > gap ? cap * (h - gap) / h : 0; }
 function cfgUsable(){ const c = S.cfg; return c ? usableOf(+c.capacity_liters, +c.tank_height_cm, +c.full_gap_cm) : 0; }
@@ -682,16 +957,45 @@ function fmtDuration(min){
   return nf(Math.floor(min/60)) + ' ' + t('hours_short') + ' ' + (min%60) + ' ' + t('minutes_short');
 }
 function witaDate(d){ return d.toLocaleDateString('en-CA',{timeZone:'Asia/Makassar'}); }
+function witaMinutes(d = new Date()){
+  const p = new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Makassar',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(d);
+  const h = +p.find(x => x.type === 'hour').value % 24, m = +p.find(x => x.type === 'minute').value;
+  return h * 60 + m;
+}
+const pad = n => String(n).padStart(2, '0');
+const m2hhmm = m => pad(Math.floor(m/60)) + ':' + pad(m % 60);     // untuk input
+const m2txt  = m => pad(Math.floor(m/60)) + '.' + pad(m % 60);     // untuk dibaca
+const hhmm2m = v => { const [h, m] = String(v || '').split(':').map(Number); return Number.isFinite(h) && Number.isFinite(m) ? h*60 + m : null; };
 
 // =====================================================================
 // STATE
 // =====================================================================
 const S = {
   data:null, cfg:null, lastStamp:null, lastChange:0,
-  pending:null, estimate:null, usage:[], events:[],
-  draft:null, brand:null, dirtyAuto:false, dirtyGap:false
+  pending:null, estimate:null, usage:[], events:[], series:null,
+  draft:null, brand:null, dirtyAuto:false, dirtyGap:false, dirtySched:false
 };
 const isOnline = () => S.lastChange && (Date.now() - S.lastChange < OFFLINE_MS);
+
+// =====================================================================
+// JADWAL (dihitung juga di web untuk tampilan)
+// =====================================================================
+function windows(c){
+  if (!c) return [];
+  const w = [[+c.sched1_start, +c.sched1_end]];
+  if (c.sched2_enabled) w.push([+c.sched2_start, +c.sched2_end]);
+  return w.filter(([s, e]) => Number.isFinite(s) && Number.isFinite(e) && s !== e);
+}
+function inWin(m, s, e){ return s < e ? (m >= s && m < e) : (m >= s || m < e); }
+function nextOpen(c){
+  const m = witaMinutes();
+  let best = null;
+  for (const [s] of windows(c)){
+    const diff = (s - m + 1440) % 1440;
+    if (best === null || diff < best.diff) best = {diff, s};
+  }
+  return best ? best.s : null;
+}
 
 // =====================================================================
 // BERANDA
@@ -709,10 +1013,15 @@ function renderHome(){
   const pct = valid ? clamp(+d.level_percent, 0, 100) : null;
   const usable = valid && d.usable_liters ? +d.usable_liters : cfgUsable();
   const vol = valid ? +d.volume_liters : null;
+  const panel = (d && online && d.panel_mode) || 'auto';
+  const on = !!(d && d.pump_on);
+  const filling = online && (on || panel === 'bypass');
 
   const water = $('water');
   water.style.height = (pct ?? 0) + '%';
   water.classList.toggle('empty', !pct || pct < 1);
+  $('stream').style.bottom = (pct ?? 0) + '%';
+  $('tankWrap').classList.toggle('filling', filling && on);
   $('pctBig').textContent = pct == null ? '—' : nf(pct) + '%';
   $('litersBig').textContent = vol == null ? '—' : nf(vol);
   $('ofCap').textContent = usable ? t('of_capacity', {cap: nf(usable)}) : '';
@@ -722,7 +1031,6 @@ function renderHome(){
   $('lastSeen').textContent = S.lastChange ? new Date(S.lastChange).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'}) : '—';
   $('rssi').textContent = d && d.wifi_rssi != null ? d.wifi_rssi + ' dBm' : '—';
 
-  // garis batas nyala/mati di gambar tandon
   const auto = c && c.mode === 'auto';
   for (const [id, val, key] of [['markStart', c && c.start_percent, 'mk_start'], ['markStop', c && c.stop_percent, 'mk_stop']]){
     const m = $(id);
@@ -730,40 +1038,57 @@ function renderHome(){
     if (auto){ m.style.bottom = val + '%'; m.firstElementChild.textContent = t(key, {p: nf(val)}); }
   }
 
-  // status dalam kalimat sederhana
   let st = 'info', txt;
   if (!d) txt = t('waiting');
   else if (!online) { st = 'bad'; txt = t('device_offline'); }
   else if (d.sensor_error) { st = 'bad'; txt = t('sensor_err'); }
-  else if (d.pump_on) { st = 'info'; txt = t('status_filling'); }
+  else if (on) { st = 'info'; txt = t('status_filling'); }
   else if (c && pct >= Math.min(95, c.stop_percent)) { st = 'ok'; txt = t('status_full'); }
   else if (pct <= Math.max(15, c ? c.start_percent : 15)) { st = 'warn'; txt = t('status_low'); }
   else { st = 'ok'; txt = t('status_ok'); }
   const se = $('stateText'); se.className = 'state ' + (st === 'ok' ? '' : st); se.textContent = txt;
-
   $('estText').textContent = estimateText(online, d, vol);
 
   // pompa
-  const on = !!(d && d.pump_on);
   $('lamp').classList.toggle('on', on && online);
-  $('pumpText').textContent = !d ? '—' : (on ? t('pump_on') : t('pump_off'));
+  $('pumpText').textContent = !d ? '—' : (panel === 'bypass' ? '🔧 ' + t('mode_manual') : on ? t('pump_on') : t('pump_off'));
   $('modeAuto').classList.toggle('active', !!auto);
   $('modeManual').classList.toggle('active', !!c && !auto);
+  const u = cfgUsable();
   $('modeDesc').textContent = !c ? '' : auto
-      ? t('mode_auto_desc', {start: nf(c.start_percent)+'% ('+nf(c.start_percent/100*cfgUsable())+' L)', stop: nf(c.stop_percent)+'% ('+nf(c.stop_percent/100*cfgUsable())+' L)'})
+      ? t('mode_auto_desc', {start: nf(c.start_percent)+'% ('+nf(c.start_percent/100*u)+' L)', stop: nf(c.stop_percent)+'% ('+nf(c.stop_percent/100*u)+' L)'})
       : t('mode_manual_desc');
-  const lock = !c || auto || !online || !!S.pending;
+  const lock = !c || auto || !online || !!S.pending || panel !== 'auto';
   $('btnOn').disabled = lock || on;
   $('btnOff').disabled = lock || !on;
 
-  // alarm
-  const box = $('alarmBox');
+  // chip status jadwal & pengaman
+  const chips = [];
+  if (c){
+    if (c.schedule_enabled){
+      const list = windows(c).map(([s, e]) => m2txt(s) + '–' + m2txt(e)).join(', ');
+      if (d && online && d.time_synced === false) chips.push(['warn', '⏰ ' + t('sched_nosync')]);
+      else {
+        const open = d && online ? d.sched_open !== false : windows(c).some(([s, e]) => inWin(witaMinutes(), s, e));
+        if (open) chips.push(['ok', '⏰ ' + t('sched_now_open') + ' (' + list + ')']);
+        else { const nx = nextOpen(c); chips.push(['warn', '⏰ ' + t('sched_now_closed', {t: nx == null ? '—' : m2txt(nx)})]); }
+      }
+    } else chips.push(['', '⏰ ' + t('sched_off')]);
+    chips.push(['', '🛡️ ' + t('dry_chip', {m: c.dry_run_minutes})]);
+  }
+  $('pumpChips').innerHTML = chips.map(([k, s]) => `<span class="chipInfo ${k}">${s}</span>`).join('');
+
+  // banner alarm & panel
   const alarm = d && online ? d.alarm : '';
-  box.hidden = !alarm;
+  $('alarmBox').hidden = !alarm;
   if (alarm){
     $('alarmText').textContent = t('alarm_' + alarm);
     $('alarmReset').hidden = alarm === 'SENSOR';
   }
+  $('panelBox').hidden = panel === 'auto';
+  if (panel !== 'auto') $('panelText').textContent = t(panel === 'bypass' ? 'panel_bypass' : 'panel_off');
+  if (panel !== 'auto' && c && !auto) note('cmdNote', t('panel_lock'));
+  else if ($('cmdNote').textContent === t('panel_lock')) note('cmdNote', '');
 }
 
 function estimateText(online, d, vol){
@@ -812,10 +1137,9 @@ async function sendCommand(on){
 function checkPending(){
   const p = S.pending;
   if (!p || !S.data) return;
-  if (Number(S.data.applied_cmd_seq) >= p.seq && S.data.pump_on === p.on){
+  const applied = Number(S.data.applied_cmd_seq) >= p.seq;
+  if (applied && (S.data.pump_on === p.on || Date.now() - p.since > 6000)){
     S.pending = null; note('cmdNote', '');
-  } else if (Number(S.data.applied_cmd_seq) >= p.seq && Date.now() - p.since > 6000){
-    S.pending = null; note('cmdNote', '');   // diterima tapi ditahan pengaman; alarm akan tampil
   } else if (Date.now() - p.since > 15000){
     S.pending = null; note('cmdNote', t('cmd_timeout'), 'err');
   }
@@ -827,21 +1151,20 @@ async function setMode(mode){
   S.cfg.mode = mode; renderHome();
   try{
     await api(T_CFG + '?' + dev, {method:'PATCH', body:{mode}, prefer:'return=minimal'});
-    note('cmdNote', '');
   }catch(e){
-    S.cfg.mode = prev; note('cmdNote', t('save_fail'), 'err'); renderHome();
+    S.cfg.mode = prev; toast(t('save_fail'), true); renderHome();
   }
 }
 
 async function resetAlarm(){
   try{
     await api('rpc/tandon_reset_alarm', {method:'POST', body:{p_device:DEVICE_ID}});
-    note('cmdNote', t('waiting_device'));
-  }catch(e){ note('cmdNote', t('save_fail'), 'err'); }
+    toast(t('waiting_device'));
+  }catch(e){ toast(t('save_fail'), true); }
 }
 
 // =====================================================================
-// PENGATURAN (dibaca dari Supabase)
+// PENGATURAN
 // =====================================================================
 async function loadConfig(force){
   try{
@@ -849,6 +1172,7 @@ async function loadConfig(force){
     if (!rows || !rows[0]) return;
     S.cfg = rows[0];
     if (force || !S.dirtyAuto) fillAuto();
+    if (force || !S.dirtySched) fillSched();
     if (force || !S.dirtyGap) $('gapInput').value = S.cfg.full_gap_cm;
     if (!S.brand) S.brand = TANKS[S.cfg.tank_brand] ? S.cfg.tank_brand : CUSTOM;
     renderTankPage();
@@ -856,9 +1180,7 @@ async function loadConfig(force){
   }catch(e){ console.warn('config:', e.message); }
 }
 
-// =====================================================================
-// HALAMAN TANDON
-// =====================================================================
+// ---------- tandon ----------
 function tankChoice(){
   if (S.draft) return S.draft;
   const c = S.cfg;
@@ -874,7 +1196,6 @@ function renderTankPage(){
     el.onclick = () => { S.brand = b; if (b === CUSTOM) updateCustomDraft(); renderTankPage(); };
     chips.appendChild(el);
   }
-
   const cur = tankChoice();
   const list = $('modelList'); list.innerHTML = '';
   $('customBox').hidden = S.brand !== CUSTOM;
@@ -884,18 +1205,15 @@ function renderTankPage(){
       const active = cur && cur.brand === S.brand && cur.model === model;
       el.className = 'model' + (active ? ' active' : '');
       el.innerHTML = `<b>${model}</b><span>${nf(cap)} L, ${nf(h,1)} cm</span>`;
-      el.onclick = () => { S.draft = {brand:S.brand, model, cap, height:h}; note('tankNote',''); renderTankPage(); };
+      el.onclick = () => { S.draft = {brand:S.brand, model, cap, height:h}; renderTankPage(); };
       list.appendChild(el);
     }
   } else if (S.brand === CUSTOM && cur && cur.brand === 'Custom'){
     if (!$('customCap').value) $('customCap').value = cur.cap;
     if (!$('customHeight').value) $('customHeight').value = cur.height;
   }
-
   const gap = +$('gapInput').value || 25;
-  const sum = $('tankSummary');
-  if (!cur){ sum.innerHTML = ''; return; }
-  sum.innerHTML =
+  $('tankSummary').innerHTML = !cur ? '' :
     `<div><span>${t('sum_model')}</span><b>${cur.brand} ${cur.model}</b></div>
      <div><span>${t('sum_cap')}</span><b>${nf(cur.cap)} L</b></div>
      <div><span>${t('sum_height')}</span><b>${nf(cur.height,1)} cm</b></div>
@@ -911,21 +1229,19 @@ async function saveTank(){
   if (S.brand === CUSTOM) updateCustomDraft();
   const cur = tankChoice();
   const gap = +$('gapInput').value;
-  if (!cur || !(cur.cap > 0) || !(cur.height > 40)){ note('tankNote', t('fill_tank'), 'err'); return; }
-  if (!(gap >= 20 && gap <= 60) || cur.height - gap < 20){ note('tankNote', t('gap_hint'), 'err'); return; }
+  if (!cur || !(cur.cap > 0) || !(cur.height > 40)){ toast(t('fill_tank'), true); return; }
+  if (!(gap >= 20 && gap <= 60) || cur.height - gap < 20){ toast(t('gap_hint'), true); return; }
   try{
     await api(T_CFG + '?' + dev, {method:'PATCH', prefer:'return=minimal', body:{
       tank_brand:cur.brand, tank_model:cur.model, capacity_liters:cur.cap, tank_height_cm:cur.height, full_gap_cm:gap
     }});
     S.draft = null; S.dirtyGap = false;
-    note('tankNote', t('saved'), 'good');
+    toast(t('saved'));
     await loadConfig(true);
-  }catch(e){ note('tankNote', t('save_fail'), 'err'); console.warn(e); }
+  }catch(e){ toast(t('save_fail'), true); console.warn(e); }
 }
 
-// =====================================================================
-// ATUR POMPA: persen <-> liter saling terhubung
-// =====================================================================
+// ---------- batas nyala/mati ----------
 function fillAuto(){
   const c = S.cfg; if (!c) return;
   setThr('start', +c.start_percent);
@@ -934,32 +1250,27 @@ function fillAuto(){
   S.dirtyAuto = false;
   drawPreview();
 }
-
 function setThr(kind, pct){
   const u = cfgUsable();
   $(kind+'Pct').value = Math.round(pct*10)/10;
   $(kind+'Range').value = pct;
   $(kind+'L').value = Math.round(pct/100*u);
 }
-
 function onThr(kind, src){
   const u = cfgUsable();
   let p;
   if (src === 'L'){
     p = u > 0 ? (+$(kind+'L').value) / u * 100 : 0;
     p = Math.round(p*10)/10;
-    $(kind+'Pct').value = p;
-    $(kind+'Range').value = p;
+    $(kind+'Pct').value = p; $(kind+'Range').value = p;
   } else {
     p = src === 'range' ? +$(kind+'Range').value : +$(kind+'Pct').value;
     if (src === 'range') $(kind+'Pct').value = p; else $(kind+'Range').value = p;
     $(kind+'L').value = Math.round(p/100*u);
   }
   S.dirtyAuto = true;
-  note('autoNote','');
   drawPreview();
 }
-
 function drawPreview(){
   const s = clamp(+$('startPct').value || 0, 0, 100), e = clamp(+$('stopPct').value || 0, 0, 100);
   $('pvBand').style.left = s + '%';
@@ -969,22 +1280,70 @@ function drawPreview(){
   $('usableInfo').textContent = t('usable_info', {u: nf(cfgUsable())});
   $('pvText').textContent = e > s ? t('pv_text', {l: nf((e - s)/100*cfgUsable())}) : '';
 }
-
 async function saveAuto(){
   const s = +$('startPct').value, e = +$('stopPct').value, dry = Math.round(+$('dryMin').value);
-  if (!(s >= 5 && s <= 90 && e >= 15 && e <= 95 && e - s >= 10)){ note('autoNote', t('threshold_err'), 'err'); return; }
+  if (!(s >= 5 && s <= 90 && e >= 15 && e <= 95 && e - s >= 10)){ toast(t('threshold_err'), true); return; }
   if (!(dry >= 3 && dry <= 60)){ $('dryMin').value = clamp(dry || 10, 3, 60); return; }
   try{
     await api(T_CFG + '?' + dev, {method:'PATCH', prefer:'return=minimal',
       body:{start_percent:s, stop_percent:e, dry_run_minutes:dry}});
     S.dirtyAuto = false;
-    note('autoNote', t('saved'), 'good');
+    toast(t('saved'));
     await loadConfig(true);
-  }catch(err){ note('autoNote', t('save_fail'), 'err'); console.warn(err); }
+  }catch(err){ toast(t('save_fail'), true); console.warn(err); }
+}
+
+// ---------- jadwal ----------
+function fillSched(){
+  const c = S.cfg; if (!c || c.schedule_enabled === undefined) return;
+  $('schedOn').checked = !!c.schedule_enabled;
+  $('s1s').value = m2hhmm(+c.sched1_start); $('s1e').value = m2hhmm(+c.sched1_end);
+  $('s2On').checked = !!c.sched2_enabled;
+  $('s2s').value = m2hhmm(+c.sched2_start); $('s2e').value = m2hhmm(+c.sched2_end);
+  $('schedFill').checked = !!c.schedule_fill;
+  S.dirtySched = false;
+  drawTimeline();
+}
+function readSchedForm(){
+  return {
+    schedule_enabled: $('schedOn').checked,
+    sched1_start: hhmm2m($('s1s').value), sched1_end: hhmm2m($('s1e').value),
+    sched2_enabled: $('s2On').checked,
+    sched2_start: hhmm2m($('s2s').value), sched2_end: hhmm2m($('s2e').value),
+    schedule_fill: $('schedFill').checked
+  };
+}
+function drawTimeline(){
+  const f = readSchedForm();
+  $('schedBody').classList.toggle('disabled', !f.schedule_enabled);
+  $('win2').classList.toggle('off', !f.sched2_enabled);
+  const bars = [];
+  const add = (s, e, cls) => {
+    if (s == null || e == null || s === e) return;
+    const seg = s < e ? [[s, e]] : [[s, 1440], [0, e]];
+    for (const [a, b] of seg) bars.push(`<i class="${cls}" style="left:${a/14.4}%;width:${(b-a)/14.4}%"></i>`);
+  };
+  add(f.sched1_start, f.sched1_end, 'w1');
+  if (f.sched2_enabled) add(f.sched2_start, f.sched2_end, 'w2');
+  bars.push(`<span class="now" style="left:calc(${witaMinutes()/14.4}% - 1px)"></span>`);
+  $('timeline').innerHTML = bars.join('');
+}
+async function saveSched(){
+  const f = readSchedForm();
+  if (f.sched1_start == null || f.sched1_end == null || f.sched1_start === f.sched1_end ||
+      (f.sched2_enabled && (f.sched2_start == null || f.sched2_end == null || f.sched2_start === f.sched2_end))){
+    toast(t('sched_invalid'), true); return;
+  }
+  try{
+    await api(T_CFG + '?' + dev, {method:'PATCH', prefer:'return=minimal', body:f});
+    S.dirtySched = false;
+    toast(t('saved'));
+    await loadConfig(true);
+  }catch(e){ toast(t('save_fail'), true); console.warn(e); }
 }
 
 // =====================================================================
-// FITUR: PERKIRAAN AIR HABIS (dari pemakaian 6 jam terakhir)
+// PERKIRAAN AIR HABIS (dari pemakaian 6 jam terakhir)
 // =====================================================================
 async function loadEstimate(){
   try{
@@ -992,7 +1351,6 @@ async function loadEstimate(){
     const rows = await api(`${T_HIST}?select=created_at,volume_liters,sensor_error&${dev}&created_at=gte.${encodeURIComponent(since)}&order=created_at.asc&limit=1000`);
     const pts = (rows || []).filter(r => !r.sensor_error && Number.isFinite(+r.volume_liters));
     if (pts.length < 20){ S.estimate = {kind:'unknown'}; return; }
-
     const B = new Map();
     for (const r of pts){
       const k = Math.floor(Date.parse(r.created_at) / 600000);
@@ -1027,6 +1385,12 @@ async function loadHistory(){
   }catch(e){ console.warn('history:', e.message); }
   renderHistory();
 }
+async function loadSeries(){
+  try{
+    S.series = await api('rpc/tandon_level_series', {method:'POST', body:{p_device:DEVICE_ID, p_hours:24}}) || [];
+  }catch(e){ console.warn('series:', e.message); S.series = S.series || []; }
+  renderLineChart();
+}
 
 function renderHistory(){
   const byDay = new Map(S.usage.map(r => [r.day, r]));
@@ -1037,7 +1401,6 @@ function renderHistory(){
     const dt = new Date(base.getTime() - i*86400e3);
     days.push({key: dt.toISOString().slice(0,10), dow: dt.getUTCDay()});
   }
-
   const sum = rows => rows.reduce((a, r) => ({
     used: a.used + (+r.used_liters || 0), min: a.min + (+r.pump_minutes || 0), n: a.n + (+r.pump_starts || 0)
   }), {used:0, min:0, n:0});
@@ -1049,6 +1412,9 @@ function renderHistory(){
     $('u'+id).textContent = nf(r.used) + ' L';
     $('s'+id).textContent = t('pump_summary', {n: nf(r.n), m: fmtDuration(r.min)});
   }
+  $('tdUsed').textContent = nf(rToday.used) + ' L';
+  $('tdStarts').textContent = nf(rToday.n) + '×';
+  $('tdDur').textContent = fmtDuration(rToday.min);
 
   const names = t('days');
   const max = Math.max(1, ...days.map(d => +(byDay.get(d.key)?.used_liters || 0)));
@@ -1057,7 +1423,8 @@ function renderHistory(){
     return `<div class="col${d.key === today ? ' today' : ''}"><b>${v ? nf(v) : ''}</b><i style="height:${Math.max(2, v/max*100)}%"></i><span>${names[d.dow]}</span></div>`;
   }).join('');
 
-  const icons = {PUMP_ON:'▶️',PUMP_OFF:'⏹',DRY_RUN:'⚠️',SENSOR_ERROR:'⚠️',SENSOR_OK:'✅',OVERFLOW_STOP:'🛑',LOW_WATER:'💧',BOOT:'🔌'};
+  const icons = {PUMP_ON:'▶️',PUMP_OFF:'⏹',DRY_RUN:'⚠️',SENSOR_ERROR:'⚠️',SENSOR_OK:'✅',OVERFLOW_STOP:'🛑',LOW_WATER:'💧',BOOT:'🔌',
+                 PANEL_AUTO:'✅',PANEL_OFF:'⏸',PANEL_BYPASS:'🔧',BYPASS_FULL:'🚨'};
   const ul = $('events');
   if (!S.events.length){ ul.innerHTML = `<li><span class="et">${t('no_data')}</span></li>`; return; }
   ul.innerHTML = S.events.map(e => {
@@ -1065,6 +1432,43 @@ function renderHistory(){
     const sub = [e.reason ? t('r_'+e.reason) : '', e.level_percent != null ? nf(e.level_percent)+'%' : ''].filter(Boolean).join(', ');
     return `<li><span class="ei">${icons[e.type] || '•'}</span><span class="et">${t('ev_'+e.type)}<small>${sub}</small></span><time>${when}</time></li>`;
   }).join('');
+}
+
+function renderLineChart(){
+  const box = $('lineChart');
+  const rows = (S.series || []).map(r => ({t: Date.parse(r.t), l: +r.level, p: +r.pump})).filter(r => Number.isFinite(r.t) && Number.isFinite(r.l));
+  if (!rows.length){ box.innerHTML = `<p class="muted">${t('no_data')}</p>`; return; }
+  const W = 720, H = 230, L = 36, R = 12, T = 12, B = 28;
+  const t1 = Date.now(), t0 = t1 - 24*3600e3;
+  const x = v => L + (v - t0) / (t1 - t0) * (W - L - R);
+  const y = p => T + (1 - p/100) * (H - T - B);
+  const step = 600000, bw = Math.max(1, x(t0 + step) - x(t0));
+  let svg = '';
+  for (const r of rows) if (r.p >= 0.5) svg += `<rect class="lc-pump" x="${x(r.t).toFixed(1)}" y="${T}" width="${bw.toFixed(1)}" height="${H-T-B}"/>`;
+  for (const p of [0, 25, 50, 75, 100]) svg += `<line class="lc-grid" x1="${L}" x2="${W-R}" y1="${y(p)}" y2="${y(p)}"/><text class="lc-lab" x="${L-6}" y="${y(p)+4}" text-anchor="end">${p}</text>`;
+  if (S.cfg){
+    svg += `<line class="lc-start" x1="${L}" x2="${W-R}" y1="${y(+S.cfg.start_percent)}" y2="${y(+S.cfg.start_percent)}"/>`;
+    svg += `<line class="lc-stop" x1="${L}" x2="${W-R}" y1="${y(+S.cfg.stop_percent)}" y2="${y(+S.cfg.stop_percent)}"/>`;
+  }
+  // garis isi tandon, diputus jika data kosong > 30 menit
+  const segs = []; let cur = [];
+  for (const r of rows){
+    if (cur.length && r.t - cur[cur.length-1].t > 1800000){ segs.push(cur); cur = []; }
+    cur.push(r);
+  }
+  if (cur.length) segs.push(cur);
+  for (const sg of segs){
+    const pts = sg.map(r => `${(x(r.t) + bw/2).toFixed(1)},${y(r.l).toFixed(1)}`);
+    const x0 = (x(sg[0].t) + bw/2).toFixed(1), x1 = (x(sg[sg.length-1].t) + bw/2).toFixed(1);
+    svg += `<path class="lc-area" d="M${x0},${y(0)} L${pts.join(' L')} L${x1},${y(0)} Z"/>`;
+    svg += `<path class="lc-line" d="M${pts.join(' L')}"/>`;
+  }
+  for (let i = 0; i <= 4; i++){
+    const tt = t0 + i * 6 * 3600e3;
+    const lab = new Date(tt).toLocaleTimeString('id-ID',{timeZone:'Asia/Makassar',hour:'2-digit',minute:'2-digit'});
+    svg += `<text class="lc-lab" x="${x(tt)}" y="${H-8}" text-anchor="${i === 0 ? 'start' : i === 4 ? 'end' : 'middle'}">${lab}</text>`;
+  }
+  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${t('chart_24h')}">${svg}</svg>`;
 }
 
 // =====================================================================
@@ -1083,13 +1487,17 @@ function renderLangs(){
     }
   }
 }
-
 function setLang(code){
   LANG = code;
   try { localStorage.setItem('tandonLang', code); } catch(e) {}
   document.documentElement.lang = code;
   document.querySelectorAll('[data-i18n]').forEach(n => n.textContent = t(n.dataset.i18n));
-  renderLangs(); renderHome(); renderTankPage(); drawPreview(); renderHistory();
+  $('themeBtn').title = t('theme'); $('themeBtn').setAttribute('aria-label', t('theme'));
+  renderLangs(); renderHome(); renderTankPage(); drawPreview(); renderHistory(); renderLineChart();
+}
+
+function tickClock(){
+  $('clock').textContent = new Date().toLocaleTimeString('id-ID',{timeZone:'Asia/Makassar',hour:'2-digit',minute:'2-digit'}) + ' WITA';
 }
 
 // =====================================================================
@@ -1098,7 +1506,8 @@ function setLang(code){
 document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
   document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('active', x === b));
   document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === 'pg-' + b.dataset.page));
-  if (b.dataset.page === 'history') loadHistory();
+  if (b.dataset.page === 'history'){ loadHistory(); loadSeries(); }
+  if (b.dataset.page === 'pump') drawTimeline();
   window.scrollTo(0, 0);
 });
 
@@ -1107,8 +1516,14 @@ $('btnOff').onclick = () => sendCommand(false);
 $('modeAuto').onclick   = () => setMode('auto');
 $('modeManual').onclick = () => setMode('manual');
 $('alarmReset').onclick = resetAlarm;
-$('saveTank').onclick = saveTank;
-$('saveAuto').onclick = saveAuto;
+$('saveTank').onclick  = saveTank;
+$('saveAuto').onclick  = saveAuto;
+$('saveSched').onclick = saveSched;
+$('themeBtn').onclick = () => {
+  THEME = (document.documentElement.dataset.theme === 'light') ? 'dark' : 'light';
+  try { localStorage.setItem('tandonTheme', THEME); } catch(e) {}
+  applyTheme();
+};
 $('gapInput').oninput = () => { S.dirtyGap = true; renderTankPage(); };
 $('customCap').oninput = $('customHeight').oninput = () => { updateCustomDraft(); renderTankPage(); };
 for (const k of ['start', 'stop']){
@@ -1117,18 +1532,24 @@ for (const k of ['start', 'stop']){
   $(k+'Range').oninput = () => onThr(k, 'range');
 }
 $('dryMin').oninput = () => { S.dirtyAuto = true; };
+for (const id of ['schedOn','s1s','s1e','s2On','s2s','s2e','schedFill'])
+  $(id).addEventListener('input', () => { S.dirtySched = true; drawTimeline(); });
 
 // =====================================================================
 // MULAI
 // =====================================================================
+applyTheme();
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (!THEME) applyTheme(); });
 setLang(LANG);
-loadConfig(true).then(() => { loadEstimate(); loadHistory(); });
+tickClock();
+loadConfig(true).then(() => { loadEstimate(); loadHistory(); loadSeries(); });
 pollData();
 setInterval(pollData, 1500);
 setInterval(() => loadConfig(false), 15000);
 setInterval(loadEstimate, 60000);
-setInterval(() => { if ($('pg-history').classList.contains('active')) loadHistory(); }, 60000);
-setInterval(renderHome, 5000);   // supaya status "tidak terhubung" muncul walau tanpa data baru
+setInterval(loadHistory, 60000);
+setInterval(() => { if ($('pg-history').classList.contains('active')) loadSeries(); }, 120000);
+setInterval(() => { tickClock(); renderHome(); drawTimeline(); }, 5000);
 </script>
 </body>
 </html>
